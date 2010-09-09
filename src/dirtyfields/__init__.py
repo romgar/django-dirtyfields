@@ -1,0 +1,1 @@
+from dirtyfields import DirtyFieldsMixin
