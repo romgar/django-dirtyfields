@@ -57,7 +57,7 @@ Using it in the shell
 Why would you want this?
 ------------------------
 
-When using [signals][signals], especially [pre_save][pre_save] then it is often very useful to be able to see if a model has changed or not. A signal could change its behaviour depending on whether a specific field has changed or not, whereas otherwise, you only could work on the event that the model's `save()` method had been called.
+When using [signals][signals], especially [pre_save][pre_save], it is useful to be able to see what fields have changed or not. A signal could change its behaviour depending on whether a specific field has changed, whereas otherwise, you only could work on the event that the model's `save()` method had been called.
 
 Credits
 -------
