@@ -1,0 +1,7 @@
+Development Status :: 5 - Production
+Intended Audience :: Developers
+License :: OSI Approved :: BSD License
+Operating System :: OS Independent
+Programming Language :: Python
+Framework :: Django
+Topic :: Software Development :: Libraries :: Python Modules
