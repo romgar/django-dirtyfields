@@ -1,1 +1,1 @@
-from dirtyfields import DirtyFieldsMixin
+from dirtyfields.dirtyfields import DirtyFieldsMixin
