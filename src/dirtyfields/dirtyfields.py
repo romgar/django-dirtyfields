@@ -18,11 +18,11 @@ class DirtyFieldsMixin(object):
         new_state = self._as_dict()
 
         if sys.version_info < (3, 0):
-            states = self._original_state.iteritems()
+            items = self._original_state.iteritems()
         else:
-            states = self._original_state.items()
+            items = self._original_state.items()
 
-        return dict([(key, value) for key, value in states if value != new_state[key]])
+        return dict([(key, value) for key, value in items if value != new_state[key]])
 
     def is_dirty(self):
         # in order to be dirty we need to have been saved at least once, so we
