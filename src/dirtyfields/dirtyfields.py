@@ -1,6 +1,7 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
 
 from django.db.models.signals import post_save
+import copy
 
 
 class DirtyFieldsMixin(object):
@@ -12,8 +13,13 @@ class DirtyFieldsMixin(object):
                               self.__class__.__name__))
         reset_state(sender=self.__class__, instance=self)
 
-    def _as_dict(self):
-        return dict([(f.name, getattr(self, f.name))
+    def _as_dict(self, do_copy=False):
+        if do_copy:
+            getter = lambda value: copy.copy(value)
+        else:
+            getter = lambda value: value
+
+        return dict([(f.name, getter(getattr(self, f.name)))
                      for f in self._meta.local_fields
                      if not f.rel])
 
@@ -33,4 +39,4 @@ class DirtyFieldsMixin(object):
 
 
 def reset_state(sender, instance, **kwargs):
-    instance._original_state = instance._as_dict()
+    instance._original_state = instance._as_dict(True)
