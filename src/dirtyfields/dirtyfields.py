@@ -15,10 +15,7 @@ class DirtyFieldsMixin(object):
             is_fk = isinstance(f, models.fields.related.ForeignKey) and not isinstance(f, models.fields.related.OneToOneField)
             if not f.rel or is_fk:
                 if is_fk:
-                    if getattr(self, f.attname):
-                        object_dict[f.name] = getattr(self, f.name)
-                    else:
-                        object_dict[f.name] = None
+                    object_dict[f.attname] = getattr(self, f.attname)
                 else:
                     object_dict[f.name] = getattr(self, f.name)
 
