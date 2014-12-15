@@ -1,6 +1,7 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
 
 from django.db.models.signals import post_save
+from django.forms.models import model_to_dict
 
 
 class DirtyFieldsMixin(object):
@@ -11,7 +12,7 @@ class DirtyFieldsMixin(object):
         reset_state(sender=self.__class__, instance=self)
 
     def _as_dict(self):
-        return dict([(f.name, getattr(self, f.name)) for f in self._meta.local_fields if not f.rel])
+        return model_to_dict(self)
 
     def get_dirty_fields(self):
         new_state = self._as_dict()
