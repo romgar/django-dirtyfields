@@ -1,7 +1,7 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
 
 from django.db.models.signals import post_save
-
+from django.forms.models import model_to_dict
 
 class DirtyFieldsMixin(object):
     def __init__(self, *args, **kwargs):
@@ -12,6 +12,9 @@ class DirtyFieldsMixin(object):
                 name=self.__class__.__name__))
         reset_state(sender=self.__class__, instance=self)
 
+    def _full_dict(self):
+        return model_to_dict(self)
+
     def _as_dict(self):
         all_field = {}
 
@@ -21,13 +24,21 @@ class DirtyFieldsMixin(object):
 
         return all_field
 
-    def get_dirty_fields(self):
-        new_state = self._as_dict()
+    def get_dirty_fields(self, check_relationship=False):
+        if check_relationship:
+            new_state = self._full_dict()
+        else:
+            new_state = self._as_dict()
         all_modify_field = {}
-
+        # import pdb; pdb.set_trace()
         for key, value in self._original_state.iteritems():
-            if value != new_state[key]:
-                all_modify_field[key] = value
+            try:
+                if value != new_state[key]:
+                    all_modify_field[key] = value
+            except KeyError:
+                # We are trying to compare a field that is a relationship in the classic mode
+                # Skipping it.
+                pass
 
         return all_modify_field
 
@@ -40,4 +51,5 @@ class DirtyFieldsMixin(object):
 
 
 def reset_state(sender, instance, **kwargs):
-    instance._original_state = instance._as_dict()
+    # import pdb; pdb.set_trace()
+    instance._original_state = instance._full_dict()
