@@ -40,12 +40,12 @@ class DirtyFieldsMixin(object):
 
         return all_modify_field
 
-    def is_dirty(self):
+    def is_dirty(self, check_relationship=False):
         # in order to be dirty we need to have been saved at least once, so we
         # check for a primary key and we need our dirty fields to not be empty
         if not self.pk:
             return True
-        return {} != self.get_dirty_fields()
+        return {} != self.get_dirty_fields(check_relationship=check_relationship)
 
 
 def reset_state(sender, instance, **kwargs):
