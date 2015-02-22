@@ -26,6 +26,8 @@ class DirtyFieldsMixin(object):
 
     def get_dirty_fields(self, check_relationship=False):
         if check_relationship:
+            # We want to check every field, including foreign keys and
+            # one-to-one fields,
             new_state = self._full_dict()
         else:
             new_state = self._as_dict()
@@ -47,5 +49,4 @@ class DirtyFieldsMixin(object):
 
 
 def reset_state(sender, instance, **kwargs):
-    # import pdb; pdb.set_trace()
     instance._original_state = instance._full_dict()
