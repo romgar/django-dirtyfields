@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from testing_app.models import TestModel, TestModelWithForeignKey, TestModelWithManyToMany
+from testing_app.models import TestModel, TestModelWithForeignKey, TestModelWithOneToOneField
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -42,7 +42,7 @@ class DirtyFieldsMixinTestCase(TestCase):
         # initial state shouldn't be dirty
         self.assertEqual(tm.get_dirty_fields(), {})
 
-        # Default dirty check is not taking relationships into account
+        # Default dirty check is not taking foreignkeys into account
         tm.fkey = tm2
         self.assertEqual(tm.get_dirty_fields(), {})
 
@@ -51,21 +51,19 @@ class DirtyFieldsMixinTestCase(TestCase):
             'fkey': tm1.id
         })
 
-    def test_relationship_option_for_many_to_many(self):
+    def test_relationship_option_for_one_to_one_field(self):
         tm1 = TestModel.objects.create()
         tm2 = TestModel.objects.create()
-        tm = TestModelWithManyToMany.objects.create()
-        # import pdb; pdb.set_trace()
+        tm = TestModelWithOneToOneField.objects.create(o2o=tm1)
+
         # initial state shouldn't be dirty
         self.assertEqual(tm.get_dirty_fields(), {})
 
-        # Default dirty check is not taking relationships into account
-        tm.m2m.add(tm1)
-        self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'm2m': []
-        })
+        # Default dirty check is not taking onetoone fields into account
+        tm.o2o = tm2
+        self.assertEqual(tm.get_dirty_fields(), {})
 
-        tm.m2m.add(tm2)
+        # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'm2m': [tm1.id]
+            'o2o': tm1.id
         })

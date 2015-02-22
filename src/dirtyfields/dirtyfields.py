@@ -30,15 +30,11 @@ class DirtyFieldsMixin(object):
         else:
             new_state = self._as_dict()
         all_modify_field = {}
-        # import pdb; pdb.set_trace()
-        for key, value in self._original_state.iteritems():
-            try:
-                if value != new_state[key]:
-                    all_modify_field[key] = value
-            except KeyError:
-                # We are trying to compare a field that is a relationship in the classic mode
-                # Skipping it.
-                pass
+
+        for key, value in new_state.iteritems():
+            original_value = self._original_state[key]
+            if value != original_value:
+                all_modify_field[key] = original_value
 
         return all_modify_field
 

@@ -12,5 +12,5 @@ class TestModelWithForeignKey(DirtyFieldsMixin, models.Model):
     fkey = models.ForeignKey(TestModel)
 
 
-class TestModelWithManyToMany(DirtyFieldsMixin, models.Model):
-    m2m = models.ManyToManyField(TestModel)
+class TestModelWithOneToOneField(DirtyFieldsMixin, models.Model):
+    o2o = models.OneToOneField(TestModel)
