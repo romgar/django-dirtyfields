@@ -8,4 +8,4 @@ script:
   - python runtests.py
 
 install:
-- pip install -r requirements.pip
+- pip install django-dirtyfields
