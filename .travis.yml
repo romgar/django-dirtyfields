@@ -9,3 +9,12 @@ script:
 
 install:
   - pip install -e .
+
+deploy:
+  provider: pypi
+  user: smn
+  password:
+    secure: "sXlDQNG8p+F4y8TKbRVw44uBCzECecgWQLNYcJBObMPoPbp64Ux488kM5RhbYhof0H1W850CKZzW66GQAjay0HS8tp9nPXg35xInPongLFuPzapoOdHtJZa5ub9QnpIs6LifJ/zXP5YDqh8ZUyoD+oFMvMFKjBkVB/NIYMYkyEM="
+  on:
+    tags: true
+    all_branches: true
