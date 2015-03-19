@@ -67,6 +67,32 @@ Using it in the shell
     {}
     >>> 
 
+
+Checking foreign key fields.
+----------------------------
+By default, dirty functions are not checking foreign keys. If you want to also take these relationships into account, use ``check_relationship`` parameter:
+
+::
+
+    (ve)$ ./manage.py shell
+    >>> from testing_app.models import TestModel
+    >>> tm = TestModel(fkey=obj1)
+    >>> tm.save()
+    >>> tm.is_dirty()
+    False
+    >>> tm.get_dirty_fields()
+    {}
+    >>> tm.fkey = obj2
+    >>> tm.is_dirty()
+    False
+    >>> tm.is_dirty(check_relationship=True)
+    True
+    >>> tm.get_dirty_fields()
+    {}
+    >>> tm.get_dirty_fields(check_relationship=True)
+    {'fkey': obj1}
+
+
 Why would you want this?
 ------------------------
 
