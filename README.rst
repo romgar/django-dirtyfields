@@ -1,5 +1,7 @@
 Django Dirty Fields
 ===================
+.. image:: https://travis-ci.org/smn/django-dirtyfields.svg?branch=develop
+    :target: https://travis-ci.org/smn/django-dirtyfields
 
 Tracking dirty fields on a Django model instance.
 
