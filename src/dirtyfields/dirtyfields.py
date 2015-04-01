@@ -3,6 +3,7 @@
 from django.db.models.signals import post_save
 from django.forms.models import model_to_dict
 
+
 class DirtyFieldsMixin(object):
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)
@@ -34,6 +35,9 @@ class DirtyFieldsMixin(object):
         all_modify_field = {}
 
         for key, value in new_state.iteritems():
+            if key not in self._original_state:
+                continue
+
             original_value = self._original_state[key]
             if value != original_value:
                 all_modify_field[key] = original_value
