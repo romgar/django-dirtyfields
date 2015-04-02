@@ -1,7 +1,6 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
-
 from django.db.models.signals import post_save
-from django.forms.models import model_to_dict
+
 
 class DirtyFieldsMixin(object):
     def __init__(self, *args, **kwargs):
@@ -13,7 +12,15 @@ class DirtyFieldsMixin(object):
         reset_state(sender=self.__class__, instance=self)
 
     def _full_dict(self):
-        return model_to_dict(self)
+        # This function is not factorised with _as_dict() because we want to keep
+        # previous behaviour (without check_relationship) untouched, as we want to
+        # minimize side-effects that we could have if we regroup full_dict and as_dict.
+        all_field = {}
+
+        for field in self._meta.concrete_fields:
+            all_field[field.name] = getattr(self, field.name)
+
+        return all_field
 
     def _as_dict(self):
         all_field = {}
