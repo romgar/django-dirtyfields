@@ -7,9 +7,9 @@ from django.conf import settings
 from django.test.utils import get_runner
 
 if __name__ == "__main__":
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'example_app.settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.test_settings'
     django.setup()
     TestRunner = get_runner(settings)
     test_runner = TestRunner()
-    failures = test_runner.run_tests(["example_app.testing_app.tests"])
+    failures = test_runner.run_tests(["tests"])
     sys.exit(bool(failures))
