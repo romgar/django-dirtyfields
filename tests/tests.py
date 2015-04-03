@@ -48,7 +48,7 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'fkey': tm1.id
+            'fkey': tm1
         })
 
     def test_relationship_option_for_one_to_one_field(self):
@@ -65,5 +65,14 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'o2o': tm1.id
+            'o2o': tm1
         })
+
+    def test_deferred_query(self):
+        """
+        This test is written to test recursion issue fix.
+        https://github.com/smn/django-dirtyfields/issues/22
+        """
+        TestModel.objects.create()
+        tm = TestModel.objects.only('boolean').first()
+        self.assertEqual(tm.boolean, True)
