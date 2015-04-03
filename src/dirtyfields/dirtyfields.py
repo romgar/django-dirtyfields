@@ -17,7 +17,7 @@ class DirtyFieldsMixin(object):
         # minimize side-effects that we could have if we regroup full_dict and as_dict.
         all_field = {}
 
-        for field in self._meta.concrete_fields:
+        for field in self._meta.local_concrete_fields:
             all_field[field.name] = getattr(self, field.name)
 
         return all_field

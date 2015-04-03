@@ -67,3 +67,12 @@ class DirtyFieldsMixinTestCase(TestCase):
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
             'o2o': tm1
         })
+
+    def test_deferred_query(self):
+        """
+        This test is written to test recursion issue fix.
+        https://github.com/smn/django-dirtyfields/issues/22
+        """
+        TestModel.objects.create()
+        tm = TestModel.objects.only('boolean').first()
+        self.assertEqual(tm.boolean, True)
