@@ -46,4 +46,6 @@ class DirtyFieldsMixin(object):
 
 
 def reset_state(sender, instance, **kwargs):
-    instance._original_state = instance._full_dict()
+    # original state should hold all posible dirty fields to avoid
+    # getting a `KeyError` when checking if a field is dirty or not
+    instance._original_state = instance._as_dict(check_relationship=True)
