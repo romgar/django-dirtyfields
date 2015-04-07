@@ -14,13 +14,15 @@ class DirtyFieldsMixin(object):
 
     def _full_dict(self):
         return model_to_dict(self)
-
-    def _as_dict(self):
+    def _as_dict(self, check_relationship):
         all_field = {}
 
         for field in self._meta.local_fields:
-            if not field.rel:
-                all_field[field.name] = getattr(self, field.name)
+
+            if field.rel and not check_relationship:
+                continue
+
+            all_field[field.name] = getattr(self, field.name)
 
         return all_field
 
