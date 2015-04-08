@@ -70,7 +70,7 @@ class DirtyFieldsMixinTestCase(TestCase):
             'o2o': tm1
         })
 
-    def test_dirty_fields_ignores_the_editable_property_of_fileds(self):
+    def test_dirty_fields_ignores_the_editable_property_of_fields(self):
         # Non regression test case for bug:
         # https://github.com/smn/django-dirtyfields/issues/17
         tm = TestModelWithNonEditableFields.objects.create()
