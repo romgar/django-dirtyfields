@@ -1,6 +1,8 @@
 from django.test import TestCase
 
-from models import TestModel, TestModelWithForeignKey, TestModelWithOneToOneField
+from models import (TestModel, TestModelWithForeignKey,
+                    TestModelWithNonEditableFields, TestModelWithOneToOneField)
+
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -66,4 +68,33 @@ class DirtyFieldsMixinTestCase(TestCase):
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
             'o2o': tm1
+        })
+
+    def test_dirty_fields_ignores_the_editable_property_of_fileds(self):
+        # Non regression test case for bug:
+        # https://github.com/smn/django-dirtyfields/issues/17
+        tm = TestModelWithNonEditableFields.objects.create()
+
+        # initial state shouldn't be dirty
+        self.assertEqual(tm.get_dirty_fields(), {})
+
+        # changing values should flag them as dirty
+        tm.boolean = False
+        tm.characters = 'testing'
+        self.assertEqual(tm.get_dirty_fields(), {
+            'boolean': True,
+            'characters': ''
+        })
+        self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
+            'boolean': True,
+            'characters': ''
+        })
+
+        # resetting them to original values should unflag
+        tm.boolean = True
+        self.assertEqual(tm.get_dirty_fields(), {
+            'characters': ''
+        })
+        self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
+            'characters': ''
         })

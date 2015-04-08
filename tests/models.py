@@ -14,3 +14,10 @@ class TestModelWithForeignKey(DirtyFieldsMixin, models.Model):
 
 class TestModelWithOneToOneField(DirtyFieldsMixin, models.Model):
     o2o = models.OneToOneField(TestModel)
+
+
+class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):
+    dt = models.DateTimeField(auto_now_add=True)
+    characters = models.CharField(blank=True, max_length=80,
+                                  editable=False)
+    boolean = models.BooleanField(default=True)
