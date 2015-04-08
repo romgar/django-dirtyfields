@@ -16,10 +16,8 @@ class DirtyFieldsMixin(object):
         all_field = {}
 
         for field in self._meta.local_fields:
-
             if field.rel and not check_relationship:
                 continue
-
             all_field[field.name] = getattr(self, field.name)
 
         return all_field
@@ -46,6 +44,6 @@ class DirtyFieldsMixin(object):
 
 
 def reset_state(sender, instance, **kwargs):
-    # original state should hold all posible dirty fields to avoid
+    # original state should hold all possible dirty fields to avoid
     # getting a `KeyError` when checking if a field is dirty or not
     instance._original_state = instance._as_dict(check_relationship=True)
