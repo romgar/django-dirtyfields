@@ -1,7 +1,7 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
 
 from django.db.models.signals import post_save
-from django.forms.models import model_to_dict
+
 
 class DirtyFieldsMixin(object):
     def __init__(self, *args, **kwargs):
@@ -12,25 +12,22 @@ class DirtyFieldsMixin(object):
                 name=self.__class__.__name__))
         reset_state(sender=self.__class__, instance=self)
 
-    def _full_dict(self):
-        return model_to_dict(self)
-
-    def _as_dict(self):
+    def _as_dict(self, check_relationship):
         all_field = {}
 
         for field in self._meta.local_fields:
-            if not field.rel:
-                all_field[field.name] = getattr(self, field.name)
+
+            if field.rel and not check_relationship:
+                continue
+
+            all_field[field.name] = getattr(self, field.name)
 
         return all_field
 
     def get_dirty_fields(self, check_relationship=False):
-        if check_relationship:
-            # We want to check every field, including foreign keys and
-            # one-to-one fields,
-            new_state = self._full_dict()
-        else:
-            new_state = self._as_dict()
+        # check_relationship indicates whether we want to check for foreign keys
+        # and one-to-one fields or ignore them
+        new_state = self._as_dict(check_relationship)
         all_modify_field = {}
 
         for key, value in new_state.iteritems():
@@ -49,4 +46,6 @@ class DirtyFieldsMixin(object):
 
 
 def reset_state(sender, instance, **kwargs):
-    instance._original_state = instance._full_dict()
+    # original state should hold all posible dirty fields to avoid
+    # getting a `KeyError` when checking if a field is dirty or not
+    instance._original_state = instance._as_dict(check_relationship=True)
