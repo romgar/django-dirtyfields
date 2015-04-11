@@ -1,5 +1,5 @@
 from django.db import models
-from dirtyfields import DirtyFieldsMixin
+from src.dirtyfields.dirtyfields import DirtyFieldsMixin
 
 
 class TestModel(DirtyFieldsMixin, models.Model):
