@@ -16,6 +16,10 @@ class TestModelWithOneToOneField(DirtyFieldsMixin, models.Model):
     o2o = models.OneToOneField(TestModel)
 
 
+class TestModelWithManyToManyField(DirtyFieldsMixin, models.Model):
+    m2m = models.ManyToManyField(TestModel)
+
+
 class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):
     dt = models.DateTimeField(auto_now_add=True)
     characters = models.CharField(blank=True, max_length=80,
