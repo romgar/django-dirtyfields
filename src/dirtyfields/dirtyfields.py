@@ -27,6 +27,13 @@ class DirtyFieldsMixin(object):
 
         return all_field
 
+    def get_ForeignKey_dirtyfield(self, field):
+        try:
+            value = getattr(self, field.name)
+        except ObjectDoesNotExist:
+            value = None
+        return value
+
     def _get_dirtyfield_getter(self, field):
         cls = field.__class__
         for klass in (cls,) + cls.__bases__:
