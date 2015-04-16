@@ -28,7 +28,14 @@ class DirtyFieldsMixin(object):
         new_state = self._as_dict(check_relationship)
         all_modify_field = {}
 
-        for key, value in new_state.iteritems():
+        # Python3
+        try:
+            items = new_state.items()
+        # Python2
+        except AttributeError:
+            items = new_state.iteritems()
+
+        for key, value in items:
             original_value = self._original_state[key]
             if value != original_value:
                 all_modify_field[key] = original_value
