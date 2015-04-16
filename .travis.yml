@@ -8,6 +8,7 @@ script:
   - python runtests.py
 
 install:
+  - pip install django
   - pip install -e .
 
 deploy:
