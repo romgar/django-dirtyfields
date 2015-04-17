@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 def listify(filename):
-    return filter(None, open(filename, 'r').read().split('\n'))
+    return open(filename, 'r').read().split('\n')
 
 setup(
     name = "django-dirtyfields",
