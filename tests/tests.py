@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from models import (TestModel, TestModelWithForeignKey,
+from models import (TestModel, TestModelWithForeignKey, TestModelWithSelfForeignKey,
                     TestModelWithNonEditableFields, TestModelWithOneToOneField)
 
 
@@ -40,6 +40,35 @@ class DirtyFieldsMixinTestCase(TestCase):
         tm1 = TestModel.objects.create()
         tm2 = TestModel.objects.create()
         tm = TestModelWithForeignKey.objects.create(fkey=tm1)
+
+        # initial state shouldn't be dirty
+        self.assertEqual(tm.get_dirty_fields(), {})
+        self.assertEqual(tm.fkey, tm1)
+
+        # Default dirty check is not taking foreignkeys into account
+        tm.fkey = tm2
+        self.assertEqual(tm.get_dirty_fields(), {})
+
+        # But if we use 'check_relationships' param, then we have to.
+        self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
+            'fkey': tm1
+        })
+
+    def test_relationship_option_for_foreign_key_to_self(self):
+        tm = TestModelWithSelfForeignKey.objects.create(id=1)
+        tm1 = TestModelWithSelfForeignKey.objects.create(id=2)
+        tm2 = TestModelWithSelfForeignKey.objects.create(id=3)
+        tm.fkey = tm1
+        tm.save()
+        tm1.fkey = tm2
+        tm1.save()
+        tm2.fkey = tm
+        tm2.save()
+
+        del tm, tm1, tm2
+        tm = TestModelWithSelfForeignKey.objects.get(id=1)
+        tm1 = TestModelWithSelfForeignKey.objects.get(id=2)
+        tm2 = TestModelWithSelfForeignKey.objects.get(id=3)
 
         # initial state shouldn't be dirty
         self.assertEqual(tm.get_dirty_fields(), {})
