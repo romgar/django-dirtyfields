@@ -1,8 +1,6 @@
 from django.test import TestCase
-
-from models import (TestModel, TestModelWithForeignKey,
+from .models import (TestModel, TestModelWithForeignKey,
                     TestModelWithNonEditableFields, TestModelWithOneToOneField)
-
 
 
 class DirtyFieldsMixinTestCase(TestCase):
