@@ -5,9 +5,10 @@ python:
   - "3.4"
 
 script:
-  - python runtests.py
+  - tox
 
 install:
+  - pip install tox
   - pip install -e .
 
 deploy:
