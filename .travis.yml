@@ -11,6 +11,9 @@ install:
   - pip install tox
   - pip install -e .
 
+after_success:
+  - coveralls
+
 deploy:
   provider: pypi
   user: smn
