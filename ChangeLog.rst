@@ -1,6 +1,23 @@
 ChangeLog
 =========
 
+.. _v0.5:
+
+0.5 (2015-05-06)
+------------------
+
+*New:*
+
+    - Adding code compatibility for python3,
+    - Launching travis-ci tests on python3,
+    - Using :code:`tox` to launch tests on Django 1.5, 1.6, 1.7 and 1.8 versions,
+    - Updating :code:`runtests.py` test script to run properly on every Django version.
+
+Bugfix:*
+
+    - Catching :code:`Error` when trying to get foreign key object if not existing (#32).
+
+
 .. _v0.4.1:
 
 0.4.1 (2015-04-08)
