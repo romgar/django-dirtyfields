@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 def listify(filename):
-    return filter(None, open(filename, 'r').read().split('\n'))
+    return [line for line in open(filename, 'r').read().split('\n') if line]
 
 setup(
     name = "django-dirtyfields",
-    version = "0.4.1",
+    version = "0.5",
     url = 'http://github.com/smn/django-dirtyfields',
     license = 'BSD',
     description = "Tracking dirty fields on a Django model instance",
