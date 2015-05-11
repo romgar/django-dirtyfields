@@ -21,3 +21,12 @@ class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):
     characters = models.CharField(blank=True, max_length=80,
                                   editable=False)
     boolean = models.BooleanField(default=True)
+
+
+class OrdinaryTestModel(models.Model):
+    boolean = models.BooleanField(default=True)
+    characters = models.CharField(blank=True, max_length=80)
+
+
+class OrdinaryTestModelWithForeignKey(models.Model):
+    fkey = models.ForeignKey(OrdinaryTestModel)
