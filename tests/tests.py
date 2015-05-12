@@ -3,19 +3,14 @@ from django.conf import settings
 from django.db import connection
 from django.db import IntegrityError
 from django.test import TestCase
+from django.test.utils import override_settings
 from .models import (TestModel, TestModelWithForeignKey,
                     TestModelWithNonEditableFields, TestModelWithOneToOneField,
                     OrdinaryTestModel, OrdinaryTestModelWithForeignKey)
                     
 
 class DirtyFieldsMixinTestCase(TestCase):
-    
-    @classmethod
-    def setUpClass(cls):
-        super(DirtyFieldsMixinTestCase, cls).setUpClass()
-        # The test runner sets DEBUG to False. Set to True to enable SQL logging.
-        settings.DEBUG = True
-    
+
     def test_dirty_fields(self):
         tm = TestModel()
         # initial state shouldn't be dirty
@@ -60,7 +55,7 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'fkey': tm1
+            'fkey': tm1.pk
         })
 
     def test_relationship_option_for_one_to_one_field(self):
@@ -77,7 +72,7 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'o2o': tm1
+            'o2o': tm1.pk
         })
 
     def test_dirty_fields_ignores_the_editable_property_of_fields(self):
@@ -124,16 +119,20 @@ class DirtyFieldsMixinTestCase(TestCase):
             model_name = model_class._meta.module_name
             
         pattern = re.compile(r'^.*SELECT.*FROM "tests_%s".*$' % model_name)
-            
+
         for query in connection.queries:
             sql = query.get('sql')
             if pattern.match(sql):
-               cnt += 1
-               
+                cnt += 1
+
         return cnt 
-                          
+
+    @override_settings(DEBUG=True)  # The test runner sets DEBUG to False. Set to True to enable SQL logging.
     def test_relationship_model_loading_issue(self):
-        
+        # Non regression test case for bug:
+        # https://github.com/smn/django-dirtyfields/issues/34
+
+        # Query tests with models that are not using django-dirtyfields
         tm1 = OrdinaryTestModel.objects.create()
         tm2 = OrdinaryTestModel.objects.create()
         tmf1 = OrdinaryTestModelWithForeignKey.objects.create(fkey=tm1)
@@ -149,15 +148,15 @@ class DirtyFieldsMixinTestCase(TestCase):
             fkey = tmf.fkey  # access the relationship here
             
         self.assertEqual(self._get_query_num(OrdinaryTestModelWithForeignKey) - 1, 1)
-
         self.assertEqual(self._get_query_num(OrdinaryTestModel), 2)  # should be 2
         
         for tmf in OrdinaryTestModelWithForeignKey.objects.select_related('fkey').all():
             fkey = tmf.fkey  # access the relationship here
         
         self.assertEqual(self._get_query_num(OrdinaryTestModelWithForeignKey) - 2, 1)
-        self.assertEqual(self._get_query_num(OrdinaryTestModel) - 2, 0)  # since we use `select_related`
-        
+        self.assertEqual(self._get_query_num(OrdinaryTestModel) - 2, 0)  # should be 0 since we use `select_related`
+
+        # Query tests with models that are using django-dirtyfields
         tm1 = TestModel.objects.create()
         tm2 = TestModel.objects.create()
         tmf1 = TestModelWithForeignKey.objects.create(fkey=tm1)
@@ -165,12 +164,18 @@ class DirtyFieldsMixinTestCase(TestCase):
         
         for tmf in TestModelWithForeignKey.objects.all():
             pk = tmf.pk  # we don't need the relationship here
-            
+
         self.assertEqual(self._get_query_num(TestModelWithForeignKey), 1)
+        self.assertEqual(self._get_query_num(TestModel), 0)  # should be 0, was 2 before bug fixing
+
+        for tmf in TestModelWithForeignKey.objects.all():
+            fkey = tmf.fkey  # access the relationship here
+
+        self.assertEqual(self._get_query_num(TestModelWithForeignKey) - 1, 1)
         self.assertEqual(self._get_query_num(TestModel), 2)  # should be 0, but the relationship is loaded by DirtyFieldsMixin
         
         for tmf in TestModelWithForeignKey.objects.select_related('fkey').all():
             fkey = tmf.fkey  # access the relationship here
         
-        self.assertEqual(self._get_query_num(TestModelWithForeignKey) - 1, 1)
-        self.assertEqual(self._get_query_num(TestModel) - 2, 2)  # should be 0 since we use `selected_related`
+        self.assertEqual(self._get_query_num(TestModelWithForeignKey) - 2, 1)
+        self.assertEqual(self._get_query_num(TestModel) - 2, 0)  # should be 0 since we use `selected_related` (was 2 before)
