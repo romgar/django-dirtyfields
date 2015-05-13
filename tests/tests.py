@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from .models import (TestModel, TestModelWithForeignKey,
                     TestModelWithNonEditableFields, TestModelWithOneToOneField,
-                    OrdinaryTestModel, OrdinaryTestModelWithForeignKey)
+                    OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey)
                     
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -179,3 +179,15 @@ class DirtyFieldsMixinTestCase(TestCase):
         
         self.assertEqual(self._get_query_num(TestModelWithForeignKey) - 2, 1)
         self.assertEqual(self._get_query_num(TestModel) - 2, 0)  # should be 0 since we use `selected_related` (was 2 before)
+
+    def test_relationship_option_for_foreign_key_to_self(self):
+        # Non regression test case for bug:
+        # https://github.com/smn/django-dirtyfields/issues/22
+        tm = TestModelWithSelfForeignKey.objects.create()
+        tm1 = TestModelWithSelfForeignKey.objects.create(fkey=tm)
+
+        tm.fkey = tm1
+        tm.save()
+
+        # Trying to access an instance was triggering a "RuntimeError: maximum recursion depth exceeded"
+        TestModelWithSelfForeignKey.objects.all()[0]
