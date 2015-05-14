@@ -5,7 +5,8 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from .models import (TestModel, TestModelWithForeignKey,
                      TestModelWithNonEditableFields, TestModelWithOneToOneField,
-                     OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey)
+                     OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
+                     SubclassModel)
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -190,3 +191,10 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # Trying to access an instance was triggering a "RuntimeError: maximum recursion depth exceeded"
         TestModelWithSelfForeignKey.objects.all()[0]
+
+    def test_non_local_fields(self):
+        subclass = SubclassModel.objects.create(characters='foo')
+        subclass.characters = 'spam'
+
+        self.assertTrue(subclass.is_dirty())
+        self.assertDictEqual(subclass.get_dirty_fields(), {'characters': 'foo'})

@@ -1,7 +1,6 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
 
 from django.db.models.signals import post_save
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class DirtyFieldsMixin(object):
@@ -16,19 +15,12 @@ class DirtyFieldsMixin(object):
     def _as_dict(self, check_relationship):
         all_field = {}
 
-        for field in self._meta.local_fields:
+        for field in self._meta.fields:
             if field.rel:
                 if not check_relationship:
                     continue
-                else:
-                    try:
-                        # Getting raw column value by using '*_id' value, instead of getting the related object
-                        # (to prevent useless SELECT query)
-                        all_field[field.name] = getattr(self, field.name + '_id')
-                    except ObjectDoesNotExist:
-                        pass
-            else:
-                all_field[field.name] = getattr(self, field.name)
+
+            all_field[field.name] = getattr(self, field.attname)
 
         return all_field
 
