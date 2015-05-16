@@ -15,15 +15,6 @@ Tracking dirty fields on a Django model instance.
 
     $ pip install django-dirtyfields
 
-or if you're interested in developing it
-
-::
-
-    $ virtualenv --no-site-packages ve/
-    $ source ve/bin/activate
-    (ve)$ pip install -r requirements.pip
-    (ve)$ python setup.py develop
-    (ve)$ cd example_app && ./manage.py test testing_app
 
 Makes a Mixing available that will give you the methods:
 
@@ -105,6 +96,17 @@ Why would you want this?
 ------------------------
 
 When using signals_, especially pre_save_, it is useful to be able to see what fields have changed or not. A signal could change its behaviour depending on whether a specific field has changed, whereas otherwise, you only could work on the event that the model's `save()` method had been called.
+
+
+Contributing
+============
+If you're interested in developing it, you can launch project tests on that way:
+
+::
+    $ pip install tox
+    $ pip install -e .
+    $ tox
+
 
 Credits
 -------
