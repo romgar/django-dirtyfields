@@ -11,19 +11,22 @@ Django Dirty Fields
 
 Tracking dirty fields on a Django model instance.
 
+Dirty means that there is a difference between field value in the database and the one we currently have on a model instance.
+
+Install
+=======
+
 ::
 
     $ pip install django-dirtyfields
 
 
-Makes a Mixing available that will give you the methods:
+Usage
+=====
 
- * is\_dirty()
- * get\_dirty\_fields()
-    
+To use django-dirtyfields, you need to:
 
-Using the Mixin in the Model
-----------------------------
+- Inherit from 'DirtyFieldMixin' in the Django model you want to track.
 
 ::
     
@@ -32,39 +35,31 @@ Using the Mixin in the Model
 
     class TestModel(DirtyFieldsMixin, models.Model):
         """A simple test model to test dirty fields mixin with"""
-        boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
-    
 
-Using it in the shell
----------------------
+- Use one of these 2 functions to know if the instance is dirty, and get the dirty fields:
+ * is\_dirty()
+ * get\_dirty\_fields()
+
+
+Example
+-------
 
 ::
 
-    (ve)$ ./manage.py shell
-    >>> from testing_app.models import TestModel
-    >>> tm = TestModel(boolean=True,characters="testing")
-    >>> tm.save()
+    $ ./manage.py shell
+    >>> from tests.models import TestModel
+    >>> tm = TestModel.create(boolean=True,characters="testing")
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
     {}
+
     >>> tm.boolean = False
     >>> tm.is_dirty()
     True
     >>> tm.get_dirty_fields()
     {'boolean': True}
-    >>> tm.characters = "have changed"
-    >>> tm.is_dirty()
-    True
-    >>> tm.get_dirty_fields()
-    {'boolean': True, 'characters': 'testing'}
-    >>> tm.save()
-    >>> tm.is_dirty()
-    False
-    >>> tm.get_dirty_fields()
-    {}
-    >>> 
 
 
 Checking foreign key fields.
@@ -73,23 +68,24 @@ By default, dirty functions are not checking foreign keys. If you want to also t
 
 ::
 
-    (ve)$ ./manage.py shell
-    >>> from testing_app.models import TestModel
-    >>> tm = TestModel(fkey=obj1)
-    >>> tm.save()
+    $ ./manage.py shell
+    >>> from tests.models import TestModel
+    >>> tm = TestModel.create(fkey=obj1)
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
     {}
     >>> tm.fkey = obj2
+
     >>> tm.is_dirty()
     False
     >>> tm.is_dirty(check_relationship=True)
     True
+
     >>> tm.get_dirty_fields()
     {}
     >>> tm.get_dirty_fields(check_relationship=True)
-    {'fkey': obj1}
+    {'fkey': 1}
 
 
 Why would you want this?
