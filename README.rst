@@ -24,9 +24,9 @@ Install
 Usage
 =====
 
-To use `django-dirtyfields`, you need to:
+To use ``django-dirtyfields``, you need to:
 
-- Inherit from `DirtyFieldMixin` in the Django model you want to track.
+- Inherit from ``DirtyFieldMixin`` in the Django model you want to track.
 
 ::
     
