@@ -24,9 +24,9 @@ Install
 Usage
 =====
 
-To use django-dirtyfields, you need to:
+To use `django-dirtyfields`, you need to:
 
-- Inherit from 'DirtyFieldMixin' in the Django model you want to track.
+- Inherit from `DirtyFieldMixin` in the Django model you want to track.
 
 ::
     
@@ -35,6 +35,7 @@ To use django-dirtyfields, you need to:
 
     class TestModel(DirtyFieldsMixin, models.Model):
         """A simple test model to test dirty fields mixin with"""
+        boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
 
 - Use one of these 2 functions to know if the instance is dirty, and get the dirty fields:
