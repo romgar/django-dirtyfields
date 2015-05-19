@@ -8,6 +8,10 @@ class TestModel(DirtyFieldsMixin, models.Model):
     characters = models.CharField(blank=True, max_length=80)
 
 
+class TestModelWithDecimalField(DirtyFieldsMixin, models.Model):
+    decimal_field = models.DecimalField(decimal_places=2, max_digits=10)
+
+
 class TestModelWithForeignKey(DirtyFieldsMixin, models.Model):
     fkey = models.ForeignKey(TestModel)
 

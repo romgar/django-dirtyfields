@@ -20,7 +20,8 @@ class DirtyFieldsMixin(object):
                 if not check_relationship:
                     continue
 
-            all_field[field.name] = getattr(self, field.attname)
+            field_value = getattr(self, field.attname)
+            all_field[field.name] = field.to_python(field_value)
 
         return all_field
 

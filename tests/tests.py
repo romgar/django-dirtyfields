@@ -1,12 +1,12 @@
+from decimal import Decimal
 import re
 from django.db import connection
 from django.db import IntegrityError
 from django.test import TestCase
 from django.test.utils import override_settings
-from .models import (TestModel, TestModelWithForeignKey,
-                     TestModelWithNonEditableFields, TestModelWithOneToOneField,
+from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields, TestModelWithOneToOneField,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
-                     SubclassModel)
+                     SubclassModel, TestModelWithDecimalField)
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -198,3 +198,17 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         self.assertTrue(subclass.is_dirty())
         self.assertDictEqual(subclass.get_dirty_fields(), {'characters': 'foo'})
+
+    def test_decimal_field_correctly_managed(self):
+        # Non regression test case for bug:
+        # https://github.com/smn/django-dirtyfields/issues/4
+        tm = TestModelWithDecimalField.objects.create(decimal_field=Decimal(2.00))
+
+        # initial state shouldn't be dirty
+        self.assertFalse(tm.is_dirty())
+
+        tm.decimal_field = 2.0
+        self.assertFalse(tm.is_dirty())
+
+        tm.decimal_field = u"2.00"
+        self.assertFalse(tm.is_dirty())
