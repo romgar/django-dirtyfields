@@ -6,32 +6,27 @@ Django Dirty Fields
    :target: https://gitter.im/smn/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 .. image:: https://travis-ci.org/smn/django-dirtyfields.svg?branch=develop
     :target: https://travis-ci.org/smn/django-dirtyfields
-.. image:: https://coveralls.io/repos/smn/django-dirtyfields/badge.svg :target: https://coveralls.io/r/smn/django-dirtyfields
+.. image:: https://coveralls.io/repos/smn/django-dirtyfields/badge.svg
+   :target: https://coveralls.io/r/smn/django-dirtyfields
 
 Tracking dirty fields on a Django model instance.
+
+Dirty means that there is a difference between field value in the database and the one we currently have on a model instance.
+
+Install
+=======
 
 ::
 
     $ pip install django-dirtyfields
 
-or if you're interested in developing it
 
-::
+Usage
+=====
 
-    $ virtualenv --no-site-packages ve/
-    $ source ve/bin/activate
-    (ve)$ pip install -r requirements.pip
-    (ve)$ python setup.py develop
-    (ve)$ cd example_app && ./manage.py test testing_app
+To use ``django-dirtyfields``, you need to:
 
-Makes a Mixing available that will give you the methods:
-
- * is\_dirty()
- * get\_dirty\_fields()
-    
-
-Using the Mixin in the Model
-----------------------------
+- Inherit from ``DirtyFieldMixin`` in the Django model you want to track.
 
 ::
     
@@ -42,37 +37,30 @@ Using the Mixin in the Model
         """A simple test model to test dirty fields mixin with"""
         boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
-    
 
-Using it in the shell
----------------------
+- Use one of these 2 functions to know if the instance is dirty, and get the dirty fields:
+ * is\_dirty()
+ * get\_dirty\_fields()
+
+
+Example
+-------
 
 ::
 
-    (ve)$ ./manage.py shell
-    >>> from testing_app.models import TestModel
-    >>> tm = TestModel(boolean=True,characters="testing")
-    >>> tm.save()
+    $ ./manage.py shell
+    >>> from tests.models import TestModel
+    >>> tm = TestModel.create(boolean=True,characters="testing")
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
     {}
+
     >>> tm.boolean = False
     >>> tm.is_dirty()
     True
     >>> tm.get_dirty_fields()
     {'boolean': True}
-    >>> tm.characters = "have changed"
-    >>> tm.is_dirty()
-    True
-    >>> tm.get_dirty_fields()
-    {'boolean': True, 'characters': 'testing'}
-    >>> tm.save()
-    >>> tm.is_dirty()
-    False
-    >>> tm.get_dirty_fields()
-    {}
-    >>> 
 
 
 Checking foreign key fields.
@@ -81,29 +69,42 @@ By default, dirty functions are not checking foreign keys. If you want to also t
 
 ::
 
-    (ve)$ ./manage.py shell
-    >>> from testing_app.models import TestModel
-    >>> tm = TestModel(fkey=obj1)
-    >>> tm.save()
+    $ ./manage.py shell
+    >>> from tests.models import TestModel
+    >>> tm = TestModel.create(fkey=obj1)
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
     {}
     >>> tm.fkey = obj2
+
     >>> tm.is_dirty()
     False
     >>> tm.is_dirty(check_relationship=True)
     True
+
     >>> tm.get_dirty_fields()
     {}
     >>> tm.get_dirty_fields(check_relationship=True)
-    {'fkey': obj1}
+    {'fkey': 1}
 
 
 Why would you want this?
 ------------------------
 
 When using signals_, especially pre_save_, it is useful to be able to see what fields have changed or not. A signal could change its behaviour depending on whether a specific field has changed, whereas otherwise, you only could work on the event that the model's `save()` method had been called.
+
+
+Contributing
+============
+If you're interested in developing it, you can launch project tests on that way:
+
+::
+
+    $ pip install tox
+    $ pip install -e .
+    $ tox
+
 
 Credits
 -------

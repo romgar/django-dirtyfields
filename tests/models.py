@@ -8,6 +8,10 @@ class TestModel(DirtyFieldsMixin, models.Model):
     characters = models.CharField(blank=True, max_length=80)
 
 
+class TestModelWithDecimalField(DirtyFieldsMixin, models.Model):
+    decimal_field = models.DecimalField(decimal_places=2, max_digits=10)
+
+
 class TestModelWithForeignKey(DirtyFieldsMixin, models.Model):
     fkey = models.ForeignKey(TestModel)
 
@@ -21,3 +25,20 @@ class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):
     characters = models.CharField(blank=True, max_length=80,
                                   editable=False)
     boolean = models.BooleanField(default=True)
+
+
+class TestModelWithSelfForeignKey(DirtyFieldsMixin, models.Model):
+    fkey = models.ForeignKey("self", blank=True, null=True)
+
+
+class OrdinaryTestModel(models.Model):
+    boolean = models.BooleanField(default=True)
+    characters = models.CharField(blank=True, max_length=80)
+
+
+class OrdinaryTestModelWithForeignKey(models.Model):
+    fkey = models.ForeignKey(OrdinaryTestModel)
+
+
+class SubclassModel(TestModel):
+    pass
