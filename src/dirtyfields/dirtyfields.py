@@ -1,4 +1,5 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
+from copy import copy
 
 from django.db.models.signals import post_save
 
@@ -21,7 +22,9 @@ class DirtyFieldsMixin(object):
                     continue
 
             field_value = getattr(self, field.attname)
-            all_field[field.name] = field.to_python(field_value)
+            # Explanation of copy usage here :
+            # https://github.com/smn/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
+            all_field[field.name] = copy(field.to_python(field_value))
 
         return all_field
 

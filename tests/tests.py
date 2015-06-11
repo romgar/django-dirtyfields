@@ -228,13 +228,13 @@ class DirtyFieldsMixinTestCase(TestCase):
         import json
         from .models import JSONFieldModel
 
-        tm = JSONFieldModel.objects.create(json_field=json.dumps({'data': 'dummy_data'}))
+        tm = JSONFieldModel.objects.create(json_field={'data': 'dummy_data'})
 
         # initial state shouldn't be dirty
         self.assertFalse(tm.is_dirty())
 
-        tm.json_field = json.dumps({'data': 'dummy_data_modified'})
+        tm.json_field['data'] = 'dummy_data_modified'
 
         self.assertEqual(tm.get_dirty_fields(), {
-            'json_field': json.dumps({'data': 'dummy_data'})
+            'json_field': {'data': 'dummy_data'}
         })
