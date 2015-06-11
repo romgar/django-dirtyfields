@@ -1,5 +1,6 @@
 from decimal import Decimal
 import re
+import unittest
 from django.db import connection
 from django.db import IntegrityError
 from django.test import TestCase
@@ -7,6 +8,15 @@ from django.test.utils import override_settings
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields, TestModelWithOneToOneField,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
                      SubclassModel, TestModelWithDecimalField)
+
+
+
+def skip_unless_jsonfield_library(test):
+    try:
+        from jsonfield import JSONField
+    except ImportError:
+        return unittest.skip('django jsonfield library required')(test)
+    return test
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -212,3 +222,19 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         tm.decimal_field = u"2.00"
         self.assertFalse(tm.is_dirty())
+
+    @skip_unless_jsonfield_library
+    def test_json_field(self):
+        import json
+        from .models import JSONFieldModel
+
+        tm = JSONFieldModel.objects.create(json_field=json.dumps({'data': 'dummy_data'}))
+
+        # initial state shouldn't be dirty
+        self.assertFalse(tm.is_dirty())
+
+        tm.json_field = json.dumps({'data': 'dummy_data_modified'})
+
+        self.assertEqual(tm.get_dirty_fields(), {
+            'json_field': json.dumps({'data': 'dummy_data'})
+        })

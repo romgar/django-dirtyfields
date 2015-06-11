@@ -42,3 +42,13 @@ class OrdinaryTestModelWithForeignKey(models.Model):
 
 class SubclassModel(TestModel):
     pass
+
+
+try:
+    from jsonfield import JSONField
+
+    class JSONFieldModel(DirtyFieldsMixin, models.Model):
+        json_field = JSONField()
+
+except ImportError:
+    pass
