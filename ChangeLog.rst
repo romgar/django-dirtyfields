@@ -2,6 +2,15 @@ ChangeLog
 =========
 
 
+.. _v0.6.1:
+
+0.6.1 (2015-06-14)
+------------------
+
+*Bugfix:*
+
+    - Preventing django db expressions to be evaluated when testing dirty fields (#39).
+
 
 .. _v0.6:
 

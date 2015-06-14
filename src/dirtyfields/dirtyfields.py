@@ -1,6 +1,7 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
 
 from django.db.models.signals import post_save
+from .compat import is_db_expression
 
 
 class DirtyFieldsMixin(object):
@@ -21,6 +22,11 @@ class DirtyFieldsMixin(object):
                     continue
 
             field_value = getattr(self, field.attname)
+
+            # If current field value is an expression, we are not evaluating it
+            if is_db_expression(field_value):
+                continue
+
             all_field[field.name] = field.to_python(field_value)
 
         return all_field

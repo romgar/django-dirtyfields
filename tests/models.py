@@ -42,3 +42,7 @@ class OrdinaryTestModelWithForeignKey(models.Model):
 
 class SubclassModel(TestModel):
     pass
+
+
+class TestExpressionModel(DirtyFieldsMixin, models.Model):
+    counter = models.IntegerField(default=0)
