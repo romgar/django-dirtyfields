@@ -44,11 +44,14 @@ class SubclassModel(TestModel):
     pass
 
 
+class TestExpressionModel(DirtyFieldsMixin, models.Model):
+    counter = models.IntegerField(default=0)
+
+
 try:
     from jsonfield import JSONField
 
     class JSONFieldModel(DirtyFieldsMixin, models.Model):
         json_field = JSONField()
-
 except ImportError:
     pass
