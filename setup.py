@@ -8,7 +8,7 @@ setup(
     version = "0.6.1",
     url = 'http://github.com/smn/django-dirtyfields',
     license = 'BSD',
-    description = "Tracking dirty fields on a Django model instance",
+    description = "Tracking dirty fields on a Django model instance (actively maintained)",
     long_description = open('README.rst','r').read(),
     author = 'Simon de Haan',
     packages = find_packages('src'),
