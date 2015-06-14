@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields, TestModelWithOneToOneField,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
-                     SubclassModel, TestModelWithDecimalField)
+                     SubclassModel, TestModelWithDecimalField, TestExpressionModel)
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -212,3 +212,14 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         tm.decimal_field = u"2.00"
         self.assertFalse(tm.is_dirty())
+
+    def test_expressions_not_taken_into_account_for_dirty_check(self):
+        # Non regression test case for bug:
+        # https://github.com/smn/django-dirtyfields/issues/39
+        from django.db.models import F
+        tm = TestExpressionModel.objects.create()
+        tm.counter = F('counter') + 1
+
+        # This save() was raising a ValidationError: [u"'F(counter) + Value(1)' value must be an integer."]
+        # caused by a call to_python() on an expression node
+        tm.save()
