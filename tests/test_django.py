@@ -4,12 +4,12 @@ import unittest
 
 import os
 import django
-os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings_tests'
-try:
-    django.setup()
-except AttributeError:
+
+# Needed for django tests
+os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.django_settings'
+if django.VERSION >= (1, 7, 0):
     # setup() call is needed for django 1.7+
-    pass
+    django.setup()
 
 from django.db import connection
 from django.db import IntegrityError
