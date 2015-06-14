@@ -2,15 +2,6 @@ from decimal import Decimal
 import re
 import unittest
 
-import os
-import django
-
-# Needed for django tests
-os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.django_settings'
-if django.VERSION >= (1, 7, 0):
-    # setup() call is needed for django 1.7+
-    django.setup()
-
 from django.db import connection
 from django.db import IntegrityError
 from django.test import TestCase
@@ -19,13 +10,6 @@ from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditabl
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
                      SubclassModel, TestModelWithDecimalField, TestExpressionModel)
 
-
-def skip_unless_jsonfield_library(test):
-    try:
-        from jsonfield import JSONField
-    except ImportError:
-        return unittest.skip('django jsonfield library required')(test)
-    return test
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -242,19 +226,3 @@ class DirtyFieldsMixinTestCase(TestCase):
         # This save() was raising a ValidationError: [u"'F(counter) + Value(1)' value must be an integer."]
         # caused by a call to_python() on an expression node
         tm.save()
-
-    @skip_unless_jsonfield_library
-    def test_json_field(self):
-        import json
-        from .models import JSONFieldModel
-
-        tm = JSONFieldModel.objects.create(json_field={'data': 'dummy_data'})
-
-        # initial state shouldn't be dirty
-        self.assertFalse(tm.is_dirty())
-
-        tm.json_field['data'] = 'dummy_data_modified'
-
-        self.assertEqual(tm.get_dirty_fields(), {
-            'json_field': {'data': 'dummy_data'}
-        })
