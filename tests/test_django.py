@@ -1,6 +1,16 @@
 from decimal import Decimal
 import re
 import unittest
+
+import os
+import django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings_tests'
+try:
+    django.setup()
+except AttributeError:
+    # setup() call is needed for django 1.7+
+    pass
+
 from django.db import connection
 from django.db import IntegrityError
 from django.test import TestCase
@@ -8,7 +18,6 @@ from django.test.utils import override_settings
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields, TestModelWithOneToOneField,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
                      SubclassModel, TestModelWithDecimalField, TestExpressionModel)
-
 
 
 def skip_unless_jsonfield_library(test):
