@@ -1,13 +1,12 @@
 import pytest
-import re
 
-from django.db import connection
 from django.db import IntegrityError
 from django.test.utils import override_settings
 
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
                      TestExpressionModel)
+from .utils import assert_select_number_queries_on_model
 
 
 @pytest.mark.django_db
@@ -48,45 +47,6 @@ def test_mandatory_foreign_key_field_not_initialized_is_not_raising_related_obje
     with pytest.raises(IntegrityError):
         TestModelWithForeignKey.objects.create()
 
-from django.conf import settings
-class assert_number_queries(object):
-    def __init__(self, number):
-        self.number = number
-
-    def query_count(self):
-        return len(connection.queries)
-
-    def __enter__(self):
-        self.DEBUG = settings.DEBUG
-        settings.DEBUG = True
-        self.num_queries_before = self.query_count()
-
-    def __exit__(self, type, value, traceback):
-        self.num_queries_after = self.query_count()
-        assert self.num_queries_after - self.num_queries_before == self.number
-        settings.DEBUG = self.DEBUG
-
-
-class assert_select_number_queries_on_model(assert_number_queries):
-    def __init__(self, model_class, number):
-        super(assert_select_number_queries_on_model, self).__init__(number)
-        self.model_class = model_class
-
-    def query_count(self):
-        return _get_query_num(self.model_class)
-
-
-def _get_query_num(model_class):
-    if hasattr(model_class._meta, 'model_name'):
-        model_name = model_class._meta.model_name
-    else:  # < 1.6
-        model_name = model_class._meta.module_name
-
-    pattern = re.compile(r'^.*SELECT.*FROM "tests_%s".*$' % model_name)
-    cnt = len([query for query in connection.queries if pattern.match(query.get('sql'))])
-
-    return cnt
-
 
 @pytest.mark.django_db
 @override_settings(DEBUG=True)  # The test runner sets DEBUG to False. Set to True to enable SQL logging.
@@ -105,23 +65,15 @@ def test_relationship_model_loading_issue():
             for tmf in OrdinaryTestModelWithForeignKey.objects.all():
                 tmf.pk
 
-    # assert _get_query_num(OrdinaryTestModelWithForeignKey) ==  1
-    # assert _get_query_num(OrdinaryTestModel) == 0  .
-
     with assert_select_number_queries_on_model(OrdinaryTestModelWithForeignKey, 1):
         with assert_select_number_queries_on_model(OrdinaryTestModel, 2):
             for tmf in OrdinaryTestModelWithForeignKey.objects.all():
                 tmf.fkey  # access the relationship here
 
-    # assert _get_query_num(OrdinaryTestModelWithForeignKey) - 1 == 1
-    # assert _get_query_num(OrdinaryTestModel) == 2  # should be 2
     with assert_select_number_queries_on_model(OrdinaryTestModelWithForeignKey, 1):
         with assert_select_number_queries_on_model(OrdinaryTestModel, 0): # should be 0 since we use `select_related`
             for tmf in OrdinaryTestModelWithForeignKey.objects.select_related('fkey').all():
                 tmf.fkey  # access the relationship here
-
-    # assert _get_query_num(OrdinaryTestModelWithForeignKey) - 2 == 1
-    # assert _get_query_num(OrdinaryTestModel) - 2 == 0
 
     # Query tests with models that are using django-dirtyfields
     tm1 = TestModel.objects.create()
@@ -134,23 +86,15 @@ def test_relationship_model_loading_issue():
             for tmf in TestModelWithForeignKey.objects.all():
                 tmf.pk  # we don't need the relationship here
 
-    # assert _get_query_num(TestModelWithForeignKey) == 1
-    # assert _get_query_num(TestModel) == 0
-
     with assert_select_number_queries_on_model(TestModelWithForeignKey, 1):
-        with assert_select_number_queries_on_model(TestModel, 2):  # should be 0, but the relationship is loaded by DirtyFieldsMixin
+        with assert_select_number_queries_on_model(TestModel, 2):
             for tmf in TestModelWithForeignKey.objects.all():
                 tmf.fkey  # access the relationship here
 
-    # assert _get_query_num(TestModelWithForeignKey) - 1 == 1
-    # assert _get_query_num(TestModel) == 2
     with assert_select_number_queries_on_model(TestModelWithForeignKey, 1):
         with assert_select_number_queries_on_model(TestModel, 0):  # should be 0 since we use `selected_related` (was 2 before)
             for tmf in TestModelWithForeignKey.objects.select_related('fkey').all():
                 tmf.fkey  # access the relationship here
-
-    # assert _get_query_num(TestModelWithForeignKey) - 2 == 1
-    # assert _get_query_num(TestModel) - 2 == 0
 
 
 @pytest.mark.django_db
