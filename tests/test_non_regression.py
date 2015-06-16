@@ -1,13 +1,12 @@
 import pytest
-import re
 
-from django.db import connection
 from django.db import IntegrityError
 from django.test.utils import override_settings
 
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
                      TestExpressionModel)
+from .utils import assert_select_number_queries_on_model
 
 
 @pytest.mark.django_db
@@ -49,24 +48,6 @@ def test_mandatory_foreign_key_field_not_initialized_is_not_raising_related_obje
         TestModelWithForeignKey.objects.create()
 
 
-def _get_query_num(model_class):
-    cnt = 0
-
-    if hasattr(model_class._meta, 'model_name'):
-        model_name = model_class._meta.model_name
-    else:  # < 1.6
-        model_name = model_class._meta.module_name
-
-    pattern = re.compile(r'^.*SELECT.*FROM "tests_%s".*$' % model_name)
-
-    for query in connection.queries:
-        sql = query.get('sql')
-        if pattern.match(sql):
-            cnt += 1
-
-    return cnt
-
-
 @pytest.mark.django_db
 @override_settings(DEBUG=True)  # The test runner sets DEBUG to False. Set to True to enable SQL logging.
 def test_relationship_model_loading_issue():
@@ -79,23 +60,20 @@ def test_relationship_model_loading_issue():
     OrdinaryTestModelWithForeignKey.objects.create(fkey=tm1)
     OrdinaryTestModelWithForeignKey.objects.create(fkey=tm2)
 
-    for tmf in OrdinaryTestModelWithForeignKey.objects.all():
-        tmf.pk
+    with assert_select_number_queries_on_model(OrdinaryTestModelWithForeignKey, 1):
+        with assert_select_number_queries_on_model(OrdinaryTestModel, 0):  # should be 0 since we don't access the relationship for now
+            for tmf in OrdinaryTestModelWithForeignKey.objects.all():
+                tmf.pk
 
-    assert _get_query_num(OrdinaryTestModelWithForeignKey) ==  1
-    assert _get_query_num(OrdinaryTestModel) == 0  # should be 0 since we don't access the relationship for now.
+    with assert_select_number_queries_on_model(OrdinaryTestModelWithForeignKey, 1):
+        with assert_select_number_queries_on_model(OrdinaryTestModel, 2):
+            for tmf in OrdinaryTestModelWithForeignKey.objects.all():
+                tmf.fkey  # access the relationship here
 
-    for tmf in OrdinaryTestModelWithForeignKey.objects.all():
-        tmf.fkey  # access the relationship here
-
-    assert _get_query_num(OrdinaryTestModelWithForeignKey) - 1 == 1
-    assert _get_query_num(OrdinaryTestModel) == 2  # should be 2
-
-    for tmf in OrdinaryTestModelWithForeignKey.objects.select_related('fkey').all():
-        tmf.fkey  # access the relationship here
-
-    assert _get_query_num(OrdinaryTestModelWithForeignKey) - 2 == 1
-    assert _get_query_num(OrdinaryTestModel) - 2 == 0  # should be 0 since we use `select_related`
+    with assert_select_number_queries_on_model(OrdinaryTestModelWithForeignKey, 1):
+        with assert_select_number_queries_on_model(OrdinaryTestModel, 0): # should be 0 since we use `select_related`
+            for tmf in OrdinaryTestModelWithForeignKey.objects.select_related('fkey').all():
+                tmf.fkey  # access the relationship here
 
     # Query tests with models that are using django-dirtyfields
     tm1 = TestModel.objects.create()
@@ -103,23 +81,20 @@ def test_relationship_model_loading_issue():
     TestModelWithForeignKey.objects.create(fkey=tm1)
     TestModelWithForeignKey.objects.create(fkey=tm2)
 
-    for tmf in TestModelWithForeignKey.objects.all():
-        tmf.pk  # we don't need the relationship here
+    with assert_select_number_queries_on_model(TestModelWithForeignKey, 1):
+        with assert_select_number_queries_on_model(TestModel, 0):  # should be 0, was 2 before bug fixing
+            for tmf in TestModelWithForeignKey.objects.all():
+                tmf.pk  # we don't need the relationship here
 
-    assert _get_query_num(TestModelWithForeignKey) == 1
-    assert _get_query_num(TestModel) == 0  # should be 0, was 2 before bug fixing
+    with assert_select_number_queries_on_model(TestModelWithForeignKey, 1):
+        with assert_select_number_queries_on_model(TestModel, 2):
+            for tmf in TestModelWithForeignKey.objects.all():
+                tmf.fkey  # access the relationship here
 
-    for tmf in TestModelWithForeignKey.objects.all():
-        tmf.fkey  # access the relationship here
-
-    assert _get_query_num(TestModelWithForeignKey) - 1 == 1
-    assert _get_query_num(TestModel) == 2  # should be 0, but the relationship is loaded by DirtyFieldsMixin
-
-    for tmf in TestModelWithForeignKey.objects.select_related('fkey').all():
-        tmf.fkey  # access the relationship here
-
-    assert _get_query_num(TestModelWithForeignKey) - 2 == 1
-    assert _get_query_num(TestModel) - 2 == 0  # should be 0 since we use `selected_related` (was 2 before)
+    with assert_select_number_queries_on_model(TestModelWithForeignKey, 1):
+        with assert_select_number_queries_on_model(TestModel, 0):  # should be 0 since we use `selected_related` (was 2 before)
+            for tmf in TestModelWithForeignKey.objects.select_related('fkey').all():
+                tmf.fkey  # access the relationship here
 
 
 @pytest.mark.django_db
