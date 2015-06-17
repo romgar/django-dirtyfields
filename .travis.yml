@@ -9,6 +9,7 @@ script:
 
 install:
   - pip install tox
+  - pip install coveralls
   - pip install -e .
 
 after_success:
