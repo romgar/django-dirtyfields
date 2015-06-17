@@ -13,7 +13,7 @@ setup(
     author = 'Simon de Haan',
     packages = find_packages('src'),
     package_dir = {'': 'src'},
-    install_requires = listify('requirements.pip'),
+    install_requires = listify('requirements.txt'),
     classifiers = listify('CLASSIFIERS.txt')
 )
 
