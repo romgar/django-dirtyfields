@@ -6,9 +6,9 @@ Django Dirty Fields
    :alt: Join the chat at https://gitter.im/smn/django-dirtyfields
    :target: https://gitter.im/smn/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 .. image:: https://travis-ci.org/smn/django-dirtyfields.svg?branch=develop
-    :target: https://travis-ci.org/smn/django-dirtyfields
-.. image:: https://coveralls.io/repos/smn/django-dirtyfields/badge.svg
-   :target: https://coveralls.io/r/smn/django-dirtyfields
+    :target: https://travis-ci.org/smn/django-dirtyfields?branch=develop
+.. image:: https://coveralls.io/repos/smn/django-dirtyfields/badge.svg?branch=develop
+   :target: https://coveralls.io/r/smn/django-dirtyfields?branch=develop
 
 Tracking dirty fields on a Django model instance.
 
