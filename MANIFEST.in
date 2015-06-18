@@ -1,4 +1,4 @@
 include LICENSE
 include README.rst
 include CLASSIFIERS.txt
-include requirements.pip
+include requirements.txt

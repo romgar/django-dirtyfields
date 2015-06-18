@@ -5,15 +5,15 @@ def listify(filename):
 
 setup(
     name = "django-dirtyfields",
-    version = "0.6.1",
+    version = "0.7",
     url = 'http://github.com/smn/django-dirtyfields',
     license = 'BSD',
-    description = "Tracking dirty fields on a Django model instance",
+    description = "Tracking dirty fields on a Django model instance (actively maintained)",
     long_description = open('README.rst','r').read(),
     author = 'Simon de Haan',
     packages = find_packages('src'),
     package_dir = {'': 'src'},
-    install_requires = listify('requirements.pip'),
+    install_requires = listify('requirements.txt'),
     classifiers = listify('CLASSIFIERS.txt')
 )
 
