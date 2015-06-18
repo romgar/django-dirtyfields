@@ -2,6 +2,17 @@ ChangeLog
 =========
 
 
+.. _v0.7:
+
+0.7 (2015-06-18)
+------------------
+
+*New:*
+
+    - Using :code:`copy` to properly track dirty fields on complex fields.
+    - Using :code:`py.test` for tests launching.
+
+
 .. _v0.6.1:
 
 0.6.1 (2015-06-14)
