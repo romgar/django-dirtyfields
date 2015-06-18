@@ -7,7 +7,9 @@ from .models import (TestModel, TestModelWithForeignKey, TestModelWithOneToOneFi
 
 def test_dirty_fields():
     tm = TestModel()
-    # initial state shouldn't be dirty
+
+    # initial state is dirty because it has not been saved yet in the db
+    assert tm.is_dirty()
     assert tm.get_dirty_fields() == {}
 
     # changing values should flag them as dirty
@@ -81,8 +83,7 @@ def test_non_local_fields():
     subclass = SubclassModel.objects.create(characters='foo')
     subclass.characters = 'spam'
 
-    is_dirty = subclass.is_dirty()
-    assert is_dirty is True
+    assert subclass.is_dirty()
     assert subclass.get_dirty_fields() == {'characters': 'foo'}
 
 
@@ -93,15 +94,10 @@ def test_decimal_field_correctly_managed():
     tm = TestModelWithDecimalField.objects.create(decimal_field=Decimal(2.00))
 
     # initial state shouldn't be dirty
-    is_dirty = tm.is_dirty()
-    assert is_dirty is False
+    assert not tm.is_dirty()
 
     tm.decimal_field = 2.0
-    # Assigning again to is_dirty because 'assert tm.is_dirty() is False' has not an explicit
-    # output in case of errors.
-    is_dirty = tm.is_dirty()
-    assert is_dirty is False
+    assert not tm.is_dirty()
 
     tm.decimal_field = u"2.00"
-    is_dirty = tm.is_dirty()
-    assert is_dirty is False
+    assert not tm.is_dirty()
