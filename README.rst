@@ -1,4 +1,4 @@
-
+===================
 Django Dirty Fields
 ===================
 
@@ -40,8 +40,8 @@ To use ``django-dirtyfields``, you need to:
         characters = models.CharField(blank=True, max_length=80)
 
 - Use one of these 2 functions to know if the instance is dirty, and get the dirty fields:
- * is\_dirty()
- * get\_dirty\_fields()
+    * is\_dirty()
+    * get\_dirty\_fields()
 
 
 Example
