@@ -15,5 +15,5 @@ def save_specific_fields(instance, fields_list):
         instance.save(update_fields=fields_list.keys())
     except TypeError:
         # django < 1.5 does not support update_fields option on save method
-        # TODO: find a workaround for version 1.4.x
-        pass
+        # TODO: find a workaround for version 1.4.x, for now just saving on the classic way.
+        instance.save()
