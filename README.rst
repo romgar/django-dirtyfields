@@ -39,7 +39,8 @@ To use ``django-dirtyfields``, you need to:
         boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
 
-- Use one of these 2 functions to know if the instance is dirty, and get the dirty fields:
+- Use one of these 2 functions on a model instance to know if this instance is dirty, and get the dirty fields:
+
     * is\_dirty()
     * get\_dirty\_fields()
 
@@ -49,9 +50,8 @@ Example
 
 ::
 
-    $ ./manage.py shell
     >>> from tests.models import TestModel
-    >>> tm = TestModel.create(boolean=True,characters="testing")
+    >>> tm = TestModel.objects.create(boolean=True,characters="testing")
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
@@ -70,9 +70,8 @@ By default, dirty functions are not checking foreign keys. If you want to also t
 
 ::
 
-    $ ./manage.py shell
     >>> from tests.models import TestModel
-    >>> tm = TestModel.create(fkey=obj1)
+    >>> tm = TestModel.objects.create(fkey=obj1)
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
