@@ -58,6 +58,7 @@ Example
     {}
 
     >>> tm.boolean = False
+
     >>> tm.is_dirty()
     True
     >>> tm.get_dirty_fields()
@@ -76,6 +77,7 @@ By default, dirty functions are not checking foreign keys. If you want to also t
     False
     >>> tm.get_dirty_fields()
     {}
+
     >>> tm.fkey = obj2
 
     >>> tm.is_dirty()
