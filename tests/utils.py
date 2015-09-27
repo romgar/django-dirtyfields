@@ -36,14 +36,14 @@ class RegexMixin(object):
 
         if self.regex is not None:
             pattern = re.compile(self.regex)
-            regex_compliant_queries = [query for query in connection.queries if pattern.match(query.get('sql'))]
-
+            regex_compliant_queries = [query for query in matched_queries if pattern.match(query.get('sql'))]
+gits
         return regex_compliant_queries
 
 
 class assert_number_of_queries_on_regex(RegexMixin, assert_number_queries):
 
-    def __init__(self, number, regex=None):
+    def __init__(self, regex, number):
         super(assert_number_of_queries_on_regex, self).__init__(number)
         self.regex = regex
 
@@ -51,7 +51,7 @@ class assert_number_of_queries_on_regex(RegexMixin, assert_number_queries):
 class assert_select_number_queries_on_model(assert_number_of_queries_on_regex):
 
     def __init__(self, model_class, number):
-        super(assert_select_number_queries_on_model, self).__init__(number)
-
         model_name = get_model_name(model_class)
-        self.regex = r'^.*SELECT.*FROM "tests_%s".*$' % model_name
+        regex = r'^.*SELECT.*FROM "tests_%s".*$' % model_name
+
+        super(assert_select_number_queries_on_model, self).__init__(regex, number)
