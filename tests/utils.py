@@ -37,7 +37,7 @@ class RegexMixin(object):
         if self.regex is not None:
             pattern = re.compile(self.regex)
             regex_compliant_queries = [query for query in matched_queries if pattern.match(query.get('sql'))]
-gits
+
         return regex_compliant_queries
 
 
