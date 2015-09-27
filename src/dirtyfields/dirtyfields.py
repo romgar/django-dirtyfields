@@ -55,7 +55,7 @@ class DirtyFieldsMixin(object):
         return {} != self.get_dirty_fields(check_relationship=check_relationship)
 
     def save_dirty_fields(self):
-        dirty_fields = self.get_dirty_fields()
+        dirty_fields = self.get_dirty_fields(check_relationship=True)
         save_specific_fields(self, dirty_fields)
 
 
