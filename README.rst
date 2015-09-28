@@ -3,10 +3,10 @@ Django Dirty Fields
 ===================
 
 .. image:: https://badges.gitter.im/Join%20Chat.svg
-   :alt: Join the chat at https://gitter.im/smn/django-dirtyfields
-   :target: https://gitter.im/smn/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-.. image:: https://travis-ci.org/smn/django-dirtyfields.svg?branch=develop
-    :target: https://travis-ci.org/smn/django-dirtyfields?branch=develop
+   :alt: Join the chat at https://gitter.im/romgar/django-dirtyfields
+   :target: https://gitter.im/romgar/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+.. image:: https://travis-ci.org/romgar/django-dirtyfields.svg?branch=develop
+    :target: https://travis-ci.org/romgar/django-dirtyfields?branch=develop
 .. image:: https://coveralls.io/repos/smn/django-dirtyfields/badge.svg?branch=develop
    :target: https://coveralls.io/r/smn/django-dirtyfields?branch=develop
 
