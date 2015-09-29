@@ -1,7 +1,6 @@
 import pytest
 
 from .models import TestModel, TestMixedFieldsModel
-from tests.compat import skip_before_django_15
 from .utils import assert_number_of_queries_on_regex
 
 
