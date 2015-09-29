@@ -1,3 +1,5 @@
+import django
+
 
 def is_db_expression(value):
     try:
@@ -11,9 +13,14 @@ def is_db_expression(value):
 
 
 def save_specific_fields(instance, fields_list):
-    try:
+
+    if django.VERSION >= (1, 5):
         instance.save(update_fields=fields_list.keys())
-    except TypeError:
+    else:
+        # dirtyfields is by default returning dirty fields with their old value
+        # We should pass the new value(s) to update the database
+        new_fields_list = {field_name: getattr(instance, field_name)
+                           for field_name, field_value in fields_list.iteritems()}
+
         # django < 1.5 does not support update_fields option on save method
-        # TODO: find a workaround for version 1.4.x, for now just saving on the classic way.
-        instance.save()
+        instance.__class__.objects.filter(pk=instance.pk).update(**new_fields_list)
