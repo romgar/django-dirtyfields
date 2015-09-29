@@ -23,6 +23,11 @@ def save_specific_fields(instance, fields_list):
         new_fields_list = {field_name: getattr(instance, field_name)
                            for field_name, field_value in fields_list.items()}
 
+        # dirtyfield is based on post_save signal to save last database value in memory.
+        # As we need to manually launch post_save signal, we also launch pre_save
+        # to be coherent with django 'classic' save signals.
+        signals.pre_save.send(sender=instance.__class__, instance=instance)
+
         # django < 1.5 does not support update_fields option on save method
         instance.__class__.objects.filter(pk=instance.pk).update(**new_fields_list)
 
