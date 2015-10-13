@@ -91,6 +91,14 @@ By default, dirty functions are not checking foreign keys. If you want to also t
     {'fkey': 1}
 
 
+Saving dirty fields.
+----------------------------
+If you want to only save dirty fields from an instance in the database (only these fields will be involved in SQL query), you can use ``save_dirty_fields`` method.
+
+Warning: this ``save_dirty_fields`` method will trigger the same signals as django default ``save`` method.
+But, in django 1.4.22-, as we are using under the hood an ``update`` method, we need to manually send these signals, so be aware that only ``sender`` and ``instance`` arguments are passed to the signal in that context.
+
+
 Why would you want this?
 ------------------------
 

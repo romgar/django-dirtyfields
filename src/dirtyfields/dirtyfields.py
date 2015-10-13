@@ -2,7 +2,7 @@
 from copy import copy
 
 from django.db.models.signals import post_save
-from .compat import is_db_expression
+from .compat import is_db_expression, save_specific_fields
 
 
 class DirtyFieldsMixin(object):
@@ -53,6 +53,10 @@ class DirtyFieldsMixin(object):
         if not self.pk:
             return True
         return {} != self.get_dirty_fields(check_relationship=check_relationship)
+
+    def save_dirty_fields(self):
+        dirty_fields = self.get_dirty_fields(check_relationship=True)
+        save_specific_fields(self, dirty_fields)
 
 
 def reset_state(sender, instance, **kwargs):
