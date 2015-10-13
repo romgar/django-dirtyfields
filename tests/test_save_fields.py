@@ -4,8 +4,6 @@ from .models import TestModel, TestMixedFieldsModel
 from .utils import assert_number_of_queries_on_regex
 
 
-# We don't test it in django 1.5 because we are using 1.5+ 'update_fields' kwargs
-# in our custom save_dirty_fields method
 @pytest.mark.django_db
 def test_save_dirty_simple_field():
     tm = TestModel.objects.create()
@@ -29,8 +27,6 @@ def test_save_dirty_simple_field():
     assert TestModel.objects.get(pk=tm.pk).characters == 'new_character_2'
 
 
-# We don't test it in django 1.5 because we are using 1.5+ 'update_fields' kwargs
-# in our custom save_dirty_fields method
 @pytest.mark.django_db
 def test_save_dirty_related_field():
     tm1 = TestModel.objects.create()
