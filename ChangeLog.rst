@@ -2,6 +2,16 @@ ChangeLog
 =========
 
 
+.. _v0.8:
+
+0.8 (2015-10-30)
+------------------
+
+*New:*
+
+    - Adding :code:`save_dirty_fields` method to save only dirty fields in the database.
+
+
 .. _v0.7:
 
 0.7 (2015-06-18)
