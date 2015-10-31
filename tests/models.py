@@ -16,6 +16,11 @@ class TestModelWithForeignKey(DirtyFieldsMixin, models.Model):
     fkey = models.ForeignKey(TestModel)
 
 
+class TestMixedFieldsModel(DirtyFieldsMixin, models.Model):
+    fkey = models.ForeignKey(TestModel)
+    characters = models.CharField(blank=True, max_length=80)
+
+
 class TestModelWithOneToOneField(DirtyFieldsMixin, models.Model):
     o2o = models.OneToOneField(TestModel)
 

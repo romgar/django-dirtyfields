@@ -1,14 +1,14 @@
-
+===================
 Django Dirty Fields
 ===================
 
 .. image:: https://badges.gitter.im/Join%20Chat.svg
-   :alt: Join the chat at https://gitter.im/smn/django-dirtyfields
-   :target: https://gitter.im/smn/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-.. image:: https://travis-ci.org/smn/django-dirtyfields.svg?branch=develop
-    :target: https://travis-ci.org/smn/django-dirtyfields
-.. image:: https://coveralls.io/repos/smn/django-dirtyfields/badge.svg
-   :target: https://coveralls.io/r/smn/django-dirtyfields
+   :alt: Join the chat at https://gitter.im/romgar/django-dirtyfields
+   :target: https://gitter.im/romgar/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+.. image:: https://travis-ci.org/romgar/django-dirtyfields.svg?branch=develop
+    :target: https://travis-ci.org/romgar/django-dirtyfields?branch=develop
+.. image:: https://coveralls.io/repos/smn/django-dirtyfields/badge.svg?branch=develop
+   :target: https://coveralls.io/r/smn/django-dirtyfields?branch=develop
 
 Tracking dirty fields on a Django model instance.
 
@@ -39,9 +39,10 @@ To use ``django-dirtyfields``, you need to:
         boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
 
-- Use one of these 2 functions to know if the instance is dirty, and get the dirty fields:
- * is\_dirty()
- * get\_dirty\_fields()
+- Use one of these 2 functions on a model instance to know if this instance is dirty, and get the dirty fields:
+
+    * is\_dirty()
+    * get\_dirty\_fields()
 
 
 Example
@@ -49,15 +50,15 @@ Example
 
 ::
 
-    $ ./manage.py shell
     >>> from tests.models import TestModel
-    >>> tm = TestModel.create(boolean=True,characters="testing")
+    >>> tm = TestModel.objects.create(boolean=True,characters="testing")
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
     {}
 
     >>> tm.boolean = False
+
     >>> tm.is_dirty()
     True
     >>> tm.get_dirty_fields()
@@ -70,13 +71,13 @@ By default, dirty functions are not checking foreign keys. If you want to also t
 
 ::
 
-    $ ./manage.py shell
     >>> from tests.models import TestModel
-    >>> tm = TestModel.create(fkey=obj1)
+    >>> tm = TestModel.objects.create(fkey=obj1)
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
     {}
+
     >>> tm.fkey = obj2
 
     >>> tm.is_dirty()
@@ -88,6 +89,14 @@ By default, dirty functions are not checking foreign keys. If you want to also t
     {}
     >>> tm.get_dirty_fields(check_relationship=True)
     {'fkey': 1}
+
+
+Saving dirty fields.
+----------------------------
+If you want to only save dirty fields from an instance in the database (only these fields will be involved in SQL query), you can use ``save_dirty_fields`` method.
+
+Warning: this ``save_dirty_fields`` method will trigger the same signals as django default ``save`` method.
+But, in django 1.4.22-, as we are using under the hood an ``update`` method, we need to manually send these signals, so be aware that only ``sender`` and ``instance`` arguments are passed to the signal in that context.
 
 
 Why would you want this?

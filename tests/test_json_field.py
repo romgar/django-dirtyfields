@@ -28,8 +28,7 @@ def test_json_field():
     tm = JSONFieldModel.objects.create(json_field={'data': 'dummy_data'})
 
     # initial state shouldn't be dirty
-    is_dirty = tm.is_dirty()
-    assert is_dirty is False
+    assert not tm.is_dirty()
 
     tm.json_field['data'] = 'dummy_data_modified'
 
