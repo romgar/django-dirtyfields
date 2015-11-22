@@ -33,6 +33,7 @@ extensions = [
     'sphinx.ext.intersphinx'
 ]
 
+# Added manually to reference other sphinx documentations
 intersphinx_mapping = {
     'python': ('http://docs.python.org/2.7', None),
     'sphinx': ('http://sphinx.pocoo.org/', None),
