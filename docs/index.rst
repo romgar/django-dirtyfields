@@ -92,32 +92,16 @@ But, in django 1.4.22-, as we are using under the hood an ``update`` method, we 
 
 
 Why would you want this?
-------------------------
+========================
 
 When using signals_, especially pre_save_, it is useful to be able to see what fields have changed or not. A signal could change its behaviour depending on whether a specific field has changed, whereas otherwise, you only could work on the event that the model's `save()` method had been called.
 
-
-Contributing
-============
-If you're interested in developing it, you can launch project tests on that way:
-
-::
-
-    $ pip install tox
-    $ pip install -e .
-    $ tox
-
-
-Credits
--------
-
-This code has largely be adapted from what was made available at `Stack Overflow`_.
-
-.. _Stack Overflow: http://stackoverflow.com/questions/110803/dirty-fields-in-django
 .. _signals: http://docs.djangoproject.com/en/1.2/topics/signals/
 .. _pre_save: http://docs.djangoproject.com/en/1.2/ref/signals/#django.db.models.signals.pre_save
 
 
+.. include:: contributing.rst
+.. include:: credits.rst
 
 Table of Contents:
 ==================
@@ -125,6 +109,8 @@ Table of Contents:
 .. toctree::
    :maxdepth: 2
 
+   contributing
+   credits
 
 
 Indices and tables
