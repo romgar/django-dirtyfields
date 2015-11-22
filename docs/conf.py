@@ -32,7 +32,6 @@ import shlex
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "_ext")))
-# ^^^ I'll do that neater later on.
 
 extensions = [
     'djangodocs',
