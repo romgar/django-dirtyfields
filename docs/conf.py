@@ -29,7 +29,13 @@ import shlex
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "_ext")))
+# ^^^ I'll do that neater later on.
+
 extensions = [
+    'djangodocs',
     'sphinx.ext.intersphinx'
 ]
 

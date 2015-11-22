@@ -94,10 +94,7 @@ But, in django 1.4.22-, as we are using under the hood an ``update`` method, we 
 Why would you want this?
 ========================
 
-When using signals_, especially pre_save_, it is useful to be able to see what fields have changed or not. A signal could change its behaviour depending on whether a specific field has changed, whereas otherwise, you only could work on the event that the model's `save()` method had been called.
-
-.. _signals: http://docs.djangoproject.com/en/1.2/topics/signals/
-.. _pre_save: http://docs.djangoproject.com/en/1.2/ref/signals/#django.db.models.signals.pre_save
+When using :mod:`django:django.db.models.signals` (:data:`django.db.models.signals.pre_save` especially), it is useful to be able to see what fields have changed or not. A signal could change its behaviour depending on whether a specific field has changed, whereas otherwise, you only could work on the event that the model's :meth:`~django.db.models.Model.save` method had been called.
 
 
 .. include:: contributing.rst
