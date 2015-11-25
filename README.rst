@@ -9,6 +9,8 @@ Django Dirty Fields
     :target: https://travis-ci.org/romgar/django-dirtyfields?branch=develop
 .. image:: https://coveralls.io/repos/romgar/django-dirtyfields/badge.svg?branch=develop
    :target: https://coveralls.io/r/romgar/django-dirtyfields?branch=develop
+.. image:: http://readthedocs.org/projects/django-dirtyfields/badge/?version=develop
+   :target: http://django-dirtyfields.readthedocs.org/en/develop/?badge=develop
 
 Tracking dirty fields on a Django model instance.
 
