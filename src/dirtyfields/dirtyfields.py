@@ -2,7 +2,7 @@
 from copy import copy
 
 from django.db.models.signals import post_save
-from .compat import is_db_expression, save_specific_fields
+from .compat import is_db_expression, save_specific_fields, is_deferred
 
 
 class DirtyFieldsMixin(object):
@@ -21,6 +21,9 @@ class DirtyFieldsMixin(object):
             if field.rel:
                 if not check_relationship:
                     continue
+
+            if is_deferred(self, field):
+                continue
 
             field_value = getattr(self, field.attname)
 
