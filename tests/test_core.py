@@ -116,3 +116,14 @@ def test_deferred_fields():
     tm.characters = 'foo'
     # 'characters' is not tracked as it is deferred
     assert tm.get_dirty_fields() == {'boolean': True}
+
+
+def test_validationerror():
+    # Initialize the model with an invalid value
+    tm = TestModel(boolean=None)
+
+    # Should not raise ValidationError
+    assert tm.is_dirty() is True
+
+    tm.boolean = False
+    assert tm.get_dirty_fields() == {'boolean': None}
