@@ -101,3 +101,18 @@ def test_decimal_field_correctly_managed():
 
     tm.decimal_field = u"2.00"
     assert not tm.is_dirty()
+
+
+@pytest.mark.django_db
+def test_deferred_fields():
+    TestModel.objects.create()
+
+    qs = TestModel.objects.only('boolean')
+
+    tm = qs[0]
+    tm.boolean = False
+    assert tm.get_dirty_fields() == {'boolean': True}
+
+    tm.characters = 'foo'
+    # 'characters' is not tracked as it is deferred
+    assert tm.get_dirty_fields() == {'boolean': True}
