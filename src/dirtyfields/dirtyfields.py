@@ -46,7 +46,7 @@ class DirtyFieldsMixin(object):
         all_modify_field = {}
 
         for key, value in new_state.items():
-            if type(value) is datetime and value.tzinfo is None:
+            if isinstance(value, datetime) and value.tzinfo is None:
                 value = value.replace(tzinfo=pytz.utc)
             original_value = self._original_state[key]
             if value != original_value:
