@@ -40,7 +40,7 @@ class DirtyFieldsMixin(object):
                 pass
 
             # Explanation of copy usage here :
-            # https://github.com/smn/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
+            # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
             all_field[field.name] = copy(field_value)
 
         return all_field

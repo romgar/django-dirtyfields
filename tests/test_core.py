@@ -90,7 +90,7 @@ def test_non_local_fields():
 @pytest.mark.django_db
 def test_decimal_field_correctly_managed():
     # Non regression test case for bug:
-    # https://github.com/smn/django-dirtyfields/issues/4
+    # https://github.com/romgar/django-dirtyfields/issues/4
     tm = TestModelWithDecimalField.objects.create(decimal_field=Decimal(2.00))
 
     # initial state shouldn't be dirty
