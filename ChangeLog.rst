@@ -2,6 +2,18 @@ ChangeLog
 =========
 
 
+.. _v0.8.1:
+
+0.8.1 (2015-12-08)
+------------------
+
+*bugfix:*
+
+    - Not comparing fields that are deferred (:code:`only` method on :code:`QuerySet`).
+    - Being more tolerant when comparing values that can be on another type than expected.
+
+
+
 .. _v0.8:
 
 0.8 (2015-10-30)
