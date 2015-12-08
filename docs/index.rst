@@ -1,22 +1,12 @@
-===================
-Django Dirty Fields
-===================
 
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-   :alt: Join the chat at https://gitter.im/romgar/django-dirtyfields
-   :target: https://gitter.im/romgar/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-.. image:: https://travis-ci.org/romgar/django-dirtyfields.svg?branch=develop
-    :target: https://travis-ci.org/romgar/django-dirtyfields?branch=develop
-.. image:: https://coveralls.io/repos/romgar/django-dirtyfields/badge.svg?branch=develop
-   :target: https://coveralls.io/r/romgar/django-dirtyfields?branch=develop
-.. image:: http://readthedocs.org/projects/django-dirtyfields/badge/?version=develop
-   :target: http://django-dirtyfields.readthedocs.org/en/develop/?badge=develop
+Welcome to django-dirtyfields's documentation!
+==============================================
 
 Tracking dirty fields on a Django model instance.
 
 Dirty means that there is a difference between field value in the database and the one we currently have on a model instance.
 
-`Documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_
+`Code source <https://github.com/romgar/django-dirtyfields/>`_
 
 Install
 =======
@@ -34,7 +24,7 @@ To use ``django-dirtyfields``, you need to:
 - Inherit from ``DirtyFieldMixin`` in the Django model you want to track.
 
 ::
-    
+
     from django.db import models
     from dirtyfields import DirtyFieldsMixin
 
@@ -49,8 +39,8 @@ To use ``django-dirtyfields``, you need to:
     * get\_dirty\_fields()
 
 
-Example
--------
+Examples
+========
 
 ::
 
@@ -104,28 +94,28 @@ But, in django 1.4.22-, as we are using under the hood an ``update`` method, we 
 
 
 Why would you want this?
-------------------------
+========================
 
-When using signals_, especially pre_save_, it is useful to be able to see what fields have changed or not. A signal could change its behaviour depending on whether a specific field has changed, whereas otherwise, you only could work on the event that the model's `save()` method had been called.
-
-
-Contributing
-============
-If you're interested in developing it, you can launch project tests on that way:
-
-::
-
-    $ pip install tox
-    $ pip install -e .
-    $ tox
+When using :mod:`django:django.db.models.signals` (:data:`django.db.models.signals.pre_save` especially), it is useful to be able to see what fields have changed or not. A signal could change its behaviour depending on whether a specific field has changed, whereas otherwise, you only could work on the event that the model's :meth:`~django.db.models.Model.save` method had been called.
 
 
-Credits
--------
+.. include:: contributing.rst
+.. include:: credits.rst
 
-This code has largely be adapted from what was made available at `Stack Overflow`_.
+Table of Contents:
+==================
 
-.. _Stack Overflow: http://stackoverflow.com/questions/110803/dirty-fields-in-django
-.. _signals: http://docs.djangoproject.com/en/1.2/topics/signals/
-.. _pre_save: http://docs.djangoproject.com/en/1.2/ref/signals/#django.db.models.signals.pre_save
+.. toctree::
+   :maxdepth: 2
+
+   contributing
+   credits
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 

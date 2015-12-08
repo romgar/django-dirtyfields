@@ -1,5 +1,6 @@
 import django
 from django.db.models import signals
+from django.db.models.query_utils import DeferredAttribute
 
 
 def is_db_expression(value):
@@ -11,6 +12,11 @@ def is_db_expression(value):
         # django >= 1.8  (big refactoring in Lookup/Expressions/Transforms)
         from django.db.models.expressions import BaseExpression, Combinable
         return isinstance(value, (BaseExpression, Combinable))
+
+
+def is_deferred(model, field):
+    attr = model.__class__.__dict__.get(field.attname)
+    return isinstance(attr, DeferredAttribute)
 
 
 def save_specific_fields(instance, fields_list):

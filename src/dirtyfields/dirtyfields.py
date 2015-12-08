@@ -1,8 +1,9 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
 from copy import copy
 
+from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
-from .compat import is_db_expression, save_specific_fields
+from .compat import is_db_expression, save_specific_fields, is_deferred
 
 
 class DirtyFieldsMixin(object):
@@ -22,15 +23,25 @@ class DirtyFieldsMixin(object):
                 if not check_relationship:
                     continue
 
+            if is_deferred(self, field):
+                continue
+
             field_value = getattr(self, field.attname)
 
             # If current field value is an expression, we are not evaluating it
             if is_db_expression(field_value):
                 continue
 
+            try:
+                # Store the converted value for fields with conversion
+                field_value = field.to_python(field_value)
+            except ValidationError:
+                # The current value is not valid so we cannot convert it
+                pass
+
             # Explanation of copy usage here :
-            # https://github.com/smn/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
-            all_field[field.name] = copy(field.to_python(field_value))
+            # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
+            all_field[field.name] = copy(field_value)
 
         return all_field
 

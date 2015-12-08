@@ -90,7 +90,7 @@ def test_non_local_fields():
 @pytest.mark.django_db
 def test_decimal_field_correctly_managed():
     # Non regression test case for bug:
-    # https://github.com/smn/django-dirtyfields/issues/4
+    # https://github.com/romgar/django-dirtyfields/issues/4
     tm = TestModelWithDecimalField.objects.create(decimal_field=Decimal(2.00))
 
     # initial state shouldn't be dirty
@@ -101,3 +101,29 @@ def test_decimal_field_correctly_managed():
 
     tm.decimal_field = u"2.00"
     assert not tm.is_dirty()
+
+
+@pytest.mark.django_db
+def test_deferred_fields():
+    TestModel.objects.create()
+
+    qs = TestModel.objects.only('boolean')
+
+    tm = qs[0]
+    tm.boolean = False
+    assert tm.get_dirty_fields() == {'boolean': True}
+
+    tm.characters = 'foo'
+    # 'characters' is not tracked as it is deferred
+    assert tm.get_dirty_fields() == {'boolean': True}
+
+
+def test_validationerror():
+    # Initialize the model with an invalid value
+    tm = TestModel(boolean=None)
+
+    # Should not raise ValidationError
+    assert tm.is_dirty() is True
+
+    tm.boolean = False
+    assert tm.get_dirty_fields() == {'boolean': None}

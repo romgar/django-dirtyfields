@@ -12,7 +12,7 @@ from .utils import assert_select_number_queries_on_model
 @pytest.mark.django_db
 def test_dirty_fields_ignores_the_editable_property_of_fields():
     # Non regression test case for bug:
-    # https://github.com/smn/django-dirtyfields/issues/17
+    # https://github.com/romgar/django-dirtyfields/issues/17
     tm = TestModelWithNonEditableFields.objects.create()
 
     # initial state shouldn't be dirty
@@ -43,7 +43,7 @@ def test_dirty_fields_ignores_the_editable_property_of_fields():
 @pytest.mark.django_db
 def test_mandatory_foreign_key_field_not_initialized_is_not_raising_related_object_exception():
     # Non regression test case for bug:
-    # https://github.com/smn/django-dirtyfields/issues/26
+    # https://github.com/romgar/django-dirtyfields/issues/26
     with pytest.raises(IntegrityError):
         TestModelWithForeignKey.objects.create()
 
@@ -52,7 +52,7 @@ def test_mandatory_foreign_key_field_not_initialized_is_not_raising_related_obje
 @override_settings(DEBUG=True)  # The test runner sets DEBUG to False. Set to True to enable SQL logging.
 def test_relationship_model_loading_issue():
     # Non regression test case for bug:
-    # https://github.com/smn/django-dirtyfields/issues/34
+    # https://github.com/romgar/django-dirtyfields/issues/34
 
     # Query tests with models that are not using django-dirtyfields
     tm1 = OrdinaryTestModel.objects.create()
@@ -100,7 +100,7 @@ def test_relationship_model_loading_issue():
 @pytest.mark.django_db
 def test_relationship_option_for_foreign_key_to_self():
     # Non regression test case for bug:
-    # https://github.com/smn/django-dirtyfields/issues/22
+    # https://github.com/romgar/django-dirtyfields/issues/22
     tm = TestModelWithSelfForeignKey.objects.create()
     tm1 = TestModelWithSelfForeignKey.objects.create(fkey=tm)
 
@@ -114,7 +114,7 @@ def test_relationship_option_for_foreign_key_to_self():
 @pytest.mark.django_db
 def test_expressions_not_taken_into_account_for_dirty_check():
     # Non regression test case for bug:
-    # https://github.com/smn/django-dirtyfields/issues/39
+    # https://github.com/romgar/django-dirtyfields/issues/39
     from django.db.models import F
     tm = TestExpressionModel.objects.create()
     tm.counter = F('counter') + 1
