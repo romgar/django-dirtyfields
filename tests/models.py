@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from dirtyfields import DirtyFieldsMixin
 
 
@@ -51,3 +52,7 @@ class SubclassModel(TestModel):
 
 class TestExpressionModel(DirtyFieldsMixin, models.Model):
     counter = models.IntegerField(default=0)
+
+
+class TestDatetimeModel(DirtyFieldsMixin, models.Model):
+    datetime_field = models.DateTimeField(default=timezone.now())

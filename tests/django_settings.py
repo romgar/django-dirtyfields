@@ -14,3 +14,6 @@ DATABASES = {
 }
 
 INSTALLED_APPS = ('tests', )
+
+USE_TZ = True
+TIME_ZONE = 'America/Chicago'
