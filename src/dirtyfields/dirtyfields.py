@@ -3,10 +3,14 @@ from copy import copy
 
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
+
+from .compare import raw_compare
 from .compat import is_db_expression, save_specific_fields, is_deferred
 
 
 class DirtyFieldsMixin(object):
+    compare_function = raw_compare
+
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)
         post_save.connect(
@@ -53,7 +57,9 @@ class DirtyFieldsMixin(object):
 
         for key, value in new_state.items():
             original_value = self._original_state[key]
-            if value != original_value:
+
+            is_different = self.compare_function(value, original_value)
+            if is_different:
                 all_modify_field[key] = original_value
 
         return all_modify_field
