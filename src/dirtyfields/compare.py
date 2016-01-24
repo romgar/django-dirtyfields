@@ -29,7 +29,7 @@ def time_zone_support_compare(cls, new_value, old_value):
                 # The db is not timezone aware, but the value we are passing for comparison is aware.
                 # By default, we then compare to UTC.
                 warnings.warn(u"Time zone support is not active, and you pass a time zone aware value (%s)"
-                              u" Converting it to UTC before comparison." % new_value,
+                              u" Converting database value to UTC before comparison." % new_value,
                               RuntimeWarning)
                 old_value = timezone.make_aware(old_value, pytz.UTC)
 
