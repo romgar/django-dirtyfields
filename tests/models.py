@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from dirtyfields import DirtyFieldsMixin
+from dirtyfields.compare import time_zone_support_compare
 
 
 class TestModel(DirtyFieldsMixin, models.Model):
@@ -55,4 +56,5 @@ class TestExpressionModel(DirtyFieldsMixin, models.Model):
 
 
 class TestDatetimeModel(DirtyFieldsMixin, models.Model):
-    datetime_field = models.DateTimeField(default=timezone.now())
+    compare_function = time_zone_support_compare
+    datetime_field = models.DateTimeField(default=timezone.now)
