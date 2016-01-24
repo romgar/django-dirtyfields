@@ -87,7 +87,6 @@ def test_non_local_fields():
     assert subclass.get_dirty_fields() == {'characters': 'foo'}
 
 
-
 @pytest.mark.django_db
 def test_decimal_field_correctly_managed():
     # Non regression test case for bug:
