@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 def raw_compare(cls, new_value, old_value):
-    return new_value != old_value
+    return new_value == old_value
 
 
 def time_zone_support_compare(cls, new_value, old_value):
@@ -33,4 +33,4 @@ def time_zone_support_compare(cls, new_value, old_value):
                               RuntimeWarning)
                 old_value = timezone.make_aware(old_value, pytz.UTC)
 
-    return new_value != old_value
+    return new_value == old_value
