@@ -38,7 +38,10 @@ class DirtyFieldsMixin(object):
             except ValidationError:
                 # The current value is not valid so we cannot convert it
                 pass
-
+            
+            if isinstance(field_value, buffer):
+                field_value = str(field_value)
+                
             # Explanation of copy usage here :
             # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
             all_field[field.name] = copy(field_value)
