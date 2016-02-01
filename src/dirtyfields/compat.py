@@ -44,7 +44,7 @@ def save_specific_fields(instance, fields_list):
 
 
 def is_buffer(value):
-    if sys.version_info < 3.0:
+    if sys.version_info < (3,0,0):
         return isinstance(value, buffer)
     else:
         return isinstance(value, memoryview)
