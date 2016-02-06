@@ -2,7 +2,6 @@ import datetime
 import pytz
 import warnings
 
-from django.conf import settings
 from django.utils import timezone
 
 
