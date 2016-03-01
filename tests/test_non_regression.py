@@ -10,6 +10,16 @@ from .utils import assert_select_number_queries_on_model
 
 
 @pytest.mark.django_db
+def test_slicing_and_only():
+    # test for bug: https://github.com/depop/django-dirtyfields/issues/1
+    for _ in range(10):
+        TestModelWithNonEditableFields.objects.create()
+
+    qs_ = TestModelWithNonEditableFields.objects.only('pk').filter()
+    [o for o in qs_.filter().order_by('pk')]
+
+
+@pytest.mark.django_db
 def test_dirty_fields_ignores_the_editable_property_of_fields():
     # Non regression test case for bug:
     # https://github.com/romgar/django-dirtyfields/issues/17
