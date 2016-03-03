@@ -25,14 +25,13 @@ def timezone_support_compare(new_value, old_value, timezone_to_set=pytz.UTC):
         warnings.warn(u"DateTimeField received a naive datetime (%s)"
                       u" while time zone support is active." % new_value,
                       RuntimeWarning)
-        new_value = timezone.make_aware(new_value, timezone_to_set)
+        new_value = timezone.make_aware(new_value, timezone_to_set).astimezone(pytz.utc)
     else:
         # The db is not timezone aware, but the value we are passing for comparison is aware.
-        # By default, we then compare to UTC.
         warnings.warn(u"Time zone support is not active (settings.USE_TZ=False), "
                       u"and you pass a time zone aware value (%s)"
                       u" Converting database value before comparison." % new_value,
                       RuntimeWarning)
-        old_value = timezone.make_aware(old_value, timezone_to_set)
+        old_value = timezone.make_aware(old_value, timezone_to_set).astimezone(pytz.utc)
 
     return raw_compare(new_value, old_value)

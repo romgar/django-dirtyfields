@@ -58,3 +58,8 @@ class TestExpressionModel(DirtyFieldsMixin, models.Model):
 class TestDatetimeModel(DirtyFieldsMixin, models.Model):
     compare_function = (timezone_support_compare, {})
     datetime_field = models.DateTimeField(default=timezone.now)
+
+
+class TestCurrentDatetimeModel(DirtyFieldsMixin, models.Model):
+    compare_function = (timezone_support_compare, {'timezone_to_set': timezone.get_current_timezone()})
+    datetime_field = models.DateTimeField(default=timezone.now)
