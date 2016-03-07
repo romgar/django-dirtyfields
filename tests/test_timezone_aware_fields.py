@@ -18,7 +18,6 @@ def test_datetime_fields_when_aware_db_and_naive_current_value():
     # Adding a naive datetime
     tm.datetime_field = datetime(2016, 1, 1)
 
-    # 'characters' is not tracked as it is deferred
     assert tm.get_dirty_fields() == {'datetime_field': datetime(2000, 1, 1, tzinfo=pytz.utc)}
 
 
@@ -31,10 +30,9 @@ def test_datetime_fields_when_naive_db_and_aware_current_value():
     # initial state shouldn't be dirty
     assert not tm.is_dirty()
 
-    # Adding a naive datetime
+    # Adding an aware datetime
     tm.datetime_field = datetime(2016, 1, 1, tzinfo=pytz.utc)
 
-    # 'characters' is not tracked as it is deferred
     assert tm.get_dirty_fields() == {'datetime_field': datetime(2000, 1, 1)}
 
 
