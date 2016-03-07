@@ -32,6 +32,6 @@ def timezone_support_compare(new_value, old_value, timezone_to_set=pytz.UTC):
                       u"and you pass a time zone aware value (%s)"
                       u" Converting database value before comparison." % new_value,
                       RuntimeWarning)
-        old_value = timezone.make_aware(old_value, timezone_to_set).astimezone(pytz.utc)
+        old_value = timezone.make_aware(old_value, pytz.utc).astimezone(timezone_to_set)
 
     return raw_compare(new_value, old_value)

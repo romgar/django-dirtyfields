@@ -46,7 +46,7 @@ def test_datetime_fields_with_current_timezone_conversion():
     # initial state shouldn't be dirty
     assert not tm.is_dirty()
 
-    # Adding a naive datetime
+    # Adding a naive datetime, that will be converted to local timezone.
     tm.datetime_field = datetime(2000, 1, 1, 6, 0, 0)
 
     # Chicago is UTC-6h, this field shouldn't be dirty, as we will automatically set this naive datetime
@@ -57,14 +57,14 @@ def test_datetime_fields_with_current_timezone_conversion():
 @override_settings(USE_TZ=False, TIME_ZONE='America/Chicago')
 @pytest.mark.django_db
 def test_datetime_fields_with_current_timezone_conversion_without_timezone_support():
-    tm = TestCurrentDatetimeModel.objects.create(datetime_field=datetime(2000, 1, 1, 6, 0, 0))
+    tm = TestCurrentDatetimeModel.objects.create(datetime_field=datetime(2000, 1, 1, 12, 0, 0))
 
     # initial state shouldn't be dirty
     assert not tm.is_dirty()
 
     # Adding an aware datetime
     chicago_timezone = pytz.timezone('America/Chicago')
-    tm.datetime_field = chicago_timezone.localize(datetime(2000, 1, 1, 12, 0, 0))
+    tm.datetime_field = chicago_timezone.localize(datetime(2000, 1, 1, 6, 0, 0), is_dst=None)
 
-    # If the database is naive, then we consider that it is defined as in defined timezone.
+    # If the database is naive, then we consider that it is defined as in UTC.
     assert not tm.is_dirty()
