@@ -1,5 +1,7 @@
 from django.db import models
+from django.utils import timezone
 from dirtyfields import DirtyFieldsMixin
+from dirtyfields.compare import timezone_support_compare
 
 
 class TestModel(DirtyFieldsMixin, models.Model):
@@ -51,3 +53,13 @@ class SubclassModel(TestModel):
 
 class TestExpressionModel(DirtyFieldsMixin, models.Model):
     counter = models.IntegerField(default=0)
+
+
+class TestDatetimeModel(DirtyFieldsMixin, models.Model):
+    compare_function = (timezone_support_compare, {})
+    datetime_field = models.DateTimeField(default=timezone.now)
+
+
+class TestCurrentDatetimeModel(DirtyFieldsMixin, models.Model):
+    compare_function = (timezone_support_compare, {'timezone_to_set': timezone.get_current_timezone()})
+    datetime_field = models.DateTimeField(default=timezone.now)
