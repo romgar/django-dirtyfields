@@ -5,7 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 
 from .compare import raw_compare
-from .compat import is_db_expression, save_specific_fields, is_deferred
+from .compat import (is_db_expression, save_specific_fields,
+                     is_deferred, is_buffer)
 
 
 class DirtyFieldsMixin(object):
@@ -42,6 +43,10 @@ class DirtyFieldsMixin(object):
             except ValidationError:
                 # The current value is not valid so we cannot convert it
                 pass
+
+            if is_buffer(field_value):
+                # psycopg2 returns uncopyable type buffer for bytea
+                field_value = str(field_value)
 
             # Explanation of copy usage here :
             # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
