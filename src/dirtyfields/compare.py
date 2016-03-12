@@ -5,6 +5,19 @@ import warnings
 from django.utils import timezone
 
 
+def compare_states(new_state, original_state, compare_function):
+    modified_field = {}
+
+    for key, value in new_state.items():
+        original_value = original_state[key]
+
+        is_identical = compare_function[0](value, original_value, **compare_function[1])
+        if not is_identical:
+            modified_field[key] = original_value
+
+    return modified_field
+
+
 def raw_compare(new_value, old_value):
     return new_value == old_value
 
