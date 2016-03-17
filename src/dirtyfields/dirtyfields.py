@@ -4,7 +4,7 @@ from copy import copy
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 
-from .compare import raw_compare, compare_states
+from .compare import raw_compare, compare_states, compare_m2m_states
 from .compat import (is_db_expression, save_specific_fields,
                      is_deferred, is_buffer)
 
@@ -65,7 +65,7 @@ class DirtyFieldsMixin(object):
             return m2m_fields
         return {}
 
-    def get_dirty_fields(self, check_relationship=False, check_m2m=False):
+    def get_dirty_fields(self, check_relationship=False, check_m2m=None):
         # check_relationship indicates whether we want to check for foreign keys
         # and one-to-one fields or ignore them
         modified_fields = compare_states(self._as_dict(check_relationship),
@@ -73,9 +73,9 @@ class DirtyFieldsMixin(object):
                                          self.compare_function)
 
         if check_m2m:
-            modified_m2m_fields = compare_states(self._as_dict_m2m(check_relationship),
-                                                 self._original_m2m_state,
-                                                 self.compare_function)
+            modified_m2m_fields = compare_m2m_states(check_m2m,
+                                                     self._original_m2m_state,
+                                                     self.compare_function)
             modified_fields.update(modified_m2m_fields)
 
         return modified_fields
