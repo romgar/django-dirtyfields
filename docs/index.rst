@@ -93,6 +93,27 @@ Warning: this ``save_dirty_fields`` method will trigger the same signals as djan
 But, in django 1.4.22-, as we are using under the hood an ``update`` method, we need to manually send these signals, so be aware that only ``sender`` and ``instance`` arguments are passed to the signal in that context.
 
 
+Custom comparison function
+----------------------------
+By default, ``dirtyfields`` compare the value between the database and the memory on a naive way (``==``).
+After some issues (with timezones for example), a customisable comparison logic has been added.
+You can now define how you want to compare 2 values by passing a function on DirtyFieldsMixin:
+
+::
+
+    from django.db import models
+    from dirtyfields import DirtyFieldsMixin
+
+    def your_function((new_value, old_value, param1):
+        # Your custom comparison code here
+        return new_value == old_value
+
+    class TestModel(DirtyFieldsMixin, models.Model):
+        compare_function = (your_function, {'param1': 5})
+
+
+Have a look at ``dirtyfields.compare`` module to get some examples.
+
 Why would you want this?
 ========================
 

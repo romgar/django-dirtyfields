@@ -1,3 +1,4 @@
+import sys
 import django
 from django.db.models import signals
 from django.db.models.query_utils import DeferredAttribute
@@ -40,3 +41,10 @@ def save_specific_fields(instance, fields_list):
         # dirtyfield is based on post_save signal to save last database value in memory.
         # As update() method does not trigger this signal, we launch it explicitly.
         signals.post_save.send(sender=instance.__class__, instance=instance)
+
+
+def is_buffer(value):
+    if sys.version_info < (3,0,0):
+        return isinstance(value, buffer)
+    else:
+        return isinstance(value, memoryview)

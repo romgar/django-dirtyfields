@@ -5,3 +5,6 @@ ve
 docs/_build/*
 docs/_template/*
 docs/_static/*
+.tox
+.cache
+.coverage
