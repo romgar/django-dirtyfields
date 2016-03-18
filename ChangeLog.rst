@@ -2,6 +2,17 @@ ChangeLog
 =========
 
 
+.. _v0.8.2:
+
+0.8.2 (2015-03-19)
+------------------
+
+*New:*
+
+    - Adding field comparison method :code:`compare_function` in :code:`DirtyFieldsMixin`.
+    - Also adding a specific comparison function :code:`timezone_support_compare` to handle different Datetime situations.
+
+
 .. _v0.8.1:
 
 0.8.1 (2015-12-08)
