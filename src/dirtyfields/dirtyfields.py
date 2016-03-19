@@ -2,9 +2,9 @@
 from copy import copy
 
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 
-from .compare import raw_compare, compare_states, compare_m2m_states
+from .compare import raw_compare, compare_states
 from .compat import (is_db_expression, save_specific_fields,
                      is_deferred, is_buffer)
 
@@ -18,7 +18,15 @@ class DirtyFieldsMixin(object):
             reset_state, sender=self.__class__,
             dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
                 name=self.__class__.__name__))
+        self._connect_m2m_relations()
         reset_state(sender=self.__class__, instance=self)
+
+    def _connect_m2m_relations(self):
+        for m2m_field, model in self._meta.get_m2m_with_model():
+            m2m_changed.connect(
+                reset_state, sender=m2m_field.rel.through,
+                dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
+                    name=self.__class__.__name__))
 
     def _as_dict(self, check_relationship):
         all_field = {}
@@ -73,19 +81,20 @@ class DirtyFieldsMixin(object):
                                          self.compare_function)
 
         if check_m2m:
-            modified_m2m_fields = compare_m2m_states(check_m2m,
-                                                     self._original_m2m_state,
-                                                     self.compare_function)
+            modified_m2m_fields = compare_states(check_m2m,
+                                                 self._original_m2m_state,
+                                                 self.compare_function)
             modified_fields.update(modified_m2m_fields)
 
         return modified_fields
 
-    def is_dirty(self, check_relationship=False):
+    def is_dirty(self, check_relationship=False, check_m2m=None):
         # in order to be dirty we need to have been saved at least once, so we
         # check for a primary key and we need our dirty fields to not be empty
         if not self.pk:
             return True
-        return {} != self.get_dirty_fields(check_relationship=check_relationship)
+        return {} != self.get_dirty_fields(check_relationship=check_relationship,
+                                           check_m2m=check_m2m)
 
     def save_dirty_fields(self):
         dirty_fields = self.get_dirty_fields(check_relationship=True)

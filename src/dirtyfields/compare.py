@@ -18,10 +18,6 @@ def compare_states(new_state, original_state, compare_function):
     return modified_field
 
 
-def compare_m2m_states(new_state, compare_function, tested_objects):
-    return {}
-
-
 def raw_compare(new_value, old_value):
     return new_value == old_value
 

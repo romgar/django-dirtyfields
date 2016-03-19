@@ -1,24 +1,28 @@
 import pytest
 
-from django.db import IntegrityError
-from django.test.utils import override_settings
-
-from .models import (TestModel, TestModelWithForeignKey,
-                     OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
-                     TestExpressionModel, TestM2MModel)
-from .utils import assert_select_number_queries_on_model
+from .models import TestModel, TestM2MModel
 
 
 @pytest.mark.django_db
 def test_dirty_fields_on_m2m():
-    # Non regression test case for bug:
-    # https://github.com/romgar/django-dirtyfields/issues/17
+
     tm = TestM2MModel.objects.create()
 
     # initial state shouldn't be dirty
+    assert not tm.is_dirty()
+
     tm2 = TestModel.objects.create()
     tm.m2m_field.add(tm2)
 
     assert tm._as_dict_m2m() == {'m2m_field': set([tm2.id])}
 
-    assert tm.get_dirty_fields(check_m2m={'m2m_field': set([tm2.id])}) == {'m2m_field': set([])}
+    # m2m check should be explicit: you have to give the values you want to compare with db state.
+    # This first assertion means that m2m_field has one element of id tm2 in the database.
+    assert tm.get_dirty_fields(check_m2m={'m2m_field': set([tm2.id])}) == {}
+
+    # This second assertion means that I'm expecting a m2m_field that is related to an element with id 0
+    # As it differs, we return the previous saved elements.
+    assert tm.get_dirty_fields(check_m2m={'m2m_field': set([0])}) == {'m2m_field': set([tm2.id])}
+
+    assert tm.get_dirty_fields(check_m2m={'m2m_field': set([0, tm2.id])}) == {'m2m_field': set([tm2.id])}
+
