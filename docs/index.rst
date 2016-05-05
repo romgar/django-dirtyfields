@@ -102,8 +102,8 @@ But, in django 1.4.22-, as we are using under the hood an ``update`` method, we 
 
 Verbose mode
 ----------------------------
-By default, when you use ``get_dirty_fields` function, if there are dirty fields, only the old value is returned.
-You can use `verbose` option to have more informations, for now a dict with old and new value:
+By default, when you use ``get_dirty_fields`` function, if there are dirty fields, only the old value is returned.
+You can use ``verbose`` option to have more informations, for now a dict with old and new value:
 
 ::
 
