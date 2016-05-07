@@ -16,7 +16,7 @@ Tracking dirty fields on a Django model instance.
 
 Dirty means that there is a difference between field value in the database and the one we currently have on a model instance.
 
-`Documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_
+`Full documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_
 
 Install
 =======
@@ -69,7 +69,7 @@ Example
     {'boolean': True}
 
 
-Consult the `Documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_ for more informations.
+Consult the `full documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_ for more informations.
 
 
 

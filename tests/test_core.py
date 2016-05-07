@@ -127,3 +127,18 @@ def test_validationerror():
 
     tm.boolean = False
     assert tm.get_dirty_fields() == {'boolean': None}
+
+
+def test_verbose_mode():
+    tm = TestModel()
+
+    # initial state is dirty because it has not been saved yet in the db
+    assert tm.is_dirty()
+    assert tm.get_dirty_fields() == {}
+
+    # changing values should flag them as dirty
+    tm.boolean = False
+
+    assert tm.get_dirty_fields(verbose=True) == {
+        'boolean': {'saved': True, 'current': False}
+    }

@@ -54,7 +54,7 @@ class DirtyFieldsMixin(object):
 
         return all_field
 
-    def get_dirty_fields(self, check_relationship=False):
+    def get_dirty_fields(self, check_relationship=False, verbose=False):
         # check_relationship indicates whether we want to check for foreign keys
         # and one-to-one fields or ignore them
         new_state = self._as_dict(check_relationship)
@@ -64,7 +64,12 @@ class DirtyFieldsMixin(object):
             original_value = self._original_state[key]
 
             is_identical = self.compare_function[0](value, original_value, **self.compare_function[1])
-            if not is_identical:
+            if is_identical:
+                continue
+
+            if verbose:
+                all_modify_field[key] = {'saved': original_value, 'current': value}
+            else:
                 all_modify_field[key] = original_value
 
         return all_modify_field

@@ -92,6 +92,26 @@ If you want to only save dirty fields from an instance in the database (only the
 Warning: this ``save_dirty_fields`` method will trigger the same signals as django default ``save`` method.
 But, in django 1.4.22-, as we are using under the hood an ``update`` method, we need to manually send these signals, so be aware that only ``sender`` and ``instance`` arguments are passed to the signal in that context.
 
+::
+
+    >>> tm.get_dirty_fields()
+    {'fkey': 1}
+    >>> tm.save_dirty_fields()
+    >>> tm.get_dirty_fields()
+    {}
+
+Verbose mode
+----------------------------
+By default, when you use ``get_dirty_fields`` function, if there are dirty fields, only the old value is returned.
+You can use ``verbose`` option to have more informations, for now a dict with old and new value:
+
+::
+
+    >>> tm.get_dirty_fields()
+    {'fkey': 1}
+    >>> tm.get_dirty_fields(verbose=True)
+    {'fkey': {'saved': 1, 'current': 3}}
+
 
 Custom comparison function
 ----------------------------
