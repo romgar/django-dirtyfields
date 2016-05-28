@@ -87,6 +87,7 @@ class DirtyFieldsMixin(object):
             modified_fields.update(modified_m2m_fields)
 
         if not verbose:
+            # Keeps backward compatibility with previous function return
             modified_fields = {key: value['saved'] for key, value in modified_fields.items()}
 
         return modified_fields
