@@ -12,8 +12,10 @@ def compare_states(new_state, original_state, compare_function):
         original_value = original_state[key]
 
         is_identical = compare_function[0](value, original_value, **compare_function[1])
-        if not is_identical:
-            modified_field[key] = original_value
+        if is_identical:
+            continue
+
+        modified_field[key] = {'saved': original_value, 'current': value}
 
     return modified_field
 

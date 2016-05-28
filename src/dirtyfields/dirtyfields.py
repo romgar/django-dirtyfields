@@ -73,7 +73,7 @@ class DirtyFieldsMixin(object):
             return m2m_fields
         return {}
 
-    def get_dirty_fields(self, check_relationship=False, check_m2m=None):
+    def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
         # check_relationship indicates whether we want to check for foreign keys
         # and one-to-one fields or ignore them
         modified_fields = compare_states(self._as_dict(check_relationship),
@@ -85,6 +85,9 @@ class DirtyFieldsMixin(object):
                                                  self._original_m2m_state,
                                                  self.compare_function)
             modified_fields.update(modified_m2m_fields)
+
+        if not verbose:
+            modified_fields = {key: value['saved'] for key, value in modified_fields.items()}
 
         return modified_fields
 
