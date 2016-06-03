@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import pre_save
 from django.utils import timezone
 from dirtyfields import DirtyFieldsMixin
 from dirtyfields.compare import timezone_support_compare
@@ -67,3 +68,18 @@ class TestCurrentDatetimeModel(DirtyFieldsMixin, models.Model):
 
 class TestM2MModel(DirtyFieldsMixin, models.Model):
     m2m_field = models.ManyToManyField(TestModel)
+
+
+class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
+    fielda = models.CharField(max_length=10)
+    fieldb = models.CharField(max_length=10, blank=True, null=True)
+
+    @staticmethod
+    def pre_save(instance, *args, **kwargs):
+        dirty_fields = instance.get_dirty_fields()
+        # only works for case2
+        if 'fielda' in dirty_fields:
+            if 'a' in instance.fielda:
+                instance.fieldb = 'aaa'
+
+pre_save.connect(TestModelWithPreSaveSignal.pre_save, sender=TestModelWithPreSaveSignal)

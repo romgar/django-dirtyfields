@@ -5,7 +5,7 @@ from django.test.utils import override_settings
 
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
-                     TestExpressionModel)
+                     TestExpressionModel, TestModelWithPreSaveSignal)
 from .utils import assert_select_number_queries_on_model
 
 
@@ -132,3 +132,23 @@ def test_expressions_not_taken_into_account_for_dirty_check():
     # This save() was raising a ValidationError: [u"'F(counter) + Value(1)' value must be an integer."]
     # caused by a call to_python() on an expression node
     tm.save()
+
+
+@pytest.mark.django_db
+def test_pre_save_signal_make_dirty_checking_not_consistent():
+
+    # first case
+    # shouldn't both examples below work the same?
+    model = TestModelWithPreSaveSignal.objects.create(fielda='a')
+    assert model.fieldb is None
+
+    # second case
+    model = TestModelWithPreSaveSignal(fielda='a')
+    model.save()
+    assert model.fieldb is None
+
+    # third case
+    model = TestModelWithPreSaveSignal()
+    model.fielda = 'a'
+    model.save()
+    assert model.fieldb is None
