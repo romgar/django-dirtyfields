@@ -2,6 +2,17 @@ ChangeLog
 =========
 
 
+.. _v0.9:
+
+0.9 (2016-06-18)
+------------------
+
+*New:*
+
+    - Adding Many-to-Many fields comparison method :code:`check_m2m` in :code:`DirtyFieldsMixin`.
+    - Adding :code:`verbose` parameter in :code:`get_dirty_fields` method to get old AND new field values.
+
+
 .. _v0.8.2:
 
 0.8.2 (2016-03-19)
