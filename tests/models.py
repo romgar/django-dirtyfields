@@ -63,3 +63,7 @@ class TestDatetimeModel(DirtyFieldsMixin, models.Model):
 class TestCurrentDatetimeModel(DirtyFieldsMixin, models.Model):
     compare_function = (timezone_support_compare, {'timezone_to_set': timezone.get_current_timezone()})
     datetime_field = models.DateTimeField(default=timezone.now)
+
+
+class TestM2MModel(DirtyFieldsMixin, models.Model):
+    m2m_field = models.ManyToManyField(TestModel)

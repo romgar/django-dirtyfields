@@ -2,9 +2,9 @@
 from copy import copy
 
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 
-from .compare import raw_compare
+from .compare import raw_compare, compare_states
 from .compat import (is_db_expression, save_specific_fields,
                      is_deferred, is_buffer)
 
@@ -18,7 +18,15 @@ class DirtyFieldsMixin(object):
             reset_state, sender=self.__class__,
             dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
                 name=self.__class__.__name__))
+        self._connect_m2m_relations()
         reset_state(sender=self.__class__, instance=self)
+
+    def _connect_m2m_relations(self):
+        for m2m_field, model in self._meta.get_m2m_with_model():
+            m2m_changed.connect(
+                reset_state, sender=m2m_field.rel.through,
+                dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
+                    name=self.__class__.__name__))
 
     def _as_dict(self, check_relationship):
         all_field = {}
@@ -54,27 +62,43 @@ class DirtyFieldsMixin(object):
 
         return all_field
 
-    def get_dirty_fields(self, check_relationship=False):
+    def _as_dict_m2m(self):
+        if self.pk:
+            m2m_fields = dict([
+                (f.attname, set([
+                    obj.id for obj in getattr(self, f.attname).all()
+                ]))
+                for f, model in self._meta.get_m2m_with_model()
+            ])
+            return m2m_fields
+        return {}
+
+    def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
         # check_relationship indicates whether we want to check for foreign keys
         # and one-to-one fields or ignore them
-        new_state = self._as_dict(check_relationship)
-        all_modify_field = {}
+        modified_fields = compare_states(self._as_dict(check_relationship),
+                                         self._original_state,
+                                         self.compare_function)
 
-        for key, value in new_state.items():
-            original_value = self._original_state[key]
+        if check_m2m:
+            modified_m2m_fields = compare_states(check_m2m,
+                                                 self._original_m2m_state,
+                                                 self.compare_function)
+            modified_fields.update(modified_m2m_fields)
 
-            is_identical = self.compare_function[0](value, original_value, **self.compare_function[1])
-            if not is_identical:
-                all_modify_field[key] = original_value
+        if not verbose:
+            # Keeps backward compatibility with previous function return
+            modified_fields = {key: value['saved'] for key, value in modified_fields.items()}
 
-        return all_modify_field
+        return modified_fields
 
-    def is_dirty(self, check_relationship=False):
+    def is_dirty(self, check_relationship=False, check_m2m=None):
         # in order to be dirty we need to have been saved at least once, so we
         # check for a primary key and we need our dirty fields to not be empty
         if not self.pk:
             return True
-        return {} != self.get_dirty_fields(check_relationship=check_relationship)
+        return {} != self.get_dirty_fields(check_relationship=check_relationship,
+                                           check_m2m=check_m2m)
 
     def save_dirty_fields(self):
         dirty_fields = self.get_dirty_fields(check_relationship=True)
@@ -85,3 +109,4 @@ def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid
     # getting a `KeyError` when checking if a field is dirty or not
     instance._original_state = instance._as_dict(check_relationship=True)
+    instance._original_m2m_state = instance._as_dict_m2m()
