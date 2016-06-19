@@ -138,17 +138,16 @@ def test_expressions_not_taken_into_account_for_dirty_check():
 def test_pre_save_signal_make_dirty_checking_not_consistent():
 
     # first case
-    # shouldn't both examples below work the same?
     model = TestModelWithPreSaveSignal.objects.create(fielda='a')
-    assert model.fieldb is None
+    assert model.fieldb is 'aaa'
 
     # second case
     model = TestModelWithPreSaveSignal(fielda='a')
     model.save()
-    assert model.fieldb is None
+    assert model.fieldb is 'aaa'
 
     # third case
     model = TestModelWithPreSaveSignal()
     model.fielda = 'a'
     model.save()
-    assert model.fieldb is None
+    assert model.fieldb is 'aaa'

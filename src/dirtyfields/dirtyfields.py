@@ -28,10 +28,13 @@ class DirtyFieldsMixin(object):
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
-    def _as_dict(self, check_relationship):
+    def _as_dict(self, check_relationship, include_primary_key=True):
         all_field = {}
 
         for field in self._meta.fields:
+            if field.primary_key and not include_primary_key:
+                continue
+
             if field.rel:
                 if not check_relationship:
                     continue
@@ -76,6 +79,13 @@ class DirtyFieldsMixin(object):
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
         # check_relationship indicates whether we want to check for foreign keys
         # and one-to-one fields or ignore them
+
+        if not self.pk:
+            # If the object has not yet been saved in the database, all fields are considered dirty
+            # for consistency (see https://github.com/romgar/django-dirtyfields/issues/65 for more details)
+            initial_dict = self._as_dict(check_relationship, include_primary_key=False)
+            return initial_dict
+
         modified_fields = compare_states(self._as_dict(check_relationship),
                                          self._original_state,
                                          self.compare_function)
@@ -95,8 +105,6 @@ class DirtyFieldsMixin(object):
     def is_dirty(self, check_relationship=False, check_m2m=None):
         # in order to be dirty we need to have been saved at least once, so we
         # check for a primary key and we need our dirty fields to not be empty
-        if not self.pk:
-            return True
         return {} != self.get_dirty_fields(check_relationship=check_relationship,
                                            check_m2m=check_m2m)
 
