@@ -5,7 +5,7 @@ from django.test.utils import override_settings
 
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
-                     TestExpressionModel)
+                     TestExpressionModel, TestModelWithPreSaveSignal)
 from .utils import assert_select_number_queries_on_model
 
 
@@ -25,27 +25,11 @@ def test_dirty_fields_ignores_the_editable_property_of_fields():
     # https://github.com/romgar/django-dirtyfields/issues/17
     tm = TestModelWithNonEditableFields.objects.create()
 
-    # initial state shouldn't be dirty
-    assert tm.get_dirty_fields() == {}
-
-    # changing values should flag them as dirty
+    # Changing values should flag them as dirty
     tm.boolean = False
     tm.characters = 'testing'
     assert tm.get_dirty_fields() == {
         'boolean': True,
-        'characters': ''
-    }
-    assert tm.get_dirty_fields(check_relationship=True) == {
-        'boolean': True,
-        'characters': ''
-    }
-
-    # resetting them to original values should unflag
-    tm.boolean = True
-    assert tm.get_dirty_fields() == {
-        'characters': ''
-    }
-    assert tm.get_dirty_fields(check_relationship=True) == {
         'characters': ''
     }
 
@@ -132,3 +116,22 @@ def test_expressions_not_taken_into_account_for_dirty_check():
     # This save() was raising a ValidationError: [u"'F(counter) + Value(1)' value must be an integer."]
     # caused by a call to_python() on an expression node
     tm.save()
+
+
+@pytest.mark.django_db
+def test_pre_save_signal_make_dirty_checking_not_consistent():
+
+    # first case
+    model = TestModelWithPreSaveSignal.objects.create(data='specific_value')
+    assert model.data_updated_on_presave is 'presave_value'
+
+    # second case
+    model = TestModelWithPreSaveSignal(data='specific_value')
+    model.save()
+    assert model.data_updated_on_presave is 'presave_value'
+
+    # third case
+    model = TestModelWithPreSaveSignal()
+    model.data = 'specific_value'
+    model.save()
+    assert model.data_updated_on_presave is 'presave_value'

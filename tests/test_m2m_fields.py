@@ -5,12 +5,7 @@ from .models import TestModel, TestM2MModel
 
 @pytest.mark.django_db
 def test_dirty_fields_on_m2m():
-
     tm = TestM2MModel.objects.create()
-
-    # initial state shouldn't be dirty
-    assert not tm.is_dirty()
-
     tm2 = TestModel.objects.create()
     tm.m2m_field.add(tm2)
 

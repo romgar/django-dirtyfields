@@ -6,7 +6,7 @@ from django.db.models.signals import post_save, m2m_changed
 
 from .compare import raw_compare, compare_states
 from .compat import (is_db_expression, save_specific_fields,
-                     is_deferred, is_buffer)
+                     is_deferred, is_buffer, get_m2m_with_model)
 
 
 class DirtyFieldsMixin(object):
@@ -22,16 +22,19 @@ class DirtyFieldsMixin(object):
         reset_state(sender=self.__class__, instance=self)
 
     def _connect_m2m_relations(self):
-        for m2m_field, model in self._meta.get_m2m_with_model():
+        for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
                 reset_state, sender=m2m_field.rel.through,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
-    def _as_dict(self, check_relationship):
+    def _as_dict(self, check_relationship, include_primary_key=True):
         all_field = {}
 
         for field in self._meta.fields:
+            if field.primary_key and not include_primary_key:
+                continue
+
             if field.rel:
                 if not check_relationship:
                     continue
@@ -68,14 +71,18 @@ class DirtyFieldsMixin(object):
                 (f.attname, set([
                     obj.id for obj in getattr(self, f.attname).all()
                 ]))
-                for f, model in self._meta.get_m2m_with_model()
+                for f, model in get_m2m_with_model(self.__class__)
             ])
             return m2m_fields
         return {}
 
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
-        # check_relationship indicates whether we want to check for foreign keys
-        # and one-to-one fields or ignore them
+        if not self.pk:
+            # If the object has not yet been saved in the database, all fields are considered dirty
+            # for consistency (see https://github.com/romgar/django-dirtyfields/issues/65 for more details)
+            initial_dict = self._as_dict(check_relationship, include_primary_key=False)
+            return initial_dict
+
         modified_fields = compare_states(self._as_dict(check_relationship),
                                          self._original_state,
                                          self.compare_function)
@@ -93,10 +100,6 @@ class DirtyFieldsMixin(object):
         return modified_fields
 
     def is_dirty(self, check_relationship=False, check_m2m=None):
-        # in order to be dirty we need to have been saved at least once, so we
-        # check for a primary key and we need our dirty fields to not be empty
-        if not self.pk:
-            return True
         return {} != self.get_dirty_fields(check_relationship=check_relationship,
                                            check_m2m=check_m2m)
 
