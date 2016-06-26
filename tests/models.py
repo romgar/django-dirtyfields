@@ -72,7 +72,7 @@ class TestM2MModel(DirtyFieldsMixin, models.Model):
 
 class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
     data = models.CharField(max_length=10)
-    updated_on_presave_data = models.CharField(max_length=10, blank=True, null=True)
+    data_updated_on_presave = models.CharField(max_length=10, blank=True, null=True)
 
     @staticmethod
     def pre_save(instance, *args, **kwargs):
@@ -80,6 +80,6 @@ class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
         # only works for case2
         if 'data' in dirty_fields:
             if 'specific_value' in instance.data:
-                instance.updated_on_presave_data = 'presave_value'
+                instance.data_updated_on_presave = 'presave_value'
 
 pre_save.connect(TestModelWithPreSaveSignal.pre_save, sender=TestModelWithPreSaveSignal)

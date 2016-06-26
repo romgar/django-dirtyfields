@@ -139,15 +139,15 @@ def test_pre_save_signal_make_dirty_checking_not_consistent():
 
     # first case
     model = TestModelWithPreSaveSignal.objects.create(data='specific_value')
-    assert model.updated_on_presave_data is 'presave_value'
+    assert model.data_updated_on_presave is 'presave_value'
 
     # second case
     model = TestModelWithPreSaveSignal(data='specific_value')
     model.save()
-    assert model.updated_on_presave_data is 'presave_value'
+    assert model.data_updated_on_presave is 'presave_value'
 
     # third case
     model = TestModelWithPreSaveSignal()
     model.data = 'specific_value'
     model.save()
-    assert model.updated_on_presave_data is 'presave_value'
+    assert model.data_updated_on_presave is 'presave_value'
