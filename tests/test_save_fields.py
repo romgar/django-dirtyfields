@@ -23,7 +23,7 @@ def test_save_dirty_simple_field():
             tm.save_dirty_fields()
 
     # We also check that the value has been correctly updated by our custom function
-    assert not tm.is_dirty()
+    assert tm.get_dirty_fields() == {}
     assert TestModel.objects.get(pk=tm.pk).characters == 'new_character_2'
 
 
@@ -48,5 +48,5 @@ def test_save_dirty_related_field():
             tmfm.save_dirty_fields()
 
     # We also check that the value has been correctly updated by our custom function
-    assert not tmfm.is_dirty()
+    assert tmfm.get_dirty_fields() == {}
     assert TestMixedFieldsModel.objects.get(pk=tmfm.pk).fkey_id == tm1.id

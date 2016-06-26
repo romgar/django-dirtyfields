@@ -25,27 +25,11 @@ def test_dirty_fields_ignores_the_editable_property_of_fields():
     # https://github.com/romgar/django-dirtyfields/issues/17
     tm = TestModelWithNonEditableFields.objects.create()
 
-    # initial state shouldn't be dirty
-    assert tm.get_dirty_fields() == {}
-
-    # changing values should flag them as dirty
+    # Changing values should flag them as dirty
     tm.boolean = False
     tm.characters = 'testing'
     assert tm.get_dirty_fields() == {
         'boolean': True,
-        'characters': ''
-    }
-    assert tm.get_dirty_fields(check_relationship=True) == {
-        'boolean': True,
-        'characters': ''
-    }
-
-    # resetting them to original values should unflag
-    tm.boolean = True
-    assert tm.get_dirty_fields() == {
-        'characters': ''
-    }
-    assert tm.get_dirty_fields(check_relationship=True) == {
         'characters': ''
     }
 
