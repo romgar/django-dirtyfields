@@ -77,9 +77,6 @@ class DirtyFieldsMixin(object):
         return {}
 
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
-        # check_relationship indicates whether we want to check for foreign keys
-        # and one-to-one fields or ignore them
-
         if not self.pk:
             # If the object has not yet been saved in the database, all fields are considered dirty
             # for consistency (see https://github.com/romgar/django-dirtyfields/issues/65 for more details)
@@ -103,8 +100,6 @@ class DirtyFieldsMixin(object):
         return modified_fields
 
     def is_dirty(self, check_relationship=False, check_m2m=None):
-        # in order to be dirty we need to have been saved at least once, so we
-        # check for a primary key and we need our dirty fields to not be empty
         return {} != self.get_dirty_fields(check_relationship=check_relationship,
                                            check_m2m=check_m2m)
 
