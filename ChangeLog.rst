@@ -2,10 +2,29 @@ ChangeLog
 =========
 
 
+.. _v1.0:
+
+1.0 (2016-06-26)
+----------------
+
+After several years of existence, django-dirty-fields is mature enough to switch to 1.X version.
+There is a backward-incompatibility on this version. Please read careful below.
+
+*New:*
+
+    - IMPORTANT: :code:`get_dirty_fields` is now more consistent for models not yet saved in the database.
+    :code:`get_dirty_fields` is, in that situation, always returning ALL fields, where it was before returning
+    various results depending on how you initialised your model.
+    It may affect you specially if you are using :code:`get_dirty_fields` in a :code:`pre_save` receiver.
+    See more details at https://github.com/romgar/django-dirtyfields/issues/65.
+    - Adding compatibility for old _meta API, deprecated in `1.10` version and now replaced by an official API.
+    - General test cleaning.
+
+
 .. _v0.9:
 
 0.9 (2016-06-18)
-------------------
+----------------
 
 *New:*
 
@@ -39,7 +58,7 @@ ChangeLog
 .. _v0.8:
 
 0.8 (2015-10-30)
-------------------
+----------------
 
 *New:*
 
@@ -49,7 +68,7 @@ ChangeLog
 .. _v0.7:
 
 0.7 (2015-06-18)
-------------------
+----------------
 
 *New:*
 
@@ -70,7 +89,7 @@ ChangeLog
 .. _v0.6:
 
 0.6 (2015-06-11)
-------------------
+----------------
 
 *New:*
 
@@ -84,7 +103,7 @@ ChangeLog
 .. _v0.5:
 
 0.5 (2015-05-06)
-------------------
+----------------
 
 *New:*
 
@@ -111,7 +130,7 @@ ChangeLog
 .. _v0.4:
 
 0.4 (2015-03-31)
-------------------
+----------------
 
 *New:*
 
