@@ -5,11 +5,17 @@ from .models import (TestModel, TestModelWithForeignKey, TestModelWithOneToOneFi
                      SubclassModel, TestModelWithDecimalField)
 
 
+@pytest.mark.django_db
 def test_dirty_fields():
     tm = TestModel()
 
     # initial state is dirty because it has not been saved yet in the db
     assert tm.is_dirty()
+
+    # initial state is dirty, so should return all fields
+    assert tm.get_dirty_fields() == {'boolean': True, 'characters': ''}
+
+    tm.save()
     assert tm.get_dirty_fields() == {}
 
     # changing values should flag them as dirty
@@ -25,19 +31,6 @@ def test_dirty_fields():
     assert tm.get_dirty_fields() == {
         'characters': ''
     }
-
-
-@pytest.mark.django_db
-def test_sweeping():
-    tm = TestModel()
-    tm.boolean = False
-    tm.characters = 'testing'
-    assert tm.get_dirty_fields() == {
-        'boolean': True,
-        'characters': ''
-    }
-    tm.save()
-    assert tm.get_dirty_fields() == {}
 
 
 @pytest.mark.django_db
@@ -126,17 +119,12 @@ def test_validationerror():
     assert tm.is_dirty() is True
 
     tm.boolean = False
-    assert tm.get_dirty_fields() == {'boolean': None}
+    assert tm.get_dirty_fields() == {'boolean': False, 'characters': ''}
 
 
+@pytest.mark.django_db
 def test_verbose_mode():
-    tm = TestModel()
-
-    # initial state is dirty because it has not been saved yet in the db
-    assert tm.is_dirty()
-    assert tm.get_dirty_fields() == {}
-
-    # changing values should flag them as dirty
+    tm = TestModel.objects.create()
     tm.boolean = False
 
     assert tm.get_dirty_fields(verbose=True) == {
