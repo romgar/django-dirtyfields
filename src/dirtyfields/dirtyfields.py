@@ -6,7 +6,7 @@ from django.db.models.signals import post_save, m2m_changed
 
 from .compare import raw_compare, compare_states
 from .compat import (is_db_expression, save_specific_fields,
-                     is_deferred, is_buffer)
+                     is_deferred, is_buffer, get_m2m_with_model)
 
 
 class DirtyFieldsMixin(object):
@@ -22,7 +22,7 @@ class DirtyFieldsMixin(object):
         reset_state(sender=self.__class__, instance=self)
 
     def _connect_m2m_relations(self):
-        for m2m_field, model in self._meta.get_m2m_with_model():
+        for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
                 reset_state, sender=m2m_field.rel.through,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
@@ -68,7 +68,7 @@ class DirtyFieldsMixin(object):
                 (f.attname, set([
                     obj.id for obj in getattr(self, f.attname).all()
                 ]))
-                for f, model in self._meta.get_m2m_with_model()
+                for f, model in get_m2m_with_model(self.__class__)
             ])
             return m2m_fields
         return {}
