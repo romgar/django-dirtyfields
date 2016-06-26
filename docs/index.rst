@@ -3,8 +3,7 @@ Welcome to django-dirtyfields's documentation!
 ==============================================
 
 Tracking dirty fields on a Django model instance.
-
-Dirty means that there is a difference between field value in the database and the one we currently have on a model instance.
+Dirty means that field in-memory and database values are different.
 
 `Source code <https://github.com/romgar/django-dirtyfields/>`_
 
