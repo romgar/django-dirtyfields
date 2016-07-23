@@ -89,7 +89,7 @@ class DirtyFieldsMixin(object):
             return initial_dict
 
         if check_m2m is not None and not self.ENABLE_M2M_CHECK:
-            raise Exception("You can't check m2m fields if enable_m2m_check is set to False")
+            raise Exception("You can't check m2m fields if ENABLE_M2M_CHECK is set to False")
 
         modified_fields = compare_states(self._as_dict(check_relationship),
                                          self._original_state,
