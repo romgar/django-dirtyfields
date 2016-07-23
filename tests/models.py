@@ -91,3 +91,8 @@ class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
                 instance.data_updated_on_presave = 'presave_value'
 
 pre_save.connect(TestModelWithPreSaveSignal.pre_save, sender=TestModelWithPreSaveSignal)
+
+
+class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
+    characters = models.CharField(blank=True, max_length=80)
+    ENABLE_M2M_CHECK = False

@@ -1,6 +1,7 @@
 import pytest
 
-from .models import TestModel, TestM2MModel, TestModelWithCustomPK, TestM2MModelWithCustomPKOnM2M
+from .models import TestModel, TestM2MModel, TestModelWithCustomPK, TestM2MModelWithCustomPKOnM2M, \
+    TestModelWithoutM2MCheck
 
 
 @pytest.mark.django_db
@@ -32,3 +33,11 @@ def test_m2m_check_with_custom_primary_key():
     # This line was triggering this error:
     # AttributeError: 'TestModelWithCustomPK' object has no attribute 'id'
     m2m_model.m2m_field.add(tm)
+
+
+@pytest.mark.django_db
+def test_m2m_disabled_does_not_allow_to_check_m2m_fields():
+    tm = TestModelWithoutM2MCheck.objects.create()
+
+    with pytest.raises(Exception):
+        assert tm.get_dirty_fields(check_m2m={'dummy': True})
