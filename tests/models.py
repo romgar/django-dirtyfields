@@ -70,6 +70,14 @@ class TestM2MModel(DirtyFieldsMixin, models.Model):
     m2m_field = models.ManyToManyField(TestModel)
 
 
+class TestModelWithCustomPK(DirtyFieldsMixin, models.Model):
+    custom_primary_key = models.CharField(max_length=80, primary_key=True)
+
+
+class TestM2MModelWithCustomPKOnM2M(DirtyFieldsMixin, models.Model):
+    m2m_field = models.ManyToManyField(TestModelWithCustomPK)
+
+
 class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
     data = models.CharField(max_length=10)
     data_updated_on_presave = models.CharField(max_length=10, blank=True, null=True)
