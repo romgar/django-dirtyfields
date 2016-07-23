@@ -14,7 +14,7 @@ class DirtyFieldsMixin(object):
 
     # This mode has been introduced to handle some situations like this one:
     # https://github.com/romgar/django-dirtyfields/issues/73
-    enable_m2m_check = True
+    ENABLE_M2M_CHECK = True
 
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)
@@ -22,7 +22,7 @@ class DirtyFieldsMixin(object):
             reset_state, sender=self.__class__,
             dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
                 name=self.__class__.__name__))
-        if self.enable_m2m_check:
+        if self.ENABLE_M2M_CHECK:
             self._connect_m2m_relations()
         reset_state(sender=self.__class__, instance=self)
 
@@ -88,7 +88,7 @@ class DirtyFieldsMixin(object):
             initial_dict = self._as_dict(check_relationship, include_primary_key=False)
             return initial_dict
 
-        if check_m2m is not None and not self.enable_m2m_check:
+        if check_m2m is not None and not self.ENABLE_M2M_CHECK:
             raise Exception("You can't check m2m fields if enable_m2m_check is set to False")
 
         modified_fields = compare_states(self._as_dict(check_relationship),
@@ -120,5 +120,5 @@ def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid
     # getting a `KeyError` when checking if a field is dirty or not
     instance._original_state = instance._as_dict(check_relationship=True)
-    if instance.enable_m2m_check:
+    if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()
