@@ -2,6 +2,16 @@ ChangeLog
 =========
 
 
+.. _v1.0.1:
+
+1.0.1 (2016-07-25)
+------------------
+
+*bugfix:*
+
+    - Fixing a bug preventing :code:`django-dirtyfields` to work properly on models with custom primary keys.
+
+
 .. _v1.0:
 
 1.0 (2016-06-26)
