@@ -2,6 +2,16 @@ ChangeLog
 =========
 
 
+.. _v1.0.1:
+
+1.0.1 (2016-07-25)
+------------------
+
+*bugfix:*
+
+    - Fixing a bug preventing :code:`django-dirtyfields` to work properly on models with custom primary keys.
+
+
 .. _v1.0:
 
 1.0 (2016-06-26)
@@ -13,11 +23,11 @@ There is a backward-incompatibility on this version. Please read careful below.
 *New:*
 
     - IMPORTANT: :code:`get_dirty_fields` is now more consistent for models not yet saved in the database.
-    :code:`get_dirty_fields` is, in that situation, always returning ALL fields, where it was before returning
-    various results depending on how you initialised your model.
-    It may affect you specially if you are using :code:`get_dirty_fields` in a :code:`pre_save` receiver.
-    See more details at https://github.com/romgar/django-dirtyfields/issues/65.
-    - Adding compatibility for old _meta API, deprecated in `1.10` version and now replaced by an official API.
+      :code:`get_dirty_fields` is, in that situation, always returning ALL fields, where it was before returning
+      various results depending on how you initialised your model.
+      It may affect you specially if you are using :code:`get_dirty_fields` in a :code:`pre_save` receiver.
+      See more details at https://github.com/romgar/django-dirtyfields/issues/65.
+    - Adding compatibility for old _meta API, deprecated in Django `1.10` version and now replaced by an official API.
     - General test cleaning.
 
 

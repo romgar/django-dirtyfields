@@ -69,7 +69,7 @@ class DirtyFieldsMixin(object):
         if self.pk:
             m2m_fields = dict([
                 (f.attname, set([
-                    obj.id for obj in getattr(self, f.attname).all()
+                    obj.pk for obj in getattr(self, f.attname).all()
                 ]))
                 for f, model in get_m2m_with_model(self.__class__)
             ])
