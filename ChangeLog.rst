@@ -2,6 +2,21 @@ ChangeLog
 =========
 
 
+
+.. _v1.1:
+
+1.1 (2016-08-04)
+----------------
+
+*New:*
+
+    - A new attribute :code:`ENABLE_M2M_CHECK` has been added to :code:`DirtyFieldsMixin` to enable/disable m2m check
+      functionality. This parameter is set to :code:`False` by default.
+      IMPORTANT: backward incompatibility with v1.0.x series. If you were using :code:`check_m2m` parameter to
+      check m2m relations, you should now add :code:`ENABLE_M2M_CHECK = True` to these models inheriting from
+      :code:`DirtyFieldsMixin`. Check the documentation to see more details/examples.
+
+
 .. _v1.0.1:
 
 1.0.1 (2016-07-25)
