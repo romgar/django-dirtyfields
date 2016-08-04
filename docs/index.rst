@@ -88,9 +88,14 @@ Checking many-to-many fields.
 ----------------------------
 By default, dirty functions are not checking many-to-many fields. They are also a bit special, as a call to `.add()` method is directly
 saving the related object to the database, thus the instance is never dirty.
-You can still use ``check_m2m`` parameter, but you need to provide the values you want to test against:
+If you want to check these relations, you should set ``ENABLE_M2M_CHECK`` to ``True`` in your model inheriting from
+``DirtyFieldMixin``, use ``check_m2m`` parameter and provide the values you want to test against:
 
 ::
+
+    class TestM2MModel(DirtyFieldMixin, models.Model):
+        ENABLE_M2M_CHECK = True
+        m2m_field = models.ManyToManyField(AnotherModel)
 
     >>> from tests.models import TestM2MModel
     >>> tm = TestM2MModel.objects.create()
@@ -108,6 +113,9 @@ You can still use ``check_m2m`` parameter, but you need to provide the values yo
 
 This can be useful when validating forms with m2m relations, where you receive some ids and want to know if your object
 in the database needs to be updated with these form values.
+
+**WARNING**: this m2m mode will generate extra queries to get m2m relation values each time you will save your objects.
+It can have serious performance issues depending on your project.
 
 
 Saving dirty fields.
