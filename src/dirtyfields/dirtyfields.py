@@ -14,7 +14,7 @@ class DirtyFieldsMixin(object):
 
     # This mode has been introduced to handle some situations like this one:
     # https://github.com/romgar/django-dirtyfields/issues/73
-    ENABLE_M2M_CHECK = True
+    ENABLE_M2M_CHECK = False
 
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)

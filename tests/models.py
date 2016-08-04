@@ -68,6 +68,11 @@ class TestCurrentDatetimeModel(DirtyFieldsMixin, models.Model):
 
 class TestM2MModel(DirtyFieldsMixin, models.Model):
     m2m_field = models.ManyToManyField(TestModel)
+    ENABLE_M2M_CHECK = True
+
+
+class TestM2MModelWithoutM2MModeEnabled(DirtyFieldsMixin, models.Model):
+    m2m_field = models.ManyToManyField(TestModel)
 
 
 class TestModelWithCustomPK(DirtyFieldsMixin, models.Model):

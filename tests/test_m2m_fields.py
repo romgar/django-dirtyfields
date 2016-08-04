@@ -1,7 +1,7 @@
 import pytest
 
 from .models import TestModel, TestM2MModel, TestModelWithCustomPK, TestM2MModelWithCustomPKOnM2M, \
-    TestModelWithoutM2MCheck
+    TestModelWithoutM2MCheck, TestM2MModelWithoutM2MModeEnabled
 
 
 @pytest.mark.django_db
@@ -21,6 +21,16 @@ def test_dirty_fields_on_m2m():
     assert tm.get_dirty_fields(check_m2m={'m2m_field': set([0])}) == {'m2m_field': set([tm2.id])}
 
     assert tm.get_dirty_fields(check_m2m={'m2m_field': set([0, tm2.id])}) == {'m2m_field': set([tm2.id])}
+
+
+@pytest.mark.django_db
+def test_dirty_fields_on_m2m_not_possible_if_not_enabled():
+    tm = TestM2MModelWithoutM2MModeEnabled.objects.create()
+    tm2 = TestModel.objects.create()
+    tm.m2m_field.add(tm2)
+
+    with pytest.raises(Exception):
+        assert tm.get_dirty_fields(check_m2m={'m2m_field': set([tm2.id])}) == {}
 
 
 @pytest.mark.django_db
