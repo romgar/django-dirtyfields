@@ -29,7 +29,7 @@ def test_dirty_fields_on_m2m_not_possible_if_not_enabled():
     tm2 = TestModel.objects.create()
     tm.m2m_field.add(tm2)
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         assert tm.get_dirty_fields(check_m2m={'m2m_field': set([tm2.id])}) == {}
 
 
