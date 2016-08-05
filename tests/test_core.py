@@ -114,7 +114,6 @@ def test_deferred_fields():
 
     tm = qs[0]
     tm.boolean = False
-
     assert tm.get_dirty_fields() == {'boolean': True}
 
     tm.characters = 'foo'
