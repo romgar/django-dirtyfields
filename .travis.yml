@@ -11,6 +11,7 @@ env:
   - TOXENV=django17
   - TOXENV=django18
   - TOXENV=django19
+  - TOXENV=django110
   - TOXENV=coverage
 
 matrix:

@@ -26,9 +26,12 @@ def is_db_expression(value):
         return isinstance(value, (BaseExpression, Combinable))
 
 
-def is_deferred(model, field):
-    attr = model.__class__.__dict__.get(field.attname)
-    return isinstance(attr, DeferredAttribute)
+def is_deferred(instance, field):
+    if django.VERSION < (1, 8):
+        attr = instance.__class__.__dict__.get(field.attname)
+        return isinstance(attr, DeferredAttribute)
+    else:
+        return field.name in instance.get_deferred_fields()
 
 
 def save_specific_fields(instance, fields_list):
