@@ -2,6 +2,15 @@ ChangeLog
 =========
 
 
+.. _v1.2:
+
+1.2 (2016-08-11)
+----------------
+
+*New:*
+
+    - :code:`django-dirtyfields` is now compatible with Django 1.10 series (deferred field handling has been updated).
+
 
 .. _v1.1:
 
