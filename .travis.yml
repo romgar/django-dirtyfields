@@ -13,6 +13,7 @@ env:
   - TOXENV=django19
   - TOXENV=django110
   - TOXENV=coverage
+  - TOXENV=postgresql
 
 matrix:
   exclude:
