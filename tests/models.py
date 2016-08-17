@@ -1,8 +1,12 @@
+import django
+
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils import timezone
+
 from dirtyfields import DirtyFieldsMixin
 from dirtyfields.compare import timezone_support_compare
+from tests.utils import is_postgresql_env_with_json_field
 
 
 class TestModel(DirtyFieldsMixin, models.Model):
@@ -101,3 +105,10 @@ pre_save.connect(TestModelWithPreSaveSignal.pre_save, sender=TestModelWithPreSav
 class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
     characters = models.CharField(blank=True, max_length=80)
     ENABLE_M2M_CHECK = False
+
+
+if is_postgresql_env_with_json_field():
+    from django.contrib.postgres.fields import JSONField
+
+    class TestModelWithJSONField(DirtyFieldsMixin, models.Model):
+        json_field = JSONField()
