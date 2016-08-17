@@ -13,11 +13,18 @@ env:
   - TOXENV=django19
   - TOXENV=django110
   - TOXENV=coverage
+  - TOXENV=postgresql
 
 matrix:
   exclude:
     - python: 3.4
       env: TOXENV=django14
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database dirtyfields_test;' -U postgres
 
 script:
   - tox

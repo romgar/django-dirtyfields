@@ -84,8 +84,8 @@ class TestM2MModelWithCustomPKOnM2M(DirtyFieldsMixin, models.Model):
 
 
 class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
-    data = models.CharField(max_length=10)
-    data_updated_on_presave = models.CharField(max_length=10, blank=True, null=True)
+    data = models.CharField(max_length=255)
+    data_updated_on_presave = models.CharField(max_length=255, blank=True, null=True)
 
     @staticmethod
     def pre_save(instance, *args, **kwargs):
