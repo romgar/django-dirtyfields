@@ -62,3 +62,10 @@ def is_buffer(value):
         return isinstance(value, buffer)
     else:
         return isinstance(value, memoryview)
+
+
+def remote_field(field):
+    if django.VERSION < (1, 9):
+        return field.rel
+    else:
+        return field.remote_field
