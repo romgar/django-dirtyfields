@@ -105,4 +105,4 @@ class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
 
 class TestDoubleForeignKeyModel(DirtyFieldsMixin, models.Model):
     fkey1 = models.ForeignKey(TestModel)
-    fkey2 = models.ForeignKey(TestModel, null=True)
+    fkey2 = models.ForeignKey(TestModel, null=True, related_name='fkey2')
