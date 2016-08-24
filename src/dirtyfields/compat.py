@@ -31,7 +31,7 @@ def is_deferred(instance, field):
         attr = instance.__class__.__dict__.get(field.attname)
         return isinstance(attr, DeferredAttribute)
     else:
-        return field.name in instance.get_deferred_fields()
+        return field.get_attname() in instance.get_deferred_fields()
 
 
 def save_specific_fields(instance, fields_list):
