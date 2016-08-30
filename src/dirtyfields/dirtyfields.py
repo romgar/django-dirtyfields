@@ -1,5 +1,5 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
-from copy import copy
+from copy import deepcopy
 
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save, m2m_changed
@@ -66,7 +66,7 @@ class DirtyFieldsMixin(object):
 
             # Explanation of copy usage here :
             # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
-            all_field[field.name] = copy(field_value)
+            all_field[field.name] = deepcopy(field_value)
 
         return all_field
 
