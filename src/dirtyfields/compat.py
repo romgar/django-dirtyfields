@@ -36,8 +36,9 @@ def is_deferred(instance, field):
 
 def save_specific_fields(instance, fields_list):
 
+    update_fields = fields_list.keys()
     if django.VERSION >= (1, 5):
-        instance.save(update_fields=fields_list.keys())
+        instance.save(update_fields=update_fields)
     else:
         # dirtyfields is by default returning dirty fields with their old value
         # We should pass the new value(s) to update the database
@@ -47,14 +48,14 @@ def save_specific_fields(instance, fields_list):
         # dirtyfield is based on post_save signal to save last database value in memory.
         # As we need to manually launch post_save signal, we also launch pre_save
         # to be coherent with django 'classic' save signals.
-        signals.pre_save.send(sender=instance.__class__, instance=instance)
+        signals.pre_save.send(sender=instance.__class__, instance=instance, update_fields=update_fields)
 
         # django < 1.5 does not support update_fields option on save method
         instance.__class__.objects.filter(pk=instance.pk).update(**new_fields_list)
 
         # dirtyfield is based on post_save signal to save last database value in memory.
         # As update() method does not trigger this signal, we launch it explicitly.
-        signals.post_save.send(sender=instance.__class__, instance=instance)
+        signals.post_save.send(sender=instance.__class__, instance=instance, update_fields=update_fields)
 
 
 def is_buffer(value):
