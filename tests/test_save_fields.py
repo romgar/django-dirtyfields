@@ -65,5 +65,5 @@ def test_save_only_specific_fields_should_let_other_fields_dirty():
 
     tm.save(update_fields=['boolean'])
 
-    # Right now, 'characters' field should still be dirty
+    # 'characters' field should still be dirty, update_fields was only saving the 'boolean' field in the db
     assert tm.get_dirty_fields() == {'characters': 'dummy'}
