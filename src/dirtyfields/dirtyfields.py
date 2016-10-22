@@ -119,6 +119,12 @@ class DirtyFieldsMixin(object):
 def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid
     # getting a `KeyError` when checking if a field is dirty or not
-    instance._original_state = instance._as_dict(check_relationship=True)
+    update_fields = kwargs.pop('update_fields', {})
+    new_state = instance._as_dict(check_relationship=True)
+    if update_fields:
+        for field in update_fields:
+            instance._original_state[field] = new_state[field]
+    else:
+        instance._original_state = new_state
     if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()
