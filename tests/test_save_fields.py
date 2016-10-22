@@ -50,3 +50,16 @@ def test_save_dirty_related_field():
     # We also check that the value has been correctly updated by our custom function
     assert tmfm.get_dirty_fields() == {}
     assert TestMixedFieldsModel.objects.get(pk=tmfm.pk).fkey_id == tm1.id
+
+
+@pytest.mark.django_db
+def test_save_only_specific_fields_should_let_other_fields_dirty():
+    tm = TestModel.objects.create(boolean=True, characters='dummy')
+
+    tm.boolean = False
+    tm.characters = 'new_dummy'
+
+    tm.save(update_fields=['boolean'])
+
+    # Right now, 'characters' field should still be dirty
+    assert tm.get_dirty_fields() == {'characters': 'dummy'}
