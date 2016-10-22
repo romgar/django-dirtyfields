@@ -1,3 +1,6 @@
+import unittest
+
+import django
 import pytest
 
 from .models import TestModel, TestMixedFieldsModel
@@ -52,6 +55,7 @@ def test_save_dirty_related_field():
     assert TestMixedFieldsModel.objects.get(pk=tmfm.pk).fkey_id == tm1.id
 
 
+@unittest.skipIf(django.VERSION < (1, 5), "Django 1.4 doesn't support update_fields param on save()")
 @pytest.mark.django_db
 def test_save_only_specific_fields_should_let_other_fields_dirty():
     tm = TestModel.objects.create(boolean=True, characters='dummy')
