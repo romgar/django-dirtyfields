@@ -50,6 +50,19 @@ def test_dirty_fields():
 
 
 @pytest.mark.django_db
+def test_dirty_fields_for_notsaved_pk():
+    tm = TestModel(id=1)
+
+    # Initial state is dirty, so should return all fields
+    assert tm.get_dirty_fields() == {'id': 1, 'boolean': True, 'characters': ''}
+
+    tm.save()
+
+    # Saving them make them not dirty anymore
+    assert tm.get_dirty_fields() == {}
+
+
+@pytest.mark.django_db
 def test_relationship_option_for_foreign_key():
     tm1 = TestModel.objects.create()
     tm2 = TestModel.objects.create()

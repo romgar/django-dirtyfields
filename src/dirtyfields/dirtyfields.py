@@ -82,10 +82,11 @@ class DirtyFieldsMixin(object):
         return {}
 
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
-        if not self.pk:
+        if self._state.adding:
             # If the object has not yet been saved in the database, all fields are considered dirty
             # for consistency (see https://github.com/romgar/django-dirtyfields/issues/65 for more details)
-            initial_dict = self._as_dict(check_relationship, include_primary_key=False)
+            pk_specified = self.pk is not None
+            initial_dict = self._as_dict(check_relationship, include_primary_key=pk_specified)
             return initial_dict
 
         if check_m2m is not None and not self.ENABLE_M2M_CHECK:
