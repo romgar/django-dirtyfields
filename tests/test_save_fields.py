@@ -1,3 +1,6 @@
+import unittest
+
+import django
 import pytest
 
 from .models import TestModel, TestMixedFieldsModel
@@ -50,3 +53,17 @@ def test_save_dirty_related_field():
     # We also check that the value has been correctly updated by our custom function
     assert tmfm.get_dirty_fields() == {}
     assert TestMixedFieldsModel.objects.get(pk=tmfm.pk).fkey_id == tm1.id
+
+
+@unittest.skipIf(django.VERSION < (1, 5), "Django 1.4 doesn't support update_fields param on save()")
+@pytest.mark.django_db
+def test_save_only_specific_fields_should_let_other_fields_dirty():
+    tm = TestModel.objects.create(boolean=True, characters='dummy')
+
+    tm.boolean = False
+    tm.characters = 'new_dummy'
+
+    tm.save(update_fields=['boolean'])
+
+    # 'characters' field should still be dirty, update_fields was only saving the 'boolean' field in the db
+    assert tm.get_dirty_fields() == {'characters': 'dummy'}

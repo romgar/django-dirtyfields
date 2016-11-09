@@ -107,6 +107,11 @@ class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
     ENABLE_M2M_CHECK = False
 
 
+class TestDoubleForeignKeyModel(DirtyFieldsMixin, models.Model):
+    fkey1 = models.ForeignKey(TestModel)
+    fkey2 = models.ForeignKey(TestModel, null=True, related_name='fkey2')
+
+
 if is_postgresql_env_with_json_field():
     from django.contrib.postgres.fields import JSONField
 
