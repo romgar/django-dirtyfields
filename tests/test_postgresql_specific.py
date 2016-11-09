@@ -9,8 +9,14 @@ from tests.utils import is_postgresql_env_with_json_field
 def test_dirty_json_field():
     from tests.models import TestModelWithJSONField
 
-    tm = TestModelWithJSONField.objects.create(json_field={'data': 'dummy_data'})
-    assert tm.get_dirty_fields() == {}
+    tm = TestModelWithJSONField.objects.create(json_field={'data': [1, 2, 3]})
 
-    tm.json_field = {'data': 'foo'}
-    assert tm.get_dirty_fields() == {'json_field': {'data': 'dummy_data'}}
+    data = tm.json_field['data']
+    data.append(4)
+
+    assert tm.get_dirty_fields(verbose=True) == {
+        'json_field': {
+            'current': {'data': [1, 2, 3, 4]},
+            'saved': {'data': [1, 2, 3]}
+        }
+    }
