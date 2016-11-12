@@ -1,8 +1,12 @@
+import django
+
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils import timezone
+
 from dirtyfields import DirtyFieldsMixin
 from dirtyfields.compare import timezone_support_compare
+from tests.utils import is_postgresql_env_with_json_field
 
 
 class TestModel(DirtyFieldsMixin, models.Model):
@@ -106,3 +110,10 @@ class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
 class TestDoubleForeignKeyModel(DirtyFieldsMixin, models.Model):
     fkey1 = models.ForeignKey(TestModel)
     fkey2 = models.ForeignKey(TestModel, null=True, related_name='fkey2')
+
+
+if is_postgresql_env_with_json_field():
+    from django.contrib.postgres.fields import JSONField
+
+    class TestModelWithJSONField(DirtyFieldsMixin, models.Model):
+        json_field = JSONField()

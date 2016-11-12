@@ -23,6 +23,9 @@ matrix:
 services:
   - postgresql
 
+addons:
+  postgresql: "9.4"
+
 before_script:
   - psql -c 'create database dirtyfields_test;' -U postgres
 
