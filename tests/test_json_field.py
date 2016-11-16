@@ -19,10 +19,11 @@ if JSON_FIELD_AVAILABLE:
 @unittest.skipIf(not JSON_FIELD_AVAILABLE, 'django jsonfield library required')
 @pytest.mark.django_db
 def test_json_field():
-    tm = JSONFieldModel.objects.create(json_field={'data': 'dummy_data'})
+    tm = JSONFieldModel.objects.create(json_field={'data': [1, 2, 3]})
 
-    tm.json_field['data'] = 'dummy_data_modified'
+    data = tm.json_field['data']
+    data.append(4)
 
     assert tm.get_dirty_fields() == {
-        'json_field': {'data': 'dummy_data'}
+        'json_field': {'data': [1, 2, 3]}
     }

@@ -5,7 +5,7 @@ from django.test.utils import override_settings
 
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
-                     TestExpressionModel, TestModelWithPreSaveSignal)
+                     TestExpressionModel, TestModelWithPreSaveSignal, TestDoubleForeignKeyModel)
 from .utils import assert_select_number_queries_on_model
 
 
@@ -135,3 +135,13 @@ def test_pre_save_signal_make_dirty_checking_not_consistent():
     model.data = 'specific_value'
     model.save()
     assert model.data_updated_on_presave is 'presave_value'
+
+
+@pytest.mark.django_db
+def test_foreign_key_deferred_field():
+    # Non regression test case for bug:
+    # https://github.com/romgar/django-dirtyfields/issues/84
+    tm = TestModel.objects.create()
+    TestDoubleForeignKeyModel.objects.create(fkey1=tm)
+
+    list(TestDoubleForeignKeyModel.objects.only('fkey1'))  # RuntimeError was raised here!

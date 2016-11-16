@@ -1,12 +1,12 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
-from copy import copy
+from copy import deepcopy
 
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save, m2m_changed
 
 from .compare import raw_compare, compare_states
 from .compat import (is_db_expression, save_specific_fields,
-                     is_deferred, is_buffer, get_m2m_with_model)
+                     is_deferred, is_buffer, get_m2m_with_model, remote_field)
 
 
 class DirtyFieldsMixin(object):
@@ -29,7 +29,7 @@ class DirtyFieldsMixin(object):
     def _connect_m2m_relations(self):
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
-                reset_state, sender=m2m_field.rel.through,
+                reset_state, sender=remote_field(m2m_field).through,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
@@ -40,7 +40,7 @@ class DirtyFieldsMixin(object):
             if field.primary_key and not include_primary_key:
                 continue
 
-            if field.rel:
+            if remote_field(field):
                 if not check_relationship:
                     continue
 
@@ -66,7 +66,7 @@ class DirtyFieldsMixin(object):
 
             # Explanation of copy usage here :
             # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
-            all_field[field.name] = copy(field_value)
+            all_field[field.name] = deepcopy(field_value)
 
         return all_field
 
@@ -82,10 +82,11 @@ class DirtyFieldsMixin(object):
         return {}
 
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
-        if not self.pk:
+        if self._state.adding:
             # If the object has not yet been saved in the database, all fields are considered dirty
             # for consistency (see https://github.com/romgar/django-dirtyfields/issues/65 for more details)
-            initial_dict = self._as_dict(check_relationship, include_primary_key=False)
+            pk_specified = self.pk is not None
+            initial_dict = self._as_dict(check_relationship, include_primary_key=pk_specified)
             return initial_dict
 
         if check_m2m is not None and not self.ENABLE_M2M_CHECK:
@@ -119,6 +120,12 @@ class DirtyFieldsMixin(object):
 def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid
     # getting a `KeyError` when checking if a field is dirty or not
-    instance._original_state = instance._as_dict(check_relationship=True)
+    update_fields = kwargs.pop('update_fields', {})
+    new_state = instance._as_dict(check_relationship=True)
+    if update_fields:
+        for field in update_fields:
+            instance._original_state[field] = new_state[field]
+    else:
+        instance._original_state = new_state
     if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()
