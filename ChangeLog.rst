@@ -2,6 +2,21 @@ ChangeLog
 =========
 
 
+.. _v1.2.1:
+
+1.2.1 (2016-11-16)
+------------------
+
+*New:*
+
+    - :code:`django-dirtyfields` is now tested with PostgreSQL, especially with specific fields
+    - Fixes #80: Use of :code:`Field.rel` raises warnings from Django 1.9+
+    - Fixes #84: Use :code:`only()` in conjunction with 2 foreign keys triggers a recursion error
+    - Fixes #77: Shallow copy does not work with Django 1.9's JSONField
+    - Fixes #88: :code:`get_dirty_fields` on a newly-created model does not work if pk is specified
+    - Fixes #90: Unmark dirty fields only listed in :code:`update_fields`
+
+
 .. _v1.2:
 
 1.2 (2016-08-11)
