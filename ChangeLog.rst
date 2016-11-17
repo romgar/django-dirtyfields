@@ -10,6 +10,9 @@ ChangeLog
 *New:*
 
     - :code:`django-dirtyfields` is now tested with PostgreSQL, especially with specific fields
+
+*Bugfix:*
+
     - Fixes #80: Use of :code:`Field.rel` raises warnings from Django 1.9+
     - Fixes #84: Use :code:`only()` in conjunction with 2 foreign keys triggers a recursion error
     - Fixes #77: Shallow copy does not work with Django 1.9's JSONField
@@ -46,7 +49,7 @@ ChangeLog
 1.0.1 (2016-07-25)
 ------------------
 
-*bugfix:*
+*Bugfix:*
 
     - Fixing a bug preventing :code:`django-dirtyfields` to work properly on models with custom primary keys.
 
@@ -97,7 +100,7 @@ There is a backward-incompatibility on this version. Please read careful below.
 0.8.1 (2015-12-08)
 ------------------
 
-*bugfix:*
+*Bugfix:*
 
     - Not comparing fields that are deferred (:code:`only` method on :code:`QuerySet`).
     - Being more tolerant when comparing values that can be on another type than expected.
