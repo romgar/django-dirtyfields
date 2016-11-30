@@ -114,7 +114,20 @@ class DirtyFieldsMixin(object):
 
     def save_dirty_fields(self):
         dirty_fields = self.get_dirty_fields(check_relationship=True)
+        if not dirty_fields:
+            return False
         save_specific_fields(self, dirty_fields)
+        return True
+
+    def save_if_dirty(self, update_fields=None, *args, **kwargs):
+        if not self.is_dirty():
+            return False
+        if update_fields:
+            dirty_fields = self.get_dirty_fields().keys()
+            # check if even one listed field is dirty
+            if not set(update_fields) & set(dirty_fields):
+                return False
+        return self.save(update_fields=update_fields, *args, **kwargs)
 
 
 def reset_state(sender, instance, **kwargs):
