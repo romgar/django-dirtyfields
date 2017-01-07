@@ -2,11 +2,12 @@
 from copy import deepcopy
 
 from django.core.exceptions import ValidationError
+from django.db.models.expressions import BaseExpression
+from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
 
 from .compare import raw_compare, compare_states
-from .compat import (is_db_expression, save_specific_fields,
-                     is_deferred, is_buffer, get_m2m_with_model, remote_field)
+from .compat import is_buffer, get_m2m_with_model, remote_field
 
 
 class DirtyFieldsMixin(object):
@@ -44,13 +45,13 @@ class DirtyFieldsMixin(object):
                 if not check_relationship:
                     continue
 
-            if is_deferred(self, field):
+            if field.get_attname() in self.get_deferred_fields():
                 continue
 
             field_value = getattr(self, field.attname)
 
             # If current field value is an expression, we are not evaluating it
-            if is_db_expression(field_value):
+            if isinstance(field_value, (BaseExpression, Combinable)):
                 continue
 
             try:
@@ -114,7 +115,7 @@ class DirtyFieldsMixin(object):
 
     def save_dirty_fields(self):
         dirty_fields = self.get_dirty_fields(check_relationship=True)
-        save_specific_fields(self, dirty_fields)
+        self.save(update_fields=dirty_fields.keys())
 
 
 def reset_state(sender, instance, **kwargs):
