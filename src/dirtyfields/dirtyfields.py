@@ -64,9 +64,12 @@ class DirtyFieldsMixin(object):
                 # psycopg2 returns uncopyable type buffer for bytea
                 field_value = str(field_value)
 
+            # Use the column name (instead of the relationship name) if it's a
+            # foreign key.
+            key = field.attname if hasattr(field, 'attname') else field.name
             # Explanation of copy usage here :
             # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
-            all_field[field.name] = deepcopy(field_value)
+            all_field[key] = deepcopy(field_value)
 
         return all_field
 
