@@ -1,6 +1,15 @@
 ChangeLog
 =========
 
+.. _master:
+
+master (unreleased)
+-------------------
+
+*New:*
+
+    - Drop support for unsupported Django versions: 1.4, 1.5, 1.6 and 1.7 series.
+
 
 .. _v1.2.1:
 
