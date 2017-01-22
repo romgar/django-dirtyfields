@@ -89,7 +89,7 @@ class DirtyFieldsMixin(object):
             pk_specified = self.pk is not None
             initial_dict = self._as_dict(check_relationship, include_primary_key=pk_specified)
             if verbose:
-                initial_dict = {key: {'saved': value, 'current': None}
+                initial_dict = {key: {'saved': None, 'current': value}
                                 for key, value in initial_dict.items()}
             return initial_dict
 

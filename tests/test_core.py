@@ -160,5 +160,6 @@ def test_verbose_mode_on_adding():
     tm = TestModel()
 
     assert tm.get_dirty_fields(verbose=True) == {
-        'boolean': {'saved': None, 'current': True}
+        'boolean': {'saved': None, 'current': True},
+        'characters': {'saved': None, 'current': u''}
     }
