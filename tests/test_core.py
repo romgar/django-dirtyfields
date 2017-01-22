@@ -153,3 +153,13 @@ def test_verbose_mode():
     assert tm.get_dirty_fields(verbose=True) == {
         'boolean': {'saved': True, 'current': False}
     }
+
+
+@pytest.mark.django_db
+def test_verbose_mode_on_adding():
+    tm = TestModel()
+
+    assert tm.get_dirty_fields(verbose=True) == {
+        'boolean': {'saved': None, 'current': True},
+        'characters': {'saved': None, 'current': u''}
+    }
