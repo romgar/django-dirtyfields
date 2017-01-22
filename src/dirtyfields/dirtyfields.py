@@ -88,6 +88,9 @@ class DirtyFieldsMixin(object):
             # for consistency (see https://github.com/romgar/django-dirtyfields/issues/65 for more details)
             pk_specified = self.pk is not None
             initial_dict = self._as_dict(check_relationship, include_primary_key=pk_specified)
+            if verbose:
+                initial_dict = {key: {'saved': value, 'current': None}
+                                for key, value in initial_dict.items()}
             return initial_dict
 
         if check_m2m is not None and not self.ENABLE_M2M_CHECK:
