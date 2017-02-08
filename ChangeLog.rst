@@ -9,6 +9,7 @@ master (unreleased)
 *New:*
 
     - Drop support for unsupported Django versions: 1.4, 1.5, 1.6 and 1.7 series.
+    - Fixes issue with verbose mode when the object has not been yet saved in the database (MR #99). Thanks vapkarian.
 
 
 .. _v1.2.1:
