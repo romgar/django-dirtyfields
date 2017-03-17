@@ -117,3 +117,9 @@ if is_postgresql_env_with_json_field():
 
     class TestModelWithJSONField(DirtyFieldsMixin, models.Model):
         json_field = JSONField()
+
+class TestModelWithSpecifiedFields(DirtyFieldsMixin, models.Model):
+    field_to_check = models.BooleanField(default=True)
+    other_field = models.BooleanField(default=True)
+    FIELDS_TO_CHECK = ['field_to_check']
+
