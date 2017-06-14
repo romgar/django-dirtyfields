@@ -11,6 +11,10 @@ master (unreleased)
     - Drop support for unsupported Django versions: 1.4, 1.5, 1.6 and 1.7 series.
     - Fixes issue with verbose mode when the object has not been yet saved in the database (MR #99). Thanks vapkarian.
 
+*Bugfix:*
+
+    - Correctly handle :code:`ForeignKey.db_column` :code:`{}_id` in :code:`update_fields`
+
 
 .. _v1.2.1:
 
