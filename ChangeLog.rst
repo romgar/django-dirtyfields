@@ -14,6 +14,7 @@ master (unreleased)
 *Bugfix:*
 
     - Correctly handle :code:`ForeignKey.db_column` :code:`{}_id` in :code:`update_fields`
+    - Handle deferred fields in :code:`update_fields`
 
 
 .. _v1.2.1:
