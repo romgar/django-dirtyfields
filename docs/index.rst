@@ -125,18 +125,18 @@ If you want to check a limited set of model fields, you should set ``FIELDS_TO_C
 ::
 
     class TestModelWithSpecifiedFields(DirtyFieldsMixin, models.Model):
-        field_to_check = models.BooleanField(default=True)
-        other_field = models.BooleanField(default=True)
-        FIELDS_TO_CHECK = ['field_to_check']
+        boolean1 = models.BooleanField(default=True)
+        boolean2 = models.BooleanField(default=True)
+        FIELDS_TO_CHECK = ['boolean1']
 
     >>> from tests.models import TestModelWithSpecifiedFields
-    >>> tm = TestModelWithSpecifiedFields.objects.create(field_to_check=True, other_field=True)
+    >>> tm = TestModelWithSpecifiedFields.objects.create()
 
-    >>> tm.field_to_check = False
-    >>> tm.other_field = False
+    >>> tm.boolean1 = False
+    >>> tm.boolean2 = False
 
     >>> tm.get_dirty_fields()
-    {'field_to_check': True}
+    {'boolean1': True}
 
 
 This can be used in order to increase performance.

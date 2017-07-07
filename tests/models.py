@@ -118,8 +118,16 @@ if is_postgresql_env_with_json_field():
     class TestModelWithJSONField(DirtyFieldsMixin, models.Model):
         json_field = JSONField()
 
+
 class TestModelWithSpecifiedFields(DirtyFieldsMixin, models.Model):
-    field_to_check = models.BooleanField(default=True)
-    other_field = models.BooleanField(default=True)
-    FIELDS_TO_CHECK = ['field_to_check']
+    boolean1 = models.BooleanField(default=True)
+    boolean2 = models.BooleanField(default=True)
+    FIELDS_TO_CHECK = ['boolean1']
+
+
+class TestModelWithM2MAndSpecifiedFields(DirtyFieldsMixin, models.Model):
+    m2m1 = models.ManyToManyField(TestModel)
+    m2m2 = models.ManyToManyField(TestModel)
+    ENABLE_M2M_CHECK = True
+    FIELDS_TO_CHECK = ['m2m1']
 
