@@ -17,6 +17,8 @@ class DirtyFieldsMixin(object):
     # https://github.com/romgar/django-dirtyfields/issues/73
     ENABLE_M2M_CHECK = False
 
+    FIELDS_TO_CHECK = None
+
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)
         post_save.connect(
@@ -38,6 +40,9 @@ class DirtyFieldsMixin(object):
         all_field = {}
 
         for field in self._meta.fields:
+            if self.FIELDS_TO_CHECK and (field.get_attname() not in self.FIELDS_TO_CHECK):
+                continue
+
             if field.primary_key and not include_primary_key:
                 continue
 
@@ -72,15 +77,17 @@ class DirtyFieldsMixin(object):
         return all_field
 
     def _as_dict_m2m(self):
+        m2m_fields = {}
+
         if self.pk:
-            m2m_fields = dict([
-                (f.attname, set([
-                    obj.pk for obj in getattr(self, f.attname).all()
-                ]))
-                for f, model in get_m2m_with_model(self.__class__)
-            ])
-            return m2m_fields
-        return {}
+            for f, model in get_m2m_with_model(self.__class__):
+                if self.FIELDS_TO_CHECK and (f.attname not in self.FIELDS_TO_CHECK):
+                    continue
+
+                m2m_fields[f.attname] = set([obj.pk for obj in getattr(self, f.attname).all()])
+
+        return m2m_fields
+
 
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
         if self._state.adding:
