@@ -22,7 +22,7 @@ class DirtyFieldsMixin(object):
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)
         post_save.connect(
-            reset_state, sender=self.__class__,
+            reset_state, sender=self.__class__, weak=False,
             dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
                 name=self.__class__.__name__))
         if self.ENABLE_M2M_CHECK:
@@ -32,7 +32,7 @@ class DirtyFieldsMixin(object):
     def _connect_m2m_relations(self):
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
-                reset_state, sender=remote_field(m2m_field).through,
+                reset_state, sender=remote_field(m2m_field).through, weak=False,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
