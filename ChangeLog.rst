@@ -16,6 +16,7 @@ master (unreleased)
 *Bugfix:*
 
     - Correctly handle :code:`ForeignKey.db_column` :code:`{}_id` in :code:`update_fields`. Thanks Hugo Smett.
+    - Fixes #111: Eliminate a memory leak.
 
 
 .. _v1.2.1:
