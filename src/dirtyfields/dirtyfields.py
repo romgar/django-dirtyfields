@@ -128,6 +128,20 @@ class DirtyFieldsMixin(object):
         dirty_fields = self.get_dirty_fields(check_relationship=True)
         self.save(update_fields=dirty_fields.keys())
 
+    def is_field_dirty(self, field_name, check_relationship=False):
+        """Return whether a particular field has changed."""
+        if field_name not in self._as_dict(check_relationship).keys():
+            raise ValueError("Invalid field name")
+
+        return field_name in self.get_dirty_fields(check_relationship)
+
+    def original_field_value(self, field_name):
+        """Return the original field value."""
+        if field_name not in self._as_dict(True).keys():
+            raise ValueError("Invalid field name")
+
+        return self._original_state[field_name]
+
 
 def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid

@@ -8,3 +8,4 @@ docs/_static/*
 .tox
 .cache
 .coverage
+.idea
