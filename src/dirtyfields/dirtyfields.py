@@ -133,7 +133,7 @@ class DirtyFieldsMixin(object):
         if field_name not in self._as_dict(check_relationship).keys():
             raise ValueError("Invalid field name")
 
-        return field_name in self.get_dirty_fields(check_relationship)
+        return not self._state.adding and field_name in self.get_dirty_fields(check_relationship)
 
     def original_field_value(self, field_name):
         """Return the original field value."""
