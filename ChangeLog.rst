@@ -10,10 +10,13 @@ master (unreleased)
 
     - Drop support for unsupported Django versions: 1.4, 1.5, 1.6 and 1.7 series.
     - Fixes issue with verbose mode when the object has not been yet saved in the database (MR #99). Thanks vapkarian.
+    - Add test coverage for Django 1.11.
+    - A new attribute :code:`FIELDS_TO_CHECK` has been added to :code:`DirtyFieldsMixin` to specify a limited set of fields to check.
 
 *Bugfix:*
 
-    - Correctly handle :code:`ForeignKey.db_column` :code:`{}_id` in :code:`update_fields`
+    - Correctly handle :code:`ForeignKey.db_column` :code:`{}_id` in :code:`update_fields`. Thanks Hugo Smett.
+    - Fixes #111: Eliminate a memory leak.
     - Handle deferred fields in :code:`update_fields`
 
 

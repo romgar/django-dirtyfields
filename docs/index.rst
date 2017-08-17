@@ -118,6 +118,30 @@ in the database needs to be updated with these form values.
 It can have serious performance issues depending on your project.
 
 
+Checking a limited set of model fields.
+-------------------------------------
+If you want to check a limited set of model fields, you should set ``FIELDS_TO_CHECK`` in your model inheriting from ``DirtyFieldsMixin``:
+
+::
+
+    class TestModelWithSpecifiedFields(DirtyFieldsMixin, models.Model):
+        boolean1 = models.BooleanField(default=True)
+        boolean2 = models.BooleanField(default=True)
+        FIELDS_TO_CHECK = ['boolean1']
+
+    >>> from tests.models import TestModelWithSpecifiedFields
+    >>> tm = TestModelWithSpecifiedFields.objects.create()
+
+    >>> tm.boolean1 = False
+    >>> tm.boolean2 = False
+
+    >>> tm.get_dirty_fields()
+    {'boolean1': True}
+
+
+This can be used in order to increase performance.
+
+
 Saving dirty fields.
 ----------------------------
 If you want to only save dirty fields from an instance in the database (only these fields will be involved in SQL query), you can use ``save_dirty_fields`` method.
