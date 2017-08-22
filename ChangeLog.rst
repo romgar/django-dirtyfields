@@ -17,6 +17,7 @@ master (unreleased)
 
     - Correctly handle :code:`ForeignKey.db_column` :code:`{}_id` in :code:`update_fields`. Thanks Hugo Smett.
     - Fixes #111: Eliminate a memory leak.
+    - Handle deferred fields in :code:`update_fields`
 
 
 .. _v1.2.1:

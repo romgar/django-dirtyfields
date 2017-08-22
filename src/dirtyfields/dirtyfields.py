@@ -136,7 +136,12 @@ def reset_state(sender, instance, **kwargs):
     if update_fields:
         for field_name in update_fields:
             field = sender._meta.get_field(field_name)
+
+            if field.get_attname() in instance.get_deferred_fields():
+                continue
+
             instance._original_state[field.name] = new_state[field.name]
+
     else:
         instance._original_state = new_state
     if instance.ENABLE_M2M_CHECK:

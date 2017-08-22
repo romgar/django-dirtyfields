@@ -92,3 +92,14 @@ def test_correctly_handle_foreignkeys_id_field_in_update_fields():
 
     tmwfk.save(update_fields=['fkey'])
     assert tmwfk.get_dirty_fields(check_relationship=True) == {}
+
+
+@pytest.mark.django_db
+def test_save_deferred_field_with_update_fields():
+    TestModel.objects.create()
+
+    tm = TestModel.objects.defer('boolean').first()
+    tm.boolean = False
+    # Test that providing a deferred field to the update_fields
+    # save parameter doesn't raise a KeyError anymore.
+    tm.save(update_fields=['boolean'])
