@@ -100,7 +100,6 @@ def test_save_deferred_field_with_update_fields():
 
     tm = TestModel.objects.defer('boolean').first()
     tm.boolean = False
-
-    assert tm.get_dirty_fields() == {}
-
+    # Test that providing a deferred field to the update_fields
+    # save parameter doesn't raise a KeyError anymore.
     tm.save(update_fields=['boolean'])
