@@ -6,6 +6,14 @@ ChangeLog
 master (unreleased)
 -------------------
 
+Up-to-date with 1.3
+
+
+.. _v1.3:
+
+1.3 (23/08/2017)
+----------------
+
 *New:*
 
     - Drop support for unsupported Django versions: 1.4, 1.5, 1.6 and 1.7 series.
