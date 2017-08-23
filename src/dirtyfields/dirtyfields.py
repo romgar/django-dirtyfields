@@ -2,11 +2,12 @@
 from copy import deepcopy
 
 from django.core.exceptions import ValidationError
+from django.db.models.expressions import BaseExpression
+from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
 
 from .compare import raw_compare, compare_states
-from .compat import (is_db_expression, save_specific_fields,
-                     is_deferred, is_buffer, get_m2m_with_model, remote_field)
+from .compat import is_buffer, get_m2m_with_model, remote_field
 
 
 class DirtyFieldsMixin(object):
@@ -16,10 +17,12 @@ class DirtyFieldsMixin(object):
     # https://github.com/romgar/django-dirtyfields/issues/73
     ENABLE_M2M_CHECK = False
 
+    FIELDS_TO_CHECK = None
+
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)
         post_save.connect(
-            reset_state, sender=self.__class__,
+            reset_state, sender=self.__class__, weak=False,
             dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
                 name=self.__class__.__name__))
         if self.ENABLE_M2M_CHECK:
@@ -29,7 +32,7 @@ class DirtyFieldsMixin(object):
     def _connect_m2m_relations(self):
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
-                reset_state, sender=remote_field(m2m_field).through,
+                reset_state, sender=remote_field(m2m_field).through, weak=False,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
@@ -37,6 +40,9 @@ class DirtyFieldsMixin(object):
         all_field = {}
 
         for field in self._meta.fields:
+            if self.FIELDS_TO_CHECK and (field.get_attname() not in self.FIELDS_TO_CHECK):
+                continue
+
             if field.primary_key and not include_primary_key:
                 continue
 
@@ -44,13 +50,13 @@ class DirtyFieldsMixin(object):
                 if not check_relationship:
                     continue
 
-            if is_deferred(self, field):
+            if field.get_attname() in self.get_deferred_fields():
                 continue
 
             field_value = getattr(self, field.attname)
 
             # If current field value is an expression, we are not evaluating it
-            if is_db_expression(field_value):
+            if isinstance(field_value, (BaseExpression, Combinable)):
                 continue
 
             try:
@@ -71,15 +77,17 @@ class DirtyFieldsMixin(object):
         return all_field
 
     def _as_dict_m2m(self):
+        m2m_fields = {}
+
         if self.pk:
-            m2m_fields = dict([
-                (f.attname, set([
-                    obj.pk for obj in getattr(self, f.attname).all()
-                ]))
-                for f, model in get_m2m_with_model(self.__class__)
-            ])
-            return m2m_fields
-        return {}
+            for f, model in get_m2m_with_model(self.__class__):
+                if self.FIELDS_TO_CHECK and (f.attname not in self.FIELDS_TO_CHECK):
+                    continue
+
+                m2m_fields[f.attname] = set([obj.pk for obj in getattr(self, f.attname).all()])
+
+        return m2m_fields
+
 
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
         if self._state.adding:
@@ -87,6 +95,9 @@ class DirtyFieldsMixin(object):
             # for consistency (see https://github.com/romgar/django-dirtyfields/issues/65 for more details)
             pk_specified = self.pk is not None
             initial_dict = self._as_dict(check_relationship, include_primary_key=pk_specified)
+            if verbose:
+                initial_dict = {key: {'saved': None, 'current': value}
+                                for key, value in initial_dict.items()}
             return initial_dict
 
         if check_m2m is not None and not self.ENABLE_M2M_CHECK:
@@ -114,7 +125,7 @@ class DirtyFieldsMixin(object):
 
     def save_dirty_fields(self):
         dirty_fields = self.get_dirty_fields(check_relationship=True)
-        save_specific_fields(self, dirty_fields)
+        self.save(update_fields=dirty_fields.keys())
 
 
 def reset_state(sender, instance, **kwargs):
@@ -123,8 +134,14 @@ def reset_state(sender, instance, **kwargs):
     update_fields = kwargs.pop('update_fields', {})
     new_state = instance._as_dict(check_relationship=True)
     if update_fields:
-        for field in update_fields:
-            instance._original_state[field] = new_state[field]
+        for field_name in update_fields:
+            field = sender._meta.get_field(field_name)
+
+            if field.get_attname() in instance.get_deferred_fields():
+                continue
+
+            instance._original_state[field.name] = new_state[field.name]
+
     else:
         instance._original_state = new_state
     if instance.ENABLE_M2M_CHECK:
