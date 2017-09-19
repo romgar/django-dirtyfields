@@ -125,6 +125,13 @@ class TestModelWithSpecifiedFields(DirtyFieldsMixin, models.Model):
     FIELDS_TO_CHECK = ['boolean1']
 
 
+class TestModelWithSpecifiedFieldsAndForeignKey(DirtyFieldsMixin, models.Model):
+    boolean1 = models.BooleanField(default=True)
+    boolean2 = models.BooleanField(default=True)
+    fk_field = models.OneToOneField(TestModel, null=True)
+    FIELDS_TO_CHECK = ['fk_field_id']
+
+
 class TestModelWithM2MAndSpecifiedFields(DirtyFieldsMixin, models.Model):
     m2m1 = models.ManyToManyField(TestModel)
     m2m2 = models.ManyToManyField(TestModel)

@@ -134,14 +134,17 @@ def reset_state(sender, instance, **kwargs):
     # getting a `KeyError` when checking if a field is dirty or not
     update_fields = kwargs.pop('update_fields', {})
     new_state = instance._as_dict(check_relationship=True)
+    FIELDS_TO_CHECK = getattr(instance, "FIELDS_TO_CHECK", None)
     if update_fields:
         for field_name in update_fields:
             field = sender._meta.get_field(field_name)
+            if not FIELDS_TO_CHECK or \
+                    (field.get_attname() in FIELDS_TO_CHECK):
 
-            if field.get_attname() in instance.get_deferred_fields():
-                continue
+                if field.get_attname() in instance.get_deferred_fields():
+                    continue
 
-            instance._original_state[field.name] = new_state[field.name]
+                instance._original_state[field.name] = new_state[field.name]
 
     else:
         instance._original_state = new_state
