@@ -32,7 +32,7 @@ Usage
 
 To use ``django-dirtyfields``, you need to:
 
-- Inherit from ``DirtyFieldMixin`` in the Django model you want to track.
+- Inherit from ``DirtyFieldsMixin`` in the Django model you want to track.
 
 ::
     
