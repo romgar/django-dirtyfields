@@ -103,3 +103,25 @@ def test_save_deferred_field_with_update_fields():
     # Test that providing a deferred field to the update_fields
     # save parameter doesn't raise a KeyError anymore.
     tm.save(update_fields=['boolean'])
+
+@pytest.mark.django_db
+def test_deferred_field_was_not_dirty():
+    TestModel.objects.create()
+    tm = TestModel.objects.defer('boolean').first()
+    tm.boolean = False
+    assert tm.get_dirty_fields() == {}
+
+@pytest.mark.django_db
+def test_save_deferred_field_with_update_fields():
+    """ Behavoir of Deferred fields have change in django 1.10. This tests
+    reflects this differents behavior.
+    """
+
+    TestModel.objects.create()
+    tm = TestModel.objects.defer('boolean').first()
+    tm.save(update_fields=['boolean'])
+    tm.boolean = False
+    if django.VERSION < (1, 10):
+        assert tm.get_dirty_fields() == {}
+    else:
+        assert tm.get_dirty_fields() == {'boolean': True}
