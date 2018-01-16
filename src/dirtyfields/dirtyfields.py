@@ -4,6 +4,7 @@ from copy import deepcopy
 from django.core.exceptions import ValidationError
 from django.db.models.expressions import BaseExpression
 from django.db.models.expressions import Combinable
+from django.db.models.functions import Now
 from django.db.models.signals import post_save, m2m_changed
 
 from .compare import raw_compare, compare_states
@@ -59,12 +60,16 @@ class DirtyFieldsMixin(object):
 
             # If current field value is an expression, we are not evaluating it
             if isinstance(field_value, (BaseExpression, Combinable)):
-                continue
+                # support only Now() expression
+                if isinstance(field_value, Now):
+                    pass
+                else:
+                    continue
 
             try:
                 # Store the converted value for fields with conversion
                 field_value = field.to_python(field_value)
-            except ValidationError:
+            except (ValidationError, TypeError):
                 # The current value is not valid so we cannot convert it
                 pass
 

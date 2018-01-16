@@ -70,6 +70,10 @@ class TestCurrentDatetimeModel(DirtyFieldsMixin, models.Model):
     datetime_field = models.DateTimeField(default=timezone.now)
 
 
+class TestDatetimeModelStandard(DirtyFieldsMixin, models.Model):
+    datetime_field = models.DateTimeField(blank=True, null=True)
+
+
 class TestM2MModel(DirtyFieldsMixin, models.Model):
     m2m_field = models.ManyToManyField(TestModel)
     ENABLE_M2M_CHECK = True
