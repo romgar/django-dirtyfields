@@ -8,6 +8,7 @@ env:
   - TOXENV=django18
   - TOXENV=django19
   - TOXENV=django110
+  - TOXENV=django20
   - TOXENV=coverage
   - TOXENV=postgresql
 

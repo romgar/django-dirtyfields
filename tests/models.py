@@ -20,16 +20,16 @@ class TestModelWithDecimalField(DirtyFieldsMixin, models.Model):
 
 
 class TestModelWithForeignKey(DirtyFieldsMixin, models.Model):
-    fkey = models.ForeignKey(TestModel)
+    fkey = models.ForeignKey(TestModel, on_delete=models.CASCADE)
 
 
 class TestMixedFieldsModel(DirtyFieldsMixin, models.Model):
-    fkey = models.ForeignKey(TestModel)
+    fkey = models.ForeignKey(TestModel, on_delete=models.CASCADE)
     characters = models.CharField(blank=True, max_length=80)
 
 
 class TestModelWithOneToOneField(DirtyFieldsMixin, models.Model):
-    o2o = models.OneToOneField(TestModel)
+    o2o = models.OneToOneField(TestModel, on_delete=models.CASCADE)
 
 
 class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):
@@ -40,7 +40,7 @@ class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):
 
 
 class TestModelWithSelfForeignKey(DirtyFieldsMixin, models.Model):
-    fkey = models.ForeignKey("self", blank=True, null=True)
+    fkey = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE)
 
 
 class OrdinaryTestModel(models.Model):
@@ -49,7 +49,7 @@ class OrdinaryTestModel(models.Model):
 
 
 class OrdinaryTestModelWithForeignKey(models.Model):
-    fkey = models.ForeignKey(OrdinaryTestModel)
+    fkey = models.ForeignKey(OrdinaryTestModel, on_delete=models.CASCADE)
 
 
 class SubclassModel(TestModel):
@@ -108,8 +108,8 @@ class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
 
 
 class TestDoubleForeignKeyModel(DirtyFieldsMixin, models.Model):
-    fkey1 = models.ForeignKey(TestModel)
-    fkey2 = models.ForeignKey(TestModel, null=True, related_name='fkey2')
+    fkey1 = models.ForeignKey(TestModel, on_delete=models.CASCADE)
+    fkey2 = models.ForeignKey(TestModel, null=True, related_name='fkey2', on_delete=models.CASCADE)
 
 
 if is_postgresql_env_with_json_field():
