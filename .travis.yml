@@ -11,6 +11,9 @@ env:
   - TOXENV=django20
   - TOXENV=coverage
   - TOXENV=postgresql
+exclude:
+  - python: '2.7'
+    env: TOXENV=django20
 
 services:
   - postgresql
