@@ -1,4 +1,5 @@
 import re
+from distutils.version import StrictVersion
 
 import django
 
@@ -65,4 +66,5 @@ def is_postgresql_env_with_json_field():
     except AttributeError:
         PG_VERSION = 0
 
-    return PG_VERSION >= 90400 and django.VERSION >= (1, 9)
+    django_version = StrictVersion(django.get_version())
+    return PG_VERSION >= 90400 and django_version >= StrictVersion('1.9')

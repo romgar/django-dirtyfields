@@ -98,8 +98,7 @@ class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
                 instance.data_updated_on_presave = 'presave_value'
 
 
-pre_save.connect(TestModelWithPreSaveSignal.pre_save,
-                 sender=TestModelWithPreSaveSignal)
+pre_save.connect(TestModelWithPreSaveSignal.pre_save, sender=TestModelWithPreSaveSignal)
 
 
 class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
@@ -137,3 +136,7 @@ class TestModelWithM2MAndSpecifiedFields(DirtyFieldsMixin, models.Model):
     m2m2 = models.ManyToManyField(TestModel)
     ENABLE_M2M_CHECK = True
     FIELDS_TO_CHECK = ['m2m1']
+
+
+class TestBinaryModel(DirtyFieldsMixin, models.Model):
+    bytea = models.BinaryField()

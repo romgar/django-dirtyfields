@@ -1,5 +1,6 @@
 import django
 import pytest
+from distutils.version import StrictVersion
 
 from .models import TestModel, TestMixedFieldsModel, TestModelWithForeignKey
 from .utils import assert_number_of_queries_on_regex
@@ -122,7 +123,7 @@ def test_save_deferred_field_with_update_fields_behaviour():
     tm = TestModel.objects.defer('boolean').first()
     tm.save(update_fields=['boolean'])
     tm.boolean = False
-    if django.VERSION < (1, 10):
+    if StrictVersion(django.get_version()) < StrictVersion('1.10'):
         assert tm.get_dirty_fields() == {}
     else:
         assert tm.get_dirty_fields() == {'boolean': True}

@@ -69,7 +69,7 @@ class DirtyFieldsMixin(object):
                 pass
 
             if is_buffer(field_value):
-                # psycopg2 returns uncopyable type buffer for bytea
+                # BinaryField containing strings return uncopyable buffers.
                 field_value = str(field_value)
 
             # Explanation of copy usage here :

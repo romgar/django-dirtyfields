@@ -1,5 +1,4 @@
 import resource
-
 import pytest
 
 from .models import TestModel as DirtyMixinModel

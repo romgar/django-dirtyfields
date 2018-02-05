@@ -2,21 +2,34 @@ language: python
 
 python:
   - 2.7
+  - 3.4
   - 3.5
+  - 3.6
 
 env:
-  - TOXENV=django18
-  - TOXENV=django19
-  - TOXENV=django110
-  - TOXENV=coverage
-  - TOXENV=postgresql
-  - TOXENV=flake8
+  - TOXENV=py27-django18
+  - TOXENV=py27-django19
+  - TOXENV=py27-django110
+  - TOXENV=py34-django18
+  - TOXENV=py34-django19
+  - TOXENV=py34-django110
+  - TOXENV=py35-django18
+  - TOXENV=py35-django19
+  - TOXENV=py35-django110
+  - TOXENV=py27-django111
+  - TOXENV=py34-django111
+  - TOXENV=py35-django111
+  - TOXENV=py36-django111
+  - TOXENV=py27-flake8
+  - TOXENV=py36-flake8
+  - TOXENV=py27-django111-coverage
+  - TOXENV=py27-django111-postgresql
 
 services:
   - postgresql
 
 addons:
-  postgresql: "9.4"
+  postgresql: "9.6"
 
 before_script:
   - psql -c 'create database dirtyfields_test;' -U postgres

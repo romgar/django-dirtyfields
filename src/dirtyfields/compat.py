@@ -1,9 +1,13 @@
+from distutils.version import StrictVersion
 import sys
 import django
 
 
+PY3 = sys.version_info[0] == 3
+
+
 def get_m2m_with_model(given_model):
-    if django.VERSION < (1, 9):
+    if StrictVersion(django.get_version()) < StrictVersion('1.9'):
         return given_model._meta.get_m2m_with_model()
     else:
         return [
@@ -14,14 +18,15 @@ def get_m2m_with_model(given_model):
 
 
 def is_buffer(value):
-    if sys.version_info < (3, 0, 0):
-        return isinstance(value, buffer)  # noqa
+    if PY3:
+        buffer_type = memoryview
     else:
-        return isinstance(value, memoryview)
+        buffer_type = buffer  # noqa
+    return isinstance(value, buffer_type)
 
 
 def remote_field(field):
-    if django.VERSION < (1, 9):
+    if StrictVersion(django.get_version()) < StrictVersion('1.9'):
         return field.rel
     else:
         return field.remote_field
