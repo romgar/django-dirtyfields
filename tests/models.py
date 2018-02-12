@@ -1,5 +1,3 @@
-import django
-
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils import timezone
@@ -99,7 +97,9 @@ class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
             if 'specific_value' in instance.data:
                 instance.data_updated_on_presave = 'presave_value'
 
-pre_save.connect(TestModelWithPreSaveSignal.pre_save, sender=TestModelWithPreSaveSignal)
+
+pre_save.connect(TestModelWithPreSaveSignal.pre_save,
+                 sender=TestModelWithPreSaveSignal)
 
 
 class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
@@ -130,4 +130,3 @@ class TestModelWithM2MAndSpecifiedFields(DirtyFieldsMixin, models.Model):
     m2m2 = models.ManyToManyField(TestModel)
     ENABLE_M2M_CHECK = True
     FIELDS_TO_CHECK = ['m2m1']
-

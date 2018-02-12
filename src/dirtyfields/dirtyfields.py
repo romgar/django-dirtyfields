@@ -90,7 +90,6 @@ class DirtyFieldsMixin(object):
 
         return m2m_fields
 
-
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
         if self._state.adding:
             # If the object has not yet been saved in the database, all fields are considered dirty
