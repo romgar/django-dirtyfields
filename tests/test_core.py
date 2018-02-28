@@ -5,7 +5,6 @@ from .models import (TestModel, TestModelWithForeignKey, TestModelWithOneToOneFi
                      SubclassModel, TestModelWithDecimalField)
 
 
-
 @pytest.mark.django_db
 def test_is_dirty_function():
     tm = TestModel.objects.create()

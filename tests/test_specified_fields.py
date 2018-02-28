@@ -26,6 +26,7 @@ def test_dirty_fields_on_model_with_m2m_and_specified_fields():
     assert tm.get_dirty_fields(check_m2m={'m2m1': set([])}) == {'m2m1': set([tm2.id])}
     assert tm.get_dirty_fields(check_m2m={'m2m2': set([])}) == {}
 
+
 @pytest.mark.django_db
 def test_dirty_fields_on_model_with_specified_fields_can_save_when_non_tracked_field_is_modified():
     tm = TestModelWithSpecifiedFields.objects.create()

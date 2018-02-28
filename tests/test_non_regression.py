@@ -65,7 +65,7 @@ def test_relationship_model_loading_issue():
                 tmf.fkey  # access the relationship here
 
     with assert_select_number_queries_on_model(OrdinaryTestModelWithForeignKey, 1):
-        with assert_select_number_queries_on_model(OrdinaryTestModel, 0): # should be 0 since we use `select_related`
+        with assert_select_number_queries_on_model(OrdinaryTestModel, 0):  # should be 0 since we use `select_related`
             for tmf in OrdinaryTestModelWithForeignKey.objects.select_related('fkey').all():
                 tmf.fkey  # access the relationship here
 

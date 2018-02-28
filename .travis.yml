@@ -10,6 +10,7 @@ env:
   - TOXENV=django110
   - TOXENV=coverage
   - TOXENV=postgresql
+  - TOXENV=flake8
 
 services:
   - postgresql

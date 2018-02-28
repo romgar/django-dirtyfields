@@ -39,6 +39,8 @@ class DirtyFieldsMixin(object):
     def _as_dict(self, check_relationship, include_primary_key=True):
         all_field = {}
 
+        deferred_fields = self.get_deferred_fields()
+
         for field in self._meta.fields:
             if self.FIELDS_TO_CHECK and (field.get_attname() not in self.FIELDS_TO_CHECK):
                 continue
@@ -50,7 +52,7 @@ class DirtyFieldsMixin(object):
                 if not check_relationship:
                     continue
 
-            if field.get_attname() in self.get_deferred_fields():
+            if field.get_attname() in deferred_fields:
                 continue
 
             field_value = getattr(self, field.attname)
@@ -87,7 +89,6 @@ class DirtyFieldsMixin(object):
                 m2m_fields[f.attname] = set([obj.pk for obj in getattr(self, f.attname).all()])
 
         return m2m_fields
-
 
     def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
         if self._state.adding:
