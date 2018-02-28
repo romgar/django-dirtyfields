@@ -25,4 +25,3 @@ def test_dirty_fields_on_model_with_m2m_and_specified_fields():
     # m2m1 is tracked, m2m2 isn`t tracked
     assert tm.get_dirty_fields(check_m2m={'m2m1': set([])}) == {'m2m1': set([tm2.id])}
     assert tm.get_dirty_fields(check_m2m={'m2m2': set([])}) == {}
-
