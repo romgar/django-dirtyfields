@@ -6,8 +6,20 @@ ChangeLog
 master (unreleased)
 -------------------
 
-Up-to-date with 1.3
 
+.. _v1.3.1:
+
+1.3.1 (28/02/2017)
+------------------
+
+*New:*
+    - Updates python classifier in setup file (#116). Thanks amureki.
+    - Adds PEP8 validation in travisCI run (#123). Thanks hsmett.
+
+*Bugfix:*
+
+    - Avoids :code:`get_deferred_fields` to be called too many times on :code:`_as_dict` (#115). Thanks benjaminrigaud.
+    - Respects :code:`FIELDS_TO_CHECK` in `reset_state` (#114). Thanks bparker98.
 
 .. _v1.3:
 
