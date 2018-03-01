@@ -70,7 +70,7 @@ class DirtyFieldsMixin(object):
 
             if is_buffer(field_value):
                 # psycopg2 returns uncopyable type buffer for bytea
-                field_value = str(field_value)
+                field_value = bytes(field_value)
 
             # Explanation of copy usage here :
             # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
