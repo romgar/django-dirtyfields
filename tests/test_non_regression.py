@@ -1,11 +1,12 @@
 import pytest
-
+from base64 import b64encode
 from django.db import IntegrityError
 from django.test.utils import override_settings
 
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
-                     TestExpressionModel, TestModelWithPreSaveSignal, TestDoubleForeignKeyModel)
+                     TestExpressionModel, TestModelWithPreSaveSignal, TestDoubleForeignKeyModel,
+                     TestBinaryModel)
 from .utils import assert_select_number_queries_on_model
 
 
@@ -145,3 +146,13 @@ def test_foreign_key_deferred_field():
     TestDoubleForeignKeyModel.objects.create(fkey1=tm)
 
     list(TestDoubleForeignKeyModel.objects.only('fkey1'))  # RuntimeError was raised here!
+
+
+@pytest.mark.django_db
+def test_bytea():
+    TestBinaryModel.objects.create(bytea=b64encode(b'Hello'))
+    tbm = TestBinaryModel.objects.get()
+    tbm.bytea = b'W\xc3\xb6rlD'
+    assert tbm.get_dirty_fields() == {
+        'bytea': b'SGVsbG8=',
+    }

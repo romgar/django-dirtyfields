@@ -137,3 +137,7 @@ class TestModelWithM2MAndSpecifiedFields(DirtyFieldsMixin, models.Model):
     m2m2 = models.ManyToManyField(TestModel)
     ENABLE_M2M_CHECK = True
     FIELDS_TO_CHECK = ['m2m1']
+
+
+class TestBinaryModel(DirtyFieldsMixin, models.Model):
+    bytea = models.BinaryField()
