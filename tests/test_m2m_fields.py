@@ -5,7 +5,7 @@ from .models import TestModel, TestM2MModel, TestModelWithCustomPK, TestM2MModel
 
 
 @pytest.mark.django_db
-def test_dirty_fields_on_m2m():
+def test_dirty_fields_on_m2m(django_assert_num_queries):
     tm = TestM2MModel.objects.create()
     tm2 = TestModel.objects.create()
     tm.m2m_field.add(tm2)
@@ -51,3 +51,19 @@ def test_m2m_disabled_does_not_allow_to_check_m2m_fields():
 
     with pytest.raises(Exception):
         assert tm.get_dirty_fields(check_m2m={'dummy': True})
+
+
+@pytest.mark.django_db
+def test_dirty_fields_on_m2m_and_assert_num_queries(django_assert_num_queries):
+    with django_assert_num_queries(2):
+        tm = TestM2MModel.objects.create()
+        tm2 = TestModel.objects.create()
+    with django_assert_num_queries(4):
+        tm.m2m_field.add(tm2)
+
+    with django_assert_num_queries(1):
+        tm3 = TestM2MModel.objects.get(id=tm.id)
+
+    assert tm3.get_dirty_fields(check_m2m={'m2m_field': set([tm2.id])}) == {}
+    assert tm.get_dirty_fields(check_m2m={'m2m_field': set([0])}) == {'m2m_field': set([tm2.id])}
+    assert tm.get_dirty_fields(check_m2m={'m2m_field': set([0, tm2.id])}) == {'m2m_field': set([tm2.id])}

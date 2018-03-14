@@ -109,6 +109,8 @@ class DirtyFieldsMixin(object):
                                          self.compare_function)
 
         if check_m2m:
+            if not hasattr(self, '_original_m2m_state'):
+                self._original_m2m_state = self._as_dict_m2m()
             modified_m2m_fields = compare_states(check_m2m,
                                                  self._original_m2m_state,
                                                  self.compare_function)
@@ -146,6 +148,7 @@ class DirtyFieldsMixin(object):
 def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid
     # getting a `KeyError` when checking if a field is dirty or not
+
     update_fields = kwargs.pop('update_fields', {})
     new_state = instance._as_dict(check_relationship=True)
     FIELDS_TO_CHECK = getattr(instance, "FIELDS_TO_CHECK", None)
@@ -162,5 +165,9 @@ def reset_state(sender, instance, **kwargs):
 
     else:
         instance._original_state = new_state
+
     if instance.ENABLE_M2M_CHECK:
-        instance._original_m2m_state = instance._as_dict_m2m()
+        if not hasattr(instance, '_original_m2m_state') and kwargs.get('action') == 'pre_add':
+            instance._original_m2m_state = instance._as_dict_m2m()
+        if kwargs.get('action') == 'post_add':
+            instance._original_m2m_state = instance._as_dict_m2m()
