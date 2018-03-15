@@ -16,6 +16,7 @@ class DirtyFieldsMixin(object):
     # This mode has been introduced to handle some situations like this one:
     # https://github.com/romgar/django-dirtyfields/issues/73
     ENABLE_M2M_CHECK = False
+    DISABLE_RESET_STATE_ON_M2M_CHANGED = False
 
     FIELDS_TO_CHECK = None
 
@@ -30,9 +31,10 @@ class DirtyFieldsMixin(object):
         reset_state(sender=self.__class__, instance=self)
 
     def _connect_m2m_relations(self):
+        m2m_handler = set_m2m_dirty if self.DISABLE_RESET_STATE_ON_M2M_CHANGED else reset_state
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
-                reset_state, sender=remote_field(m2m_field).through, weak=False,
+                m2m_handler, sender=remote_field(m2m_field).through, weak=False,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
@@ -121,6 +123,8 @@ class DirtyFieldsMixin(object):
         return modified_fields
 
     def is_dirty(self, check_relationship=False, check_m2m=None):
+        if self.DISABLE_RESET_STATE_ON_M2M_CHANGED and self._m2m_dirty:
+            return True
         return {} != self.get_dirty_fields(check_relationship=check_relationship,
                                            check_m2m=check_m2m)
 
@@ -128,10 +132,25 @@ class DirtyFieldsMixin(object):
         dirty_fields = self.get_dirty_fields(check_relationship=True)
         self.save(update_fields=dirty_fields.keys())
 
+    def is_field_dirty(self, field_name, check_relationship=False):
+        """Return whether a particular field has changed."""
+        if field_name not in self._as_dict(check_relationship).keys():
+            raise ValueError("Invalid field name")
+
+        return not self._state.adding and field_name in self.get_dirty_fields(check_relationship)
+
+    def original_field_value(self, field_name):
+        """Return the original field value."""
+        if field_name not in self._as_dict(True).keys():
+            raise ValueError("Invalid field name")
+
+        return self._original_state[field_name]
+
 
 def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid
     # getting a `KeyError` when checking if a field is dirty or not
+
     update_fields = kwargs.pop('update_fields', {})
     new_state = instance._as_dict(check_relationship=True)
     FIELDS_TO_CHECK = getattr(instance, "FIELDS_TO_CHECK", None)
@@ -148,5 +167,13 @@ def reset_state(sender, instance, **kwargs):
 
     else:
         instance._original_state = new_state
+
     if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()
+
+    if instance.DISABLE_RESET_STATE_ON_M2M_CHANGED:
+        instance._m2m_dirty = False
+
+
+def set_m2m_dirty(sender, instance, **kwargs):
+    instance._m2m_dirty = True

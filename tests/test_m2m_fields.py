@@ -5,7 +5,7 @@ from .models import TestModel, TestM2MModel, TestModelWithCustomPK, TestM2MModel
 
 
 @pytest.mark.django_db
-def test_dirty_fields_on_m2m():
+def test_dirty_fields_on_m2m(django_assert_num_queries):
     tm = TestM2MModel.objects.create()
     tm2 = TestModel.objects.create()
     tm.m2m_field.add(tm2)

@@ -24,8 +24,7 @@ Install
 
 ::
 
-    $ pip install django-dirtyfields
-
+    $ pip install git+git://github.com/romgar/django-dirtyfields.git
 
 Usage
 =====
@@ -44,10 +43,12 @@ To use ``django-dirtyfields``, you need to:
         boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
 
-- Use one of these 2 functions on a model instance to know if this instance is dirty, and get the dirty fields:
+- Use one of these 4 functions on a model instance to know if this instance is dirty, and get the dirty fields:
 
     * is\_dirty()
     * get\_dirty\_fields()
+    * is\_field\_dirty(field\_name)
+    * original\_field\_value(field\_name)
 
 
 Example
@@ -68,9 +69,12 @@ Example
     True
     >>> tm.get_dirty_fields()
     {'boolean': True}
+    >>> tm.is_field_dirty('characters')
+    True
+    >>> tm.original_field_value('characters')
+    u'testing'
 
 
 Consult the `full documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_ for more informations.
 
-
-
+Forked from https://github.com/smn/django-dirtyfields
