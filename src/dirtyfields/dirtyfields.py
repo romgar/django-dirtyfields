@@ -16,6 +16,7 @@ class DirtyFieldsMixin(object):
     # This mode has been introduced to handle some situations like this one:
     # https://github.com/romgar/django-dirtyfields/issues/73
     ENABLE_M2M_CHECK = False
+    DISABLE_RESET_STATE_ON_M2M_CHANGED = False
 
     FIELDS_TO_CHECK = None
 
@@ -30,9 +31,10 @@ class DirtyFieldsMixin(object):
         reset_state(sender=self.__class__, instance=self)
 
     def _connect_m2m_relations(self):
+        m2m_handler = set_m2m_dirty if self.DISABLE_RESET_STATE_ON_M2M_CHANGED else reset_state
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
-                reset_state, sender=remote_field(m2m_field).through, weak=False,
+                m2m_handler, sender=remote_field(m2m_field).through, weak=False,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
@@ -109,8 +111,6 @@ class DirtyFieldsMixin(object):
                                          self.compare_function)
 
         if check_m2m:
-            if not hasattr(self, '_original_m2m_state'):
-                self._original_m2m_state = self._as_dict_m2m()
             modified_m2m_fields = compare_states(check_m2m,
                                                  self._original_m2m_state,
                                                  self.compare_function)
@@ -123,6 +123,8 @@ class DirtyFieldsMixin(object):
         return modified_fields
 
     def is_dirty(self, check_relationship=False, check_m2m=None):
+        if self.DISABLE_RESET_STATE_ON_M2M_CHANGED and self._m2m_dirty:
+            return True
         return {} != self.get_dirty_fields(check_relationship=check_relationship,
                                            check_m2m=check_m2m)
 
@@ -143,11 +145,6 @@ class DirtyFieldsMixin(object):
             raise ValueError("Invalid field name")
 
         return self._original_state[field_name]
-
-    def start_dirty_tracking(self):
-        self.ENABLE_M2M_CHECK = True
-        self._connect_m2m_relations()
-        reset_state(sender=self.__class__, instance=self)
 
 
 def reset_state(sender, instance, **kwargs):
@@ -173,3 +170,10 @@ def reset_state(sender, instance, **kwargs):
 
     if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()
+
+    if instance.DISABLE_RESET_STATE_ON_M2M_CHANGED:
+        instance._m2m_dirty = False
+
+
+def set_m2m_dirty(sender, instance, **kwargs):
+    instance._m2m_dirty = True
