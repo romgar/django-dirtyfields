@@ -144,6 +144,11 @@ class DirtyFieldsMixin(object):
 
         return self._original_state[field_name]
 
+    def start_dirty_tracking(self):
+        self.ENABLE_M2M_CHECK = True
+        self._connect_m2m_relations()
+        reset_state(sender=self.__class__, instance=self)
+
 
 def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid
@@ -167,7 +172,4 @@ def reset_state(sender, instance, **kwargs):
         instance._original_state = new_state
 
     if instance.ENABLE_M2M_CHECK:
-        if not hasattr(instance, '_original_m2m_state') and kwargs.get('action') == 'pre_add':
-            instance._original_m2m_state = instance._as_dict_m2m()
-        if kwargs.get('action') == 'post_add':
-            instance._original_m2m_state = instance._as_dict_m2m()
+        instance._original_m2m_state = instance._as_dict_m2m()
