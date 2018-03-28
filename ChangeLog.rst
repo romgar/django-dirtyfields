@@ -9,6 +9,9 @@ master (unreleased)
 *New:*
     - Test against the whole Python-Django matrix with Tox & Travis
 
+*Bugfix:*
+    - Fix tests for Django 2.0
+
 .. _v1.3.1:
 
 1.3.1 (28/02/2018)
