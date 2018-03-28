@@ -6,6 +6,8 @@ ChangeLog
 master (unreleased)
 -------------------
 
+*New:*
+    - Test against the whole Python-Django matrix with Tox & Travis
 
 .. _v1.3.1:
 
