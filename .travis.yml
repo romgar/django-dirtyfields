@@ -1,16 +1,44 @@
 language: python
 
-python:
-  - 2.7
-  - 3.5
-
-env:
-  - TOXENV=django18
-  - TOXENV=django19
-  - TOXENV=django110
-  - TOXENV=coverage
-  - TOXENV=postgresql
-  - TOXENV=flake8
+matrix:
+  include:
+    # Python version is just for the look on travis.
+    - python: 2.7
+      env: TOXENV=py27-django18
+    - python: 2.7
+      env: TOXENV=py27-django19
+    - python: 2.7
+      env: TOXENV=py27-django110
+    - python: 2.7
+      env: TOXENV=py27-django111
+    - python: 3.4
+      env: TOXENV=py34-django18
+    - python: 3.4
+      env: TOXENV=py34-django19
+    - python: 3.4
+      env: TOXENV=py34-django110
+    - python: 3.4
+      env: TOXENV=py34-django111
+    - python: 3.5
+      env: TOXENV=py35-django18
+    - python: 3.5
+      env: TOXENV=py35-django19
+    - python: 3.5
+      env: TOXENV=py35-django110
+    - python: 3.5
+      env: TOXENV=py35-django111
+    - python: 3.6
+      env: TOXENV=py36-django111
+    - python: 3.6
+      env: TOXENV=py36-django20
+    - python: 2.7
+      env: TOXENV=py27-flake8
+    - python: 3.6
+      env: TOXENV=py36-flake8
+    - python: 3.6
+      env: TOXENV=py36-django111-coverage
+    - python: 3.6
+      env: TOXENV=py36-django111-postgresql
 
 services:
   - postgresql
