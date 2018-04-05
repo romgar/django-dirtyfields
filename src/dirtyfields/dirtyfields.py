@@ -29,6 +29,10 @@ class DirtyFieldsMixin(object):
             self._connect_m2m_relations()
         reset_state(sender=self.__class__, instance=self)
 
+    def refresh_from_db(self, *a, **kw):
+        super(DirtyFieldsMixin, self).refresh_from_db(*a, **kw)
+        reset_state(sender=self.__class__, instance=self)
+
     def _connect_m2m_relations(self):
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(

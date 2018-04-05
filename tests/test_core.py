@@ -162,3 +162,14 @@ def test_verbose_mode_on_adding():
         'boolean': {'saved': None, 'current': True},
         'characters': {'saved': None, 'current': u''}
     }
+
+
+@pytest.mark.django_db
+def test_refresh_from_db():
+    tm = TestModel.objects.create()
+    alias = TestModel.objects.get(pk=tm.pk)
+    alias.boolean = False
+    alias.save()
+
+    tm.refresh_from_db()
+    assert tm.get_dirty_fields() == {}
