@@ -60,7 +60,7 @@ Examples
 
 Checking foreign key fields.
 ----------------------------
-By default, dirty functions are not checking foreign keys. If you want to also take these relationships into account, use ``check_relationship`` parameter:
+By default, dirty functions are not checking foreign keys. If you want to also take these relationships into account, use ``check_relationship`` parameter. Notice that the foreign key is specified only by its id, ``<fkname>_id``, since the relation might be deleted in the meantime.
 
 ::
 
@@ -81,7 +81,7 @@ By default, dirty functions are not checking foreign keys. If you want to also t
     >>> tm.get_dirty_fields()
     {}
     >>> tm.get_dirty_fields(check_relationship=True)
-    {'fkey': 1}
+    {'fkey_id': 1}
 
 
 Checking many-to-many fields.
