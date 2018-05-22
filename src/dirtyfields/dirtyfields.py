@@ -6,12 +6,13 @@ from django.db.models.expressions import BaseExpression
 from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
 
-from .compare import raw_compare, compare_states
+from .compare import raw_compare, compare_states, normalise_value
 from .compat import is_buffer, get_m2m_with_model, remote_field
 
 
 class DirtyFieldsMixin(object):
     compare_function = (raw_compare, {})
+    normalise_function = (normalise_value, {})
 
     # This mode has been introduced to handle some situations like this one:
     # https://github.com/romgar/django-dirtyfields/issues/73
@@ -101,7 +102,7 @@ class DirtyFieldsMixin(object):
             pk_specified = self.pk is not None
             initial_dict = self._as_dict(check_relationship, include_primary_key=pk_specified)
             if verbose:
-                initial_dict = {key: {'saved': None, 'current': value}
+                initial_dict = {key: {'saved': None, 'current': self.normalise_function[0](value)}
                                 for key, value in initial_dict.items()}
             return initial_dict
 
@@ -110,17 +111,19 @@ class DirtyFieldsMixin(object):
 
         modified_fields = compare_states(self._as_dict(check_relationship),
                                          self._original_state,
-                                         self.compare_function)
+                                         self.compare_function,
+                                         self.normalise_function)
 
         if check_m2m:
             modified_m2m_fields = compare_states(check_m2m,
                                                  self._original_m2m_state,
-                                                 self.compare_function)
+                                                 self.compare_function,
+                                                 self.normalise_function)
             modified_fields.update(modified_m2m_fields)
 
         if not verbose:
             # Keeps backward compatibility with previous function return
-            modified_fields = {key: value['saved'] for key, value in modified_fields.items()}
+            modified_fields = {key: self.normalise_function[0](value['saved']) for key, value in modified_fields.items()}
 
         return modified_fields
 
