@@ -199,20 +199,29 @@ In some cases it is useful to normalise those values, e.g., when wanting ot save
 The default behaviour of using values as is can be changed by providing a ``normalise_function``
 in your model. That function can evaluate the value's type and rewrite it accordingly.
 
-::
+This example shows the usage of the normalise function, with an extra paramter of a user's timezone
+being passed as well:
 
+::
+    import pytz
     import datetime
     from django.db import models
     from dirtyfields import DirtyFieldsMixin
 
-    def your_normalise_function(value):
+    def your_normalise_function(value, timezone=None):
         if isinstance(value, (datetime.datetime, datetime.date)):
-            return value.isoformat()
+            if timezone:
+                return pytz.timezone(timezone).localize(value).isoformat()
+            else:
+                return value.isoformat()
         else:
             return value
 
+    def get_user_timezone():
+        return 'Europe/London'
+
     class TestModel(DirtyFieldsMixin, models.Model):
-        normalise_function = (your_normalise_function, {'extra_kwargs': 1})
+        normalise_function = (your_normalise_function, {'timezone': get_user_timezone()})
 
 
 Why would you want this?
