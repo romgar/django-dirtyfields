@@ -5,7 +5,7 @@ import warnings
 from django.utils import timezone
 
 
-def compare_states(new_state, original_state, compare_function):
+def compare_states(new_state, original_state, compare_function, normalise_function):
     modified_field = {}
 
     for key, value in new_state.items():
@@ -21,7 +21,10 @@ def compare_states(new_state, original_state, compare_function):
         if is_identical:
             continue
 
-        modified_field[key] = {'saved': original_value, 'current': value}
+        modified_field[key] = {
+            'saved': normalise_function[0](original_value, **normalise_function[1]),
+            'current': normalise_function[0](value, **normalise_function[1])
+        }
 
     return modified_field
 
@@ -56,3 +59,13 @@ def timezone_support_compare(new_value, old_value, timezone_to_set=pytz.UTC):
         old_value = timezone.make_aware(old_value, pytz.utc).astimezone(timezone_to_set)
 
     return raw_compare(new_value, old_value)
+
+
+def normalise_value(value):
+    """
+    Default normalisation of value simply returns the value as is.
+    Custom implementations can normalise the value for various storage schemes.
+    For example, converting datetime objects to iso datetime strings in order to
+    comply with JSON standard.
+    """
+    return value
