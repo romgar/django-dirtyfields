@@ -7,7 +7,15 @@ from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
 
 from .compare import raw_compare, compare_states, normalise_value
-from .compat import is_buffer, get_m2m_with_model, remote_field
+from .compat import is_buffer
+
+
+def get_m2m_with_model(given_model):
+    return [
+        (f, f.model if f.model != given_model else None)
+        for f in given_model._meta.get_fields()
+        if f.many_to_many and not f.auto_created
+    ]
 
 
 class DirtyFieldsMixin(object):
@@ -37,7 +45,7 @@ class DirtyFieldsMixin(object):
     def _connect_m2m_relations(self):
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
-                reset_state, sender=remote_field(m2m_field).through, weak=False,
+                reset_state, sender=m2m_field.remote_field.through, weak=False,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
@@ -53,7 +61,7 @@ class DirtyFieldsMixin(object):
             if field.primary_key and not include_primary_key:
                 continue
 
-            if remote_field(field):
+            if field.remote_field:
                 if not check_relationship:
                     continue
 

@@ -1,7 +1,5 @@
 import re
 
-import django
-
 from django.conf import settings
 from django.db import connection
 
@@ -65,4 +63,4 @@ def is_postgresql_env_with_json_field():
     except AttributeError:
         PG_VERSION = 0
 
-    return PG_VERSION >= 90400 and django.VERSION >= (1, 9)
+    return PG_VERSION >= 90400
