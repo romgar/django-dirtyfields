@@ -3,8 +3,6 @@ import re
 from django.conf import settings
 from django.db import connection
 
-from .compat import get_model_name
-
 
 class assert_number_queries(object):
 
@@ -51,7 +49,7 @@ class assert_number_of_queries_on_regex(RegexMixin, assert_number_queries):
 class assert_select_number_queries_on_model(assert_number_of_queries_on_regex):
 
     def __init__(self, model_class, number):
-        model_name = get_model_name(model_class)
+        model_name = model_class._meta.model_name
         regex = r'^.*SELECT.*FROM "tests_%s".*$' % model_name
 
         super(assert_select_number_queries_on_model, self).__init__(regex, number)
