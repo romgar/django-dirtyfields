@@ -1,3 +1,4 @@
 pytest==3.0.6
 pytest-django==3.1.2
+jsonfield==2.0.2
 pytz
