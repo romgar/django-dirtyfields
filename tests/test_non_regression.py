@@ -5,7 +5,7 @@ from django.test.utils import override_settings
 from .models import (TestModel, TestModelWithForeignKey, TestModelWithNonEditableFields,
                      OrdinaryTestModel, OrdinaryTestModelWithForeignKey, TestModelWithSelfForeignKey,
                      TestExpressionModel, TestModelWithPreSaveSignal, TestDoubleForeignKeyModel,
-                     TestBinaryModel)
+                     TestBinaryModel, TestEnums, TestModelWithEnum)
 from .utils import assert_select_number_queries_on_model
 
 
@@ -155,3 +155,18 @@ def test_bytea():
     assert tbm.get_dirty_fields() == {
         'bytea': b'^H\xc3\xabllo',
     }
+
+
+@pytest.mark.django_db
+def test_enum_field():
+    # Non regression test case for bug:
+    # https://github.com/romgar/django-dirtyfields/issues/139
+    tm = TestModelWithEnum.objects.create(enum_field=TestEnums.one)
+    tm.save()
+
+    tm.enum_field = TestEnums.two
+    assert tm.get_dirty_fields() == {'enum_field': 'one'}
+    tm.save()
+
+    tm.enum_field = TestEnums.one
+    assert tm.get_dirty_fields() == {'enum_field': 'two'}

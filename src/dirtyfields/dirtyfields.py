@@ -1,5 +1,6 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
 from copy import deepcopy
+import enum
 
 from django.core.exceptions import ValidationError
 from django.db.models.expressions import BaseExpression
@@ -65,6 +66,9 @@ class DirtyFieldsMixin(object):
             # If current field value is an expression, we are not evaluating it
             if isinstance(field_value, (BaseExpression, Combinable)):
                 continue
+
+            if isinstance(field_value, enum.Enum):
+                field_value = field_value.name
 
             try:
                 # Store the converted value for fields with conversion

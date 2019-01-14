@@ -1,3 +1,5 @@
+import enum
+
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils import timezone
@@ -143,3 +145,12 @@ class TestModelWithM2MAndSpecifiedFields(DirtyFieldsMixin, models.Model):
 
 class TestBinaryModel(DirtyFieldsMixin, models.Model):
     bytea = models.BinaryField()
+
+
+class TestEnums(enum.Enum):
+    one = 'One'
+    two = 'Two'
+
+
+class TestModelWithEnum(DirtyFieldsMixin, models.Model):
+    enum_field = models.TextField(choices=[(choice.name, choice.value) for choice in TestEnums])

@@ -1,3 +1,26 @@
+=====================================
+Clover version of Django Dirty Fields
+=====================================
+
+We are using a forked version of this package to add support for enum fields.
+
+To run tests locally, you will need to provide ``POSTGRES_NAME`` and ``POSTGRES_USER``
+environment variables that point to your local postgres. To find your user name,
+you can check the role names in your local db:
+
+::
+
+    $ psql postgres
+    postgres=# \du
+
+
+This package uses `tox` to manage environments and dependencies for testing; though we
+only care about testing against Python 3.6 for now. To run tests locally, run:
+
+::
+
+    $ POSTGRES_NAME='postgres' POSTGRES_USER='your-role-name' tox
+
 ===================
 Django Dirty Fields
 ===================
