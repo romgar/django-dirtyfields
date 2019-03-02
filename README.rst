@@ -15,7 +15,18 @@ Django Dirty Fields
 Tracking dirty fields on a Django model instance.
 Dirty means that field in-memory and database values are different.
 
-This package is compatible and tested with latest versions of Django (1.8, 1.9, 1.10, 1.11 series).
+This package is compatible and tested with the following Python & Django versions:
+
+
+
++----------+---------------------------------------+
+| Django   | Python                                |
++==========+=======================================+
+| 1.11     | 2.7, 3.5, 3.6, 3.7 (added in 1.11.17) |
++----------+---------------------------------------+
+| 2.0, 2.1 | 3.5, 3.6, 3.7                         |
++----------+---------------------------------------+
+
 
 `Full documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_
 
