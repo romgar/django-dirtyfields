@@ -33,9 +33,9 @@ This package is compatible and tested with the following Python & Django version
 Install
 =======
 
-::
+.. code-block:: bash
 
-    $ pip install django-dirtyfields
+   $ pip install django-dirtyfields
 
 
 Usage
@@ -45,8 +45,8 @@ To use ``django-dirtyfields``, you need to:
 
 - Inherit from ``DirtyFieldsMixin`` in the Django model you want to track.
 
-::
-    
+  .. code-block:: python
+
     from django.db import models
     from dirtyfields import DirtyFieldsMixin
 
@@ -57,14 +57,14 @@ To use ``django-dirtyfields``, you need to:
 
 - Use one of these 2 functions on a model instance to know if this instance is dirty, and get the dirty fields:
 
-    * is\_dirty()
-    * get\_dirty\_fields()
+  * is\_dirty()
+  * get\_dirty\_fields()
 
 
 Example
 -------
 
-::
+.. code-block:: python
 
     >>> from tests.models import TestModel
     >>> tm = TestModel.objects.create(boolean=True,characters="testing")
