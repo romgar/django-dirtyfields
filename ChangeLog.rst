@@ -14,6 +14,7 @@ master (unreleased)
     - Drop support of Django 1.10
     - Confirm support of Django 2.0
     - Confirm support of Django 2.1
+    - Confirm support of Django 2.2
 
 *Bugfix:*
     - Fix tests for Django 2.0
