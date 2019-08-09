@@ -1,6 +1,12 @@
 import pytest
 
-from .models import TestModel, TestModelWithSpecifiedFields, TestModelWithM2MAndSpecifiedFields, TestModelWithSpecifiedFieldsAndForeignKey
+from .models import (
+    TestModel,
+    TestModelWithSpecifiedFields,
+    TestModelWithM2MAndSpecifiedFields,
+    TestModelWithSpecifiedFieldsAndForeignKey,
+    TestModelWithSpecifiedFieldsAndForeignKey2
+)
 
 
 @pytest.mark.django_db
@@ -43,6 +49,23 @@ def test_dirty_fields_on_model_with_specified_fields_can_save_when_non_tracked_f
 @pytest.mark.django_db
 def test_dirty_fields_on_model_with_specified_fields_can_save_when_non_tracked_fk_field_is_modified():
     tm = TestModelWithSpecifiedFieldsAndForeignKey.objects.create()
+    fk = TestModel.objects.create()
+    tm.fk_field = fk
+    tm.boolean1 = False
+    tm.boolean2 = False
+
+    tm.save(update_fields=["fk_field"])
+    assert "fk_field" in tm._original_state
+
+    tm.boolean2 = True
+    tm.save()
+    assert "fk_field" in tm._original_state
+    assert "boolean2" not in tm._original_state
+
+
+@pytest.mark.django_db
+def test_dirty_fields_on_model_with_specified_fields_can_save_when_non_tracked_fk_field_is_modified_2():
+    tm = TestModelWithSpecifiedFieldsAndForeignKey2.objects.create()
     fk = TestModel.objects.create()
     tm.fk_field = fk
     tm.boolean1 = False
