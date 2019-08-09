@@ -131,7 +131,7 @@ class TestModelWithSpecifiedFieldsAndForeignKey(DirtyFieldsMixin, models.Model):
     boolean2 = models.BooleanField(default=True)
     fk_field = models.OneToOneField(TestModel, null=True,
                                     on_delete=models.CASCADE)
-    FIELDS_TO_CHECK = ['fk_field_id']
+    FIELDS_TO_CHECK = ['fk_field']
 
 
 class TestModelWithM2MAndSpecifiedFields(DirtyFieldsMixin, models.Model):

@@ -55,7 +55,7 @@ class DirtyFieldsMixin(object):
         deferred_fields = self.get_deferred_fields()
 
         for field in self._meta.fields:
-            if self.FIELDS_TO_CHECK and (field.get_attname() not in self.FIELDS_TO_CHECK):
+            if self.FIELDS_TO_CHECK and (field.name not in self.FIELDS_TO_CHECK):
                 continue
 
             if field.primary_key and not include_primary_key:
@@ -153,8 +153,7 @@ def reset_state(sender, instance, **kwargs):
     if update_fields:
         for field_name in update_fields:
             field = sender._meta.get_field(field_name)
-            if not FIELDS_TO_CHECK or \
-                    (field.get_attname() in FIELDS_TO_CHECK):
+            if not FIELDS_TO_CHECK or (field.name in FIELDS_TO_CHECK):
 
                 if field.get_attname() in instance.get_deferred_fields():
                     continue
