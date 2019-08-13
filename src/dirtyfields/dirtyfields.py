@@ -57,7 +57,7 @@ class DirtyFieldsMixin(object):
         for field in self._meta.fields:
 
             # For backward compatibility reasons, in particular for fkey fields, we check both
-            # the real name and the wrapped name (it means that we can specify either the field 
+            # the real name and the wrapped name (it means that we can specify either the field
             # name with or without the "_id" suffix.
             field_names_to_check = [field.name, field.get_attname()]
             if self.FIELDS_TO_CHECK and (not any(name in self.FIELDS_TO_CHECK for name in field_names_to_check)):
