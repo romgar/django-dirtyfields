@@ -5,32 +5,44 @@ language: python
 matrix:
   include:
     # Python version is just for the look on travis.
-    - python: 2.7
-      env: TOXENV=py27-django111
     - python: 3.5
       env: TOXENV=py35-django111
     - python: 3.6
       env: TOXENV=py36-django111
     - python: 3.7
       env: TOXENV=py37-django111
+    - python: 3.8
+      env: TOXENV=py38-django111
     - python: 3.5
       env: TOXENV=py35-django20
     - python: 3.6
       env: TOXENV=py36-django20
     - python: 3.7
       env: TOXENV=py37-django20
+    - python: 3.8
+      env: TOXENV=py38-django20
     - python: 3.5
       env: TOXENV=py35-django21
     - python: 3.6
       env: TOXENV=py36-django21
     - python: 3.7
       env: TOXENV=py37-django21
+    - python: 3.8
+      env: TOXENV=py38-django21
     - python: 3.5
       env: TOXENV=py35-django22
     - python: 3.6
       env: TOXENV=py36-django22
     - python: 3.7
       env: TOXENV=py37-django22
+    - python: 3.8
+      env: TOXENV=py38-django22
+    - python: 3.6
+      env: TOXENV=py36-django30
+    - python: 3.7
+      env: TOXENV=py37-django30
+    - python: 3.8
+      env: TOXENV=py38-django30
     - python: 3.6
       env: TOXENV=py36-flake8
     - python: 3.6

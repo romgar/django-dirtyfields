@@ -7,14 +7,17 @@ master (unreleased)
 -------------------
 
 *New:*
+    - Drop support of Python 2
     - Drop support of Python 3.4
     - Confirm support of Python 3.7
+    - Confirm support of Python 3.8
     - Drop support of Django 1.8
     - Drop support of Django 1.9
     - Drop support of Django 1.10
     - Confirm support of Django 2.0
     - Confirm support of Django 2.1
     - Confirm support of Django 2.2
+    - Confirm support of Django 3.0
 
 *Bugfix:*
     - Fix tests for Django 2.0
