@@ -1,16 +1,42 @@
+dist: xenial
+
 language: python
 
-python:
-  - 2.7
-  - 3.5
-
-env:
-  - TOXENV=django18
-  - TOXENV=django19
-  - TOXENV=django110
-  - TOXENV=coverage
-  - TOXENV=postgresql
-  - TOXENV=flake8
+matrix:
+  include:
+    # Python version is just for the look on travis.
+    - python: 2.7
+      env: TOXENV=py27-django111
+    - python: 3.5
+      env: TOXENV=py35-django111
+    - python: 3.6
+      env: TOXENV=py36-django111
+    - python: 3.7
+      env: TOXENV=py37-django111
+    - python: 3.5
+      env: TOXENV=py35-django20
+    - python: 3.6
+      env: TOXENV=py36-django20
+    - python: 3.7
+      env: TOXENV=py37-django20
+    - python: 3.5
+      env: TOXENV=py35-django21
+    - python: 3.6
+      env: TOXENV=py36-django21
+    - python: 3.7
+      env: TOXENV=py37-django21
+    - python: 3.5
+      env: TOXENV=py35-django22
+    - python: 3.6
+      env: TOXENV=py36-django22
+    - python: 3.7
+      env: TOXENV=py37-django22
+    - python: 3.6
+      env: TOXENV=py36-flake8
+    - python: 3.6
+      env: TOXENV=py36-django111-coverage
+    - python: 3.6
+      env: TOXENV=py36-django111-postgresql
 
 services:
   - postgresql
@@ -30,7 +56,7 @@ install:
   - pip install -e .
 
 after_success:
-  - if test "$TOXENV" = "coverage"; then coveralls; fi
+  - if test "$TOXENV" = "py36-django111-coverage"; then coveralls; fi
 
 deploy:
   provider: pypi

@@ -3,13 +3,34 @@ ChangeLog
 
 .. _master:
 
-master (unreleased)
--------------------
+master
+------
 
+Up-to-date with 1.4 release.
+
+.. _v1.4:
+
+1.4 (11/04/2020)
+----------------
+
+*New:*
+    - Drop support of Python 3.4
+    - Drop support of Django 1.8
+    - Drop support of Django 1.9
+    - Drop support of Django 1.10
+    - Confirm support of Python 3.7
+    - Confirm support of Django 2.0
+    - Confirm support of Django 2.1
+    - Confirm support of Django 2.2
+
+*Bugfix:*
+    - Fixes tests for Django 2.0
+    - :code:`refresh_from_db` is now properly resetting dirty fields.
+    - Adds :code:`normalise_function` to provide control on how dirty values are stored
 
 .. _v1.3.1:
 
-1.3.1 (28/02/2017)
+1.3.1 (28/02/2018)
 ------------------
 
 *New:*

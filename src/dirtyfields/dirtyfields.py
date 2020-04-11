@@ -6,12 +6,21 @@ from django.db.models.expressions import BaseExpression
 from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
 
-from .compare import raw_compare, compare_states
-from .compat import is_buffer, get_m2m_with_model, remote_field
+from .compare import raw_compare, compare_states, normalise_value
+from .compat import is_buffer
+
+
+def get_m2m_with_model(given_model):
+    return [
+        (f, f.model if f.model != given_model else None)
+        for f in given_model._meta.get_fields()
+        if f.many_to_many and not f.auto_created
+    ]
 
 
 class DirtyFieldsMixin(object):
     compare_function = (raw_compare, {})
+    normalise_function = (normalise_value, {})
 
     # This mode has been introduced to handle some situations like this one:
     # https://github.com/romgar/django-dirtyfields/issues/73
@@ -29,10 +38,14 @@ class DirtyFieldsMixin(object):
             self._connect_m2m_relations()
         reset_state(sender=self.__class__, instance=self)
 
+    def refresh_from_db(self, *a, **kw):
+        super(DirtyFieldsMixin, self).refresh_from_db(*a, **kw)
+        reset_state(sender=self.__class__, instance=self)
+
     def _connect_m2m_relations(self):
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
-                reset_state, sender=remote_field(m2m_field).through, weak=False,
+                reset_state, sender=m2m_field.remote_field.through, weak=False,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
                     name=self.__class__.__name__))
 
@@ -42,13 +55,18 @@ class DirtyFieldsMixin(object):
         deferred_fields = self.get_deferred_fields()
 
         for field in self._meta.fields:
-            if self.FIELDS_TO_CHECK and (field.name not in self.FIELDS_TO_CHECK):
+
+            # For backward compatibility reasons, in particular for fkey fields, we check both
+            # the real name and the wrapped name (it means that we can specify either the field
+            # name with or without the "_id" suffix.
+            field_names_to_check = [field.name, field.get_attname()]
+            if self.FIELDS_TO_CHECK and (not any(name in self.FIELDS_TO_CHECK for name in field_names_to_check)):
                 continue
 
             if field.primary_key and not include_primary_key:
                 continue
 
-            if remote_field(field):
+            if field.remote_field:
                 if not check_relationship:
                     continue
 
@@ -70,7 +88,7 @@ class DirtyFieldsMixin(object):
 
             if is_buffer(field_value):
                 # psycopg2 returns uncopyable type buffer for bytea
-                field_value = str(field_value)
+                field_value = bytes(field_value)
 
             # Explanation of copy usage here :
             # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
@@ -97,7 +115,7 @@ class DirtyFieldsMixin(object):
             pk_specified = self.pk is not None
             initial_dict = self._as_dict(check_relationship, include_primary_key=pk_specified)
             if verbose:
-                initial_dict = {key: {'saved': None, 'current': value}
+                initial_dict = {key: {'saved': None, 'current': self.normalise_function[0](value)}
                                 for key, value in initial_dict.items()}
             return initial_dict
 
@@ -106,17 +124,19 @@ class DirtyFieldsMixin(object):
 
         modified_fields = compare_states(self._as_dict(check_relationship),
                                          self._original_state,
-                                         self.compare_function)
+                                         self.compare_function,
+                                         self.normalise_function)
 
         if check_m2m:
             modified_m2m_fields = compare_states(check_m2m,
                                                  self._original_m2m_state,
-                                                 self.compare_function)
+                                                 self.compare_function,
+                                                 self.normalise_function)
             modified_fields.update(modified_m2m_fields)
 
         if not verbose:
             # Keeps backward compatibility with previous function return
-            modified_fields = {key: value['saved'] for key, value in modified_fields.items()}
+            modified_fields = {key: self.normalise_function[0](value['saved']) for key, value in modified_fields.items()}
 
         return modified_fields
 

@@ -2,6 +2,7 @@ import pytest
 import pytz
 from datetime import datetime
 
+from django.utils import timezone
 from django.test.utils import override_settings
 
 from .models import TestDatetimeModel, TestCurrentDatetimeModel
@@ -27,6 +28,26 @@ def test_datetime_fields_when_naive_db_and_aware_current_value():
     tm.datetime_field = datetime(2016, 1, 1, tzinfo=pytz.utc)
 
     assert tm.get_dirty_fields() == {'datetime_field': datetime(2000, 1, 1)}
+
+
+@pytest.mark.django_db
+def test_datetime_fields_when_aware_db_and_aware_current_value():
+    aware_dt = timezone.now()
+    tm = TestDatetimeModel.objects.create(datetime_field=aware_dt)
+
+    tm.datetime_field = timezone.now()
+
+    assert tm.get_dirty_fields() == {'datetime_field': aware_dt}
+
+
+@pytest.mark.django_db
+def test_datetime_fields_when_naive_db_and_naive_current_value():
+    naive_dt = datetime.now()
+    tm = TestDatetimeModel.objects.create(datetime_field=naive_dt)
+
+    tm.datetime_field = datetime.now()
+
+    assert tm.get_dirty_fields() == {'datetime_field': naive_dt}
 
 
 @override_settings(USE_TZ=True, TIME_ZONE='America/Chicago')

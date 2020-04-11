@@ -191,6 +191,39 @@ You can now define how you want to compare 2 values by passing a function on Dir
 
 Have a look at ``dirtyfields.compare`` module to get some examples.
 
+Custom value normalisation function
+----------------------------
+By default, ``dirtyfields`` reports on the dirty fields as is. If a date field was changed
+the result of ``get_dirty_fields`` will return the current and saved datetime object.
+In some cases it is useful to normalise those values, e.g., when wanting ot save the diff data as a json dataset in a database.
+The default behaviour of using values as is can be changed by providing a ``normalise_function``
+in your model. That function can evaluate the value's type and rewrite it accordingly.
+
+This example shows the usage of the normalise function, with an extra paramter of a user's timezone
+being passed as well:
+
+::
+    import pytz
+    import datetime
+    from django.db import models
+    from dirtyfields import DirtyFieldsMixin
+
+    def your_normalise_function(value, timezone=None):
+        if isinstance(value, (datetime.datetime, datetime.date)):
+            if timezone:
+                return pytz.timezone(timezone).localize(value).isoformat()
+            else:
+                return value.isoformat()
+        else:
+            return value
+
+    def get_user_timezone():
+        return 'Europe/London'
+
+    class TestModel(DirtyFieldsMixin, models.Model):
+        normalise_function = (your_normalise_function, {'timezone': get_user_timezone()})
+
+
 Why would you want this?
 ========================
 
