@@ -59,6 +59,7 @@ after_success:
   - if test "$TOXENV" = "py36-django111-coverage"; then coveralls; fi
 
 deploy:
+  skip_cleanup: true
   provider: pypi
   user: smn
   password:
