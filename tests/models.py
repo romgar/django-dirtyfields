@@ -74,6 +74,13 @@ class TestAutoNowDatetimeModel(DirtyFieldsMixin, models.Model):
     test_string = models.TextField()
 
 
+class TestAutoNowDatetimeFieldToCheckModel(DirtyFieldsMixin, models.Model):
+    datetime_field = models.DateTimeField(auto_now=True)
+    date_field = models.DateField(auto_now=True)
+    test_string = models.TextField()
+    FIELDS_TO_CHECK = ["test_string"]
+
+
 class TestM2MModel(DirtyFieldsMixin, models.Model):
     m2m_field = models.ManyToManyField(TestModel)
     ENABLE_M2M_CHECK = True
