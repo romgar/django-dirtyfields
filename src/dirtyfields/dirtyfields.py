@@ -1,10 +1,13 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
+import datetime
 from copy import deepcopy
 
 from django.core.exceptions import ValidationError
+from django.db.models import DateTimeField, DateField
 from django.db.models.expressions import BaseExpression
 from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
+from django.utils import timezone
 
 from .compare import raw_compare, compare_states, normalise_value
 from .compat import is_buffer
@@ -108,7 +111,7 @@ class DirtyFieldsMixin(object):
 
         return m2m_fields
 
-    def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False):
+    def get_dirty_fields(self, check_relationship=False, check_m2m=None, verbose=False, include_auto_now=False):
         if self._state.adding:
             # If the object has not yet been saved in the database, all fields are considered dirty
             # for consistency (see https://github.com/romgar/django-dirtyfields/issues/65 for more details)
@@ -134,6 +137,30 @@ class DirtyFieldsMixin(object):
                                                  self.normalise_function)
             modified_fields.update(modified_m2m_fields)
 
+        if modified_fields and include_auto_now:
+            auto_add_fields = {}
+            relevant_datetime_fields = filter(
+                lambda value: isinstance(value, (DateTimeField, DateField)) and value.auto_now,
+                self._meta.fields
+            )
+            for field in relevant_datetime_fields:
+                field_value = getattr(self, field.attname)
+                try:
+                    # Store the converted value for fields with conversion
+                    field_value = field.to_python(field_value)
+                except ValidationError:
+                    # The current value is not valid so we cannot convert it
+                    pass
+                print(field.name, field_value)
+                current_value = None
+                if isinstance(field, DateTimeField):
+                    current_value = timezone.now()
+                elif isinstance(field, DateField):
+                    current_value = datetime.date.today()
+                auto_add_fields[field.name] = {"saved": field_value, "current": current_value}
+            print(auto_add_fields)
+            modified_fields.update(auto_add_fields)
+
         if not verbose:
             # Keeps backward compatibility with previous function return
             modified_fields = {key: self.normalise_function[0](value['saved']) for key, value in modified_fields.items()}
@@ -144,8 +171,8 @@ class DirtyFieldsMixin(object):
         return {} != self.get_dirty_fields(check_relationship=check_relationship,
                                            check_m2m=check_m2m)
 
-    def save_dirty_fields(self):
-        dirty_fields = self.get_dirty_fields(check_relationship=True)
+    def save_dirty_fields(self, include_auto_now=False):
+        dirty_fields = self.get_dirty_fields(check_relationship=True, include_auto_now=include_auto_now)
         self.save(update_fields=dirty_fields.keys())
 
 

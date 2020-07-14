@@ -68,6 +68,12 @@ class TestCurrentDatetimeModel(DirtyFieldsMixin, models.Model):
     datetime_field = models.DateTimeField(default=timezone.now)
 
 
+class TestAutoNowDatetimeModel(DirtyFieldsMixin, models.Model):
+    datetime_field = models.DateTimeField(auto_now=True)
+    date_field = models.DateField(auto_now=True)
+    test_string = models.TextField()
+
+
 class TestM2MModel(DirtyFieldsMixin, models.Model):
     m2m_field = models.ManyToManyField(TestModel)
     ENABLE_M2M_CHECK = True
