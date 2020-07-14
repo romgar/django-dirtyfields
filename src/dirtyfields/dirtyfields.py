@@ -151,14 +151,12 @@ class DirtyFieldsMixin(object):
                 except ValidationError:
                     # The current value is not valid so we cannot convert it
                     pass
-                print(field.name, field_value)
                 current_value = None
                 if isinstance(field, DateTimeField):
                     current_value = timezone.now()
                 elif isinstance(field, DateField):
                     current_value = datetime.date.today()
                 auto_add_fields[field.name] = {"saved": field_value, "current": current_value}
-            print(auto_add_fields)
             modified_fields.update(auto_add_fields)
 
         if not verbose:
