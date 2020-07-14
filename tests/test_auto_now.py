@@ -1,4 +1,3 @@
-from decimal import Decimal
 import pytest
 
 from .models import TestAutoNowDatetimeModel, TestAutoNowDatetimeFieldToCheckModel

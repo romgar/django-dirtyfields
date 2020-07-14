@@ -14,6 +14,7 @@ from .compat import is_buffer
 
 SKIP_FIELD = object()
 
+
 def get_m2m_with_model(given_model):
     return [
         (f, f.model if f.model != given_model else None)
