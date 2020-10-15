@@ -37,6 +37,53 @@ matrix:
       env: TOXENV=py36-django111-coverage
     - python: 3.6
       env: TOXENV=py36-django111-postgresql
+      # Adding jobs for ppc64le architecture
+    - python: 3.5
+      env: TOXENV=py35-django111
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36-django111
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37-django111
+      arch: ppc64le
+    - python: 3.5
+      env: TOXENV=py35-django20
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36-django20
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37-django20
+      arch: ppc64le
+    - python: 3.5
+      env: TOXENV=py35-django21
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36-django21
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37-django21
+      arch: ppc64le
+    - python: 3.5
+      env: TOXENV=py35-django22
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36-django22
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37-django22
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36-flake8
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36-django111-coverage
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36-django111-postgresql
+      arch: ppc64le
+
 
 services:
   - postgresql
@@ -46,7 +93,6 @@ addons:
 
 before_script:
   - psql -c 'create database dirtyfields_test;' -U postgres
-
 script:
   - tox
 
