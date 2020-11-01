@@ -173,3 +173,16 @@ def test_refresh_from_db():
 
     tm.refresh_from_db()
     assert tm.get_dirty_fields() == {}
+
+
+@pytest.mark.django_db
+def test_refresh_from_db_particular_fields():
+    tm = TestModel.objects.create(characters="old value")
+    tm.boolean = False
+    tm.characters = "new value"
+    assert tm.get_dirty_fields() == {"boolean": True, "characters": "old value"}
+
+    tm.refresh_from_db(fields={"characters"})
+    assert tm.boolean is False
+    assert tm.characters == "old value"
+    assert tm.get_dirty_fields() == {"boolean": True}
