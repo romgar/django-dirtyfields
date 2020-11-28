@@ -155,3 +155,19 @@ def test_bytea():
     assert tbm.get_dirty_fields() == {
         'bytea': b'^H\xc3\xabllo',
     }
+
+
+@pytest.mark.django_db
+def test_access_deferred_field_doesnt_reset_state():
+    # Non regression test case for bug:
+    # https://github.com/romgar/django-dirtyfields/issues/154
+    tm = TestModel.objects.create(characters="old value")
+    tm_deferred = TestModel.objects.defer("characters").get(id=tm.id)
+    assert tm_deferred.get_deferred_fields() == {"characters"}
+    tm_deferred.boolean = False
+    assert tm_deferred.get_dirty_fields() == {"boolean": True}
+
+    tm_deferred.characters  # access deferred field
+    assert tm_deferred.get_deferred_fields() == set()
+    # previously accessing the deferred field would reset the dirty state.
+    assert tm_deferred.get_dirty_fields() == {"boolean": True}

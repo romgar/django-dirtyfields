@@ -38,9 +38,9 @@ class DirtyFieldsMixin(object):
             self._connect_m2m_relations()
         reset_state(sender=self.__class__, instance=self)
 
-    def refresh_from_db(self, *a, **kw):
-        super(DirtyFieldsMixin, self).refresh_from_db(*a, **kw)
-        reset_state(sender=self.__class__, instance=self)
+    def refresh_from_db(self, using=None, fields=None):
+        super(DirtyFieldsMixin, self).refresh_from_db(using=using, fields=fields)
+        reset_state(sender=self.__class__, instance=self, update_fields=fields)
 
     def _connect_m2m_relations(self):
         for m2m_field, model in get_m2m_with_model(self.__class__):
@@ -152,10 +152,11 @@ class DirtyFieldsMixin(object):
 def reset_state(sender, instance, **kwargs):
     # original state should hold all possible dirty fields to avoid
     # getting a `KeyError` when checking if a field is dirty or not
-    update_fields = kwargs.pop('update_fields', {})
+    update_fields = kwargs.pop('update_fields', None)
     new_state = instance._as_dict(check_relationship=True)
     FIELDS_TO_CHECK = getattr(instance, "FIELDS_TO_CHECK", None)
-    if update_fields:
+
+    if update_fields is not None:
         for field_name in update_fields:
             field = sender._meta.get_field(field_name)
             if not FIELDS_TO_CHECK or (field.name in FIELDS_TO_CHECK):
@@ -164,8 +165,8 @@ def reset_state(sender, instance, **kwargs):
                     continue
 
                 instance._original_state[field.name] = new_state[field.name]
-
     else:
         instance._original_state = new_state
+
     if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()

@@ -66,6 +66,23 @@ def test_save_only_specific_fields_should_let_other_fields_dirty():
 
 
 @pytest.mark.django_db
+def test_save_empty_update_fields_wont_reset_dirty_state():
+    tm = TestModel.objects.create(boolean=True, characters='dummy')
+
+    tm.boolean = False
+    tm.characters = 'new_dummy'
+    assert tm.get_dirty_fields() == {"boolean": True, 'characters': 'dummy'}
+
+    # Django docs say "An empty update_fields iterable will skip the save",
+    # so this should not change the dirty state.
+    tm.save(update_fields=[])
+
+    assert tm.boolean is False
+    assert tm.characters == "new_dummy"
+    assert tm.get_dirty_fields() == {"boolean": True, 'characters': 'dummy'}
+
+
+@pytest.mark.django_db
 def test_handle_foreignkeys_id_field_in_update_fields():
     tm1 = TestModel.objects.create(boolean=True, characters='dummy')
     tm2 = TestModel.objects.create(boolean=True, characters='dummy')

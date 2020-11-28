@@ -6,7 +6,11 @@ ChangeLog
 master
 ------
 
-Up-to-date with 1.4 release.
+*Bugfix:*
+    - Fixes an issue when :code:`refresh_from_db` was called with the :code:`fields` argument, the dirty state for all
+      fields would be reset, even though only the fields specified are reloaded from the database. Now only the reloaded
+      fields will have their dirty state reset (#154).
+    - Fixes an issue where accessing a deferred field would reset the dirty state for all fields (#154).
 
 .. _v1.4:
 
