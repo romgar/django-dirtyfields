@@ -6,6 +6,10 @@ def listify(filename):
         return list(filter(None, f.read().splitlines()))
 
 
+with open("README.rst", "r") as frm:
+    long_description = frm.read()
+
+
 setup(
     name="django-dirtyfields",
     version="1.4",
@@ -13,7 +17,8 @@ setup(
     license='BSD',
     description=("Tracking dirty fields on a Django model instance "
                  "(actively maintained)"),
-    long_description=open('README.rst', 'r').read(),
+    long_description=long_description,
+    long_description_content_type="text/x-rst",
     author='Romain Garrigues',
     packages=find_packages('src'),
     package_dir={'': 'src'},
