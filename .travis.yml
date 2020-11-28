@@ -67,6 +67,7 @@ deploy:
   # No need to provide the password anymore. It has been set as an PYPI_PASSWORD environment variable
   # on travis-ci.org web interface, and is picked automatically in this deploy stage for pypi.
   password: $PYPI_PASSWORD
+  skip_existing: true
   on:
     tags: true
     all_branches: true
