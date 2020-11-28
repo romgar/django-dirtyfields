@@ -2,7 +2,8 @@ from setuptools import setup, find_packages
 
 
 def listify(filename):
-    return [line for line in open(filename, 'r').read().split('\n') if line]
+    with open(filename, "r") as f:
+        return list(filter(None, f.read().splitlines()))
 
 
 setup(
