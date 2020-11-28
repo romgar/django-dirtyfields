@@ -6,7 +6,18 @@ ChangeLog
 master
 ------
 
-Up-to-date with 1.4 release.
+No changes yet
+
+.. _v1.4.1:
+
+1.4.1 (28/11/2020)
+------------------
+
+*Bugfix:*
+    - Fixes an issue when :code:`refresh_from_db` was called with the :code:`fields` argument, the dirty state for all
+      fields would be reset, even though only the fields specified are reloaded from the database. Now only the reloaded
+      fields will have their dirty state reset (#154).
+    - Fixes an issue where accessing a deferred field would reset the dirty state for all fields (#154).
 
 .. _v1.4:
 
@@ -34,6 +45,7 @@ Up-to-date with 1.4 release.
 ------------------
 
 *New:*
+
     - Updates python classifier in setup file (#116). Thanks amureki.
     - Adds PEP8 validation in travisCI run (#123). Thanks hsmett.
 

@@ -1,5 +1,6 @@
 *.pyc
 ve
+.venv
 *.egg-info
 *.db
 docs/_build/*
@@ -8,3 +9,4 @@ docs/_static/*
 .tox
 .cache
 .coverage
+.idea
