@@ -142,6 +142,17 @@ If you want to check a limited set of model fields, you should set ``FIELDS_TO_C
 This can be used in order to increase performance.
 
 
+DateTimeField and DateField with auto_now set to True.
+------------------------------------------------------
+You can automatically include `DateTimeField` and `DateField` fields with `auto_now` set to `True` to the list of dirty
+fields when any other field is dirty by using the `include_auto_now` parameter with `get_dirty_fields` or
+`save_dirty_fields`. This is for example useful when using `modified_date` field to track record updates.
+
+::
+
+    >>> tm.get_dirty_fields(include_auto_now=True)
+    >>> tm.save_dirty_fields(include_auto_now=True)
+
 Saving dirty fields.
 ----------------------------
 If you want to only save dirty fields from an instance in the database (only these fields will be involved in SQL query), you can use ``save_dirty_fields`` method.
