@@ -30,6 +30,8 @@ This package is compatible and tested with the following Python & Django version
 +---------------+------------------------------------------------------+
 | 3.0           | 3.6, 3.7, 3.8, 3.9 (as of 3.0.11)                    |
 +---------------+------------------------------------------------------+
+| 3.1           | 3.6, 3.7, 3.8, 3.9 (as of 3.1.3)                     |
++---------------+------------------------------------------------------+
 
 
 `Full documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_

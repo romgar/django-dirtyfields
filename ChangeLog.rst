@@ -11,6 +11,7 @@ master
     - Confirm support of Python 3.8
     - Confirm support of Python 3.9
     - Confirm support of Django 3.0
+    - Confirm support of Django 3.1
 
 .. _v1.4.1:
 
