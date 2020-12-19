@@ -9,6 +9,7 @@ master
 *New:*
     - Drop support of Python 2.7
     - Confirm support of Python 3.8
+    - Confirm support of Python 3.9
     - Confirm support of Django 3.0
 
 .. _v1.4.1:
