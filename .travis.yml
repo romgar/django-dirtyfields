@@ -1,8 +1,9 @@
+os: linux
 dist: xenial
 
 language: python
 
-matrix:
+jobs:
   include:
     # Python version is just for the look on travis.
     - python: 2.7
@@ -63,7 +64,7 @@ deploy:
   provider: pypi
   # We use the __token__ special key to indicate that we use Pypi API token, instead of the
   # username/password combinaison
-  user: "__token__"
+  username: "__token__"
   # No need to provide the password anymore. It has been set as an PYPI_PASSWORD environment variable
   # on travis-ci.org web interface, and is picked automatically in this deploy stage for pypi.
   password: $PYPI_PASSWORD
