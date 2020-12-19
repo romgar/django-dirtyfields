@@ -28,7 +28,6 @@ This package is compatible and tested with the following Python & Django version
 +---------------+---------------------------------------+
 
 
-`Full documentation <https://django-dirtyfields.readthedocs.org/en/develop/>`_
 
 Install
 =======
