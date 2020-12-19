@@ -6,7 +6,8 @@ ChangeLog
 master
 ------
 
-No changes yet
+*New:*
+    - Drop support of Python 2.7
 
 .. _v1.4.1:
 
