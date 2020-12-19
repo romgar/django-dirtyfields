@@ -2,7 +2,7 @@
 def setup(app):
     """
     Mandatory to cross ref any non-default sphinx behaviours defined in Django
-    Thanks http://reinout.vanrees.org/weblog/2012/12/01/django-intersphinx.html
+    Thanks https://reinout.vanrees.org/weblog/2012/12/01/django-intersphinx.html
     We can then use :django:settings:`ROOT_URLCONF` for example
     (We then avoid ERROR: Unknown interpreted text role "django:settings")
     """

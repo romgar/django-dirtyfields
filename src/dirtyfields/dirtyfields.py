@@ -1,4 +1,4 @@
-# Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
+# Adapted from https://stackoverflow.com/questions/110803/dirty-fields-in-django
 from copy import deepcopy
 
 from django.core.exceptions import ValidationError

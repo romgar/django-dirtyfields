@@ -9,8 +9,8 @@ Django Dirty Fields
     :target: https://travis-ci.org/romgar/django-dirtyfields?branch=develop
 .. image:: https://coveralls.io/repos/romgar/django-dirtyfields/badge.svg?branch=develop
    :target: https://coveralls.io/r/romgar/django-dirtyfields?branch=develop
-.. image:: http://readthedocs.org/projects/django-dirtyfields/badge/?version=develop
-   :target: http://django-dirtyfields.readthedocs.org/en/develop/?badge=develop
+.. image:: https://readthedocs.org/projects/django-dirtyfields/badge/?version=develop
+   :target: https://django-dirtyfields.readthedocs.org/en/develop/?badge=develop
 
 Tracking dirty fields on a Django model instance.
 Dirty means that field in-memory and database values are different.
@@ -28,7 +28,7 @@ This package is compatible and tested with the following Python & Django version
 +---------------+---------------------------------------+
 
 
-`Full documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_
+`Full documentation <https://django-dirtyfields.readthedocs.org/en/develop/>`_
 
 Install
 =======
@@ -81,7 +81,7 @@ Example
     {'boolean': True}
 
 
-Consult the `full documentation <http://django-dirtyfields.readthedocs.org/en/develop/>`_ for more informations.
+Consult the `full documentation <https://django-dirtyfields.readthedocs.org/en/develop/>`_ for more informations.
 
 
 
