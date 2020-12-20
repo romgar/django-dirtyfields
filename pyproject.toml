@@ -1,0 +1,3 @@
+[tool.coverage.run]
+branch = true
+source = ['dirtyfields']
