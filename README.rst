@@ -55,7 +55,7 @@ To use ``django-dirtyfields``, you need to:
     from django.db import models
     from dirtyfields import DirtyFieldsMixin
 
-    class TestModel(DirtyFieldsMixin, models.Model):
+    class ModelTest(DirtyFieldsMixin, models.Model):
         """A simple test model to test dirty fields mixin with"""
         boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
@@ -71,8 +71,8 @@ Example
 
 .. code-block:: python
 
-    >>> from tests.models import TestModel
-    >>> tm = TestModel.objects.create(boolean=True,characters="testing")
+    >>> from tests.models import ModelTest
+    >>> tm = ModelTest.objects.create(boolean=True,characters="testing")
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()

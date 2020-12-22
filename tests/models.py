@@ -7,85 +7,85 @@ from dirtyfields.compare import timezone_support_compare
 from tests.utils import is_postgresql_env_with_json_field
 
 
-class TestModel(DirtyFieldsMixin, models.Model):
+class ModelTest(DirtyFieldsMixin, models.Model):
     """A simple test model to test dirty fields mixin with"""
     boolean = models.BooleanField(default=True)
     characters = models.CharField(blank=True, max_length=80)
 
 
-class TestModelWithDecimalField(DirtyFieldsMixin, models.Model):
+class ModelWithDecimalFieldTest(DirtyFieldsMixin, models.Model):
     decimal_field = models.DecimalField(decimal_places=2, max_digits=10)
 
 
-class TestModelWithForeignKey(DirtyFieldsMixin, models.Model):
-    fkey = models.ForeignKey(TestModel, on_delete=models.CASCADE)
+class ModelWithForeignKeyTest(DirtyFieldsMixin, models.Model):
+    fkey = models.ForeignKey(ModelTest, on_delete=models.CASCADE)
 
 
-class TestMixedFieldsModel(DirtyFieldsMixin, models.Model):
-    fkey = models.ForeignKey(TestModel, on_delete=models.CASCADE)
+class MixedFieldsModelTest(DirtyFieldsMixin, models.Model):
+    fkey = models.ForeignKey(ModelTest, on_delete=models.CASCADE)
     characters = models.CharField(blank=True, max_length=80)
 
 
-class TestModelWithOneToOneField(DirtyFieldsMixin, models.Model):
-    o2o = models.OneToOneField(TestModel, on_delete=models.CASCADE)
+class ModelWithOneToOneFieldTest(DirtyFieldsMixin, models.Model):
+    o2o = models.OneToOneField(ModelTest, on_delete=models.CASCADE)
 
 
-class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):
+class ModelWithNonEditableFieldsTest(DirtyFieldsMixin, models.Model):
     dt = models.DateTimeField(auto_now_add=True)
     characters = models.CharField(blank=True, max_length=80,
                                   editable=False)
     boolean = models.BooleanField(default=True)
 
 
-class TestModelWithSelfForeignKey(DirtyFieldsMixin, models.Model):
+class ModelWithSelfForeignKeyTest(DirtyFieldsMixin, models.Model):
     fkey = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE)
 
 
-class OrdinaryTestModel(models.Model):
+class OrdinaryModelTest(models.Model):
     boolean = models.BooleanField(default=True)
     characters = models.CharField(blank=True, max_length=80)
 
 
-class OrdinaryTestModelWithForeignKey(models.Model):
-    fkey = models.ForeignKey(OrdinaryTestModel, on_delete=models.CASCADE)
+class OrdinaryModelWithForeignKeyTest(models.Model):
+    fkey = models.ForeignKey(OrdinaryModelTest, on_delete=models.CASCADE)
 
 
-class SubclassModel(TestModel):
+class SubclassModelTest(ModelTest):
     pass
 
 
-class TestExpressionModel(DirtyFieldsMixin, models.Model):
+class ExpressionModelTest(DirtyFieldsMixin, models.Model):
     counter = models.IntegerField(default=0)
 
 
-class TestDatetimeModel(DirtyFieldsMixin, models.Model):
+class DatetimeModelTest(DirtyFieldsMixin, models.Model):
     compare_function = (timezone_support_compare, {})
     datetime_field = models.DateTimeField(default=timezone.now)
 
 
-class TestCurrentDatetimeModel(DirtyFieldsMixin, models.Model):
+class CurrentDatetimeModelTest(DirtyFieldsMixin, models.Model):
     compare_function = (timezone_support_compare, {'timezone_to_set': timezone.get_current_timezone()})
     datetime_field = models.DateTimeField(default=timezone.now)
 
 
-class TestM2MModel(DirtyFieldsMixin, models.Model):
-    m2m_field = models.ManyToManyField(TestModel)
+class Many2ManyModelTest(DirtyFieldsMixin, models.Model):
+    m2m_field = models.ManyToManyField(ModelTest)
     ENABLE_M2M_CHECK = True
 
 
-class TestM2MModelWithoutM2MModeEnabled(DirtyFieldsMixin, models.Model):
-    m2m_field = models.ManyToManyField(TestModel)
+class Many2ManyWithoutMany2ManyModeEnabledModelTest(DirtyFieldsMixin, models.Model):
+    m2m_field = models.ManyToManyField(ModelTest)
 
 
-class TestModelWithCustomPK(DirtyFieldsMixin, models.Model):
+class ModelWithCustomPKTest(DirtyFieldsMixin, models.Model):
     custom_primary_key = models.CharField(max_length=80, primary_key=True)
 
 
-class TestM2MModelWithCustomPKOnM2M(DirtyFieldsMixin, models.Model):
-    m2m_field = models.ManyToManyField(TestModelWithCustomPK)
+class M2MModelWithCustomPKOnM2MTest(DirtyFieldsMixin, models.Model):
+    m2m_field = models.ManyToManyField(ModelWithCustomPKTest)
 
 
-class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
+class WithPreSaveSignalModelTest(DirtyFieldsMixin, models.Model):
     data = models.CharField(max_length=255)
     data_updated_on_presave = models.CharField(max_length=255, blank=True, null=True)
 
@@ -98,52 +98,55 @@ class TestModelWithPreSaveSignal(DirtyFieldsMixin, models.Model):
                 instance.data_updated_on_presave = 'presave_value'
 
 
-pre_save.connect(TestModelWithPreSaveSignal.pre_save,
-                 sender=TestModelWithPreSaveSignal)
+pre_save.connect(
+    WithPreSaveSignalModelTest.pre_save,
+    sender=WithPreSaveSignalModelTest,
+    dispatch_uid="WithPreSaveSignalModelTest__pre_save",
+)
 
 
-class TestModelWithoutM2MCheck(DirtyFieldsMixin, models.Model):
+class ModelWithoutM2MCheckTest(DirtyFieldsMixin, models.Model):
     characters = models.CharField(blank=True, max_length=80)
     ENABLE_M2M_CHECK = False
 
 
-class TestDoubleForeignKeyModel(DirtyFieldsMixin, models.Model):
-    fkey1 = models.ForeignKey(TestModel, on_delete=models.CASCADE)
-    fkey2 = models.ForeignKey(TestModel, null=True, related_name='fkey2',
+class DoubleForeignKeyModelTest(DirtyFieldsMixin, models.Model):
+    fkey1 = models.ForeignKey(ModelTest, on_delete=models.CASCADE)
+    fkey2 = models.ForeignKey(ModelTest, null=True, related_name='fkey2',
                               on_delete=models.CASCADE)
 
 
 if is_postgresql_env_with_json_field():
     from django.contrib.postgres.fields import JSONField
 
-    class TestModelWithJSONField(DirtyFieldsMixin, models.Model):
+    class ModelWithJSONBFieldTest(DirtyFieldsMixin, models.Model):
         json_field = JSONField()
 
 
-class TestModelWithSpecifiedFields(DirtyFieldsMixin, models.Model):
+class ModelWithSpecifiedFieldsTest(DirtyFieldsMixin, models.Model):
     boolean1 = models.BooleanField(default=True)
     boolean2 = models.BooleanField(default=True)
     FIELDS_TO_CHECK = ['boolean1']
 
 
-class TestModelWithSpecifiedFieldsAndForeignKey(DirtyFieldsMixin, models.Model):
+class ModelWithSpecifiedFieldsAndForeignKeyTest(DirtyFieldsMixin, models.Model):
     boolean1 = models.BooleanField(default=True)
     boolean2 = models.BooleanField(default=True)
-    fk_field = models.OneToOneField(TestModel, null=True,
+    fk_field = models.OneToOneField(ModelTest, null=True,
                                     on_delete=models.CASCADE)
     FIELDS_TO_CHECK = ['fk_field']
 
 
-class TestModelWithSpecifiedFieldsAndForeignKey2(TestModelWithSpecifiedFieldsAndForeignKey):
+class ModelWithSpecifiedFieldsAndForeignKeyTest2(ModelWithSpecifiedFieldsAndForeignKeyTest):
     FIELDS_TO_CHECK = ['fk_field_id']
 
 
-class TestModelWithM2MAndSpecifiedFields(DirtyFieldsMixin, models.Model):
-    m2m1 = models.ManyToManyField(TestModel)
-    m2m2 = models.ManyToManyField(TestModel)
+class ModelWithM2MAndSpecifiedFieldsTest(DirtyFieldsMixin, models.Model):
+    m2m1 = models.ManyToManyField(ModelTest)
+    m2m2 = models.ManyToManyField(ModelTest)
     ENABLE_M2M_CHECK = True
     FIELDS_TO_CHECK = ['m2m1']
 
 
-class TestBinaryModel(DirtyFieldsMixin, models.Model):
+class BinaryModelTest(DirtyFieldsMixin, models.Model):
     bytea = models.BinaryField()

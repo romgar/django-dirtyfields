@@ -1,12 +1,12 @@
 import pytest
 
-from .models import TestModel, TestMixedFieldsModel, TestModelWithForeignKey
+from .models import ModelTest, MixedFieldsModelTest, ModelWithForeignKeyTest
 from .utils import assert_number_of_queries_on_regex
 
 
 @pytest.mark.django_db
 def test_save_dirty_simple_field():
-    tm = TestModel.objects.create()
+    tm = ModelTest.objects.create()
 
     tm.characters = 'new_character'
 
@@ -24,14 +24,14 @@ def test_save_dirty_simple_field():
 
     # We also check that the value has been correctly updated by our custom function
     assert tm.get_dirty_fields() == {}
-    assert TestModel.objects.get(pk=tm.pk).characters == 'new_character_2'
+    assert ModelTest.objects.get(pk=tm.pk).characters == 'new_character_2'
 
 
 @pytest.mark.django_db
 def test_save_dirty_related_field():
-    tm1 = TestModel.objects.create()
-    tm2 = TestModel.objects.create()
-    tmfm = TestMixedFieldsModel.objects.create(fkey=tm1)
+    tm1 = ModelTest.objects.create()
+    tm2 = ModelTest.objects.create()
+    tmfm = MixedFieldsModelTest.objects.create(fkey=tm1)
 
     tmfm.fkey = tm2
 
@@ -49,12 +49,12 @@ def test_save_dirty_related_field():
 
     # We also check that the value has been correctly updated by our custom function
     assert tmfm.get_dirty_fields() == {}
-    assert TestMixedFieldsModel.objects.get(pk=tmfm.pk).fkey_id == tm1.id
+    assert MixedFieldsModelTest.objects.get(pk=tmfm.pk).fkey_id == tm1.id
 
 
 @pytest.mark.django_db
 def test_save_only_specific_fields_should_let_other_fields_dirty():
-    tm = TestModel.objects.create(boolean=True, characters='dummy')
+    tm = ModelTest.objects.create(boolean=True, characters='dummy')
 
     tm.boolean = False
     tm.characters = 'new_dummy'
@@ -67,7 +67,7 @@ def test_save_only_specific_fields_should_let_other_fields_dirty():
 
 @pytest.mark.django_db
 def test_save_empty_update_fields_wont_reset_dirty_state():
-    tm = TestModel.objects.create(boolean=True, characters='dummy')
+    tm = ModelTest.objects.create(boolean=True, characters='dummy')
 
     tm.boolean = False
     tm.characters = 'new_dummy'
@@ -84,9 +84,9 @@ def test_save_empty_update_fields_wont_reset_dirty_state():
 
 @pytest.mark.django_db
 def test_handle_foreignkeys_id_field_in_update_fields():
-    tm1 = TestModel.objects.create(boolean=True, characters='dummy')
-    tm2 = TestModel.objects.create(boolean=True, characters='dummy')
-    tmwfk = TestModelWithForeignKey.objects.create(fkey=tm1)
+    tm1 = ModelTest.objects.create(boolean=True, characters='dummy')
+    tm2 = ModelTest.objects.create(boolean=True, characters='dummy')
+    tmwfk = ModelWithForeignKeyTest.objects.create(fkey=tm1)
 
     tmwfk.fkey = tm2
     assert tmwfk.get_dirty_fields(check_relationship=True) == {'fkey': tm1.pk}
@@ -97,9 +97,9 @@ def test_handle_foreignkeys_id_field_in_update_fields():
 
 @pytest.mark.django_db
 def test_correctly_handle_foreignkeys_id_field_in_update_fields():
-    tm1 = TestModel.objects.create(boolean=True, characters='dummy')
-    tm2 = TestModel.objects.create(boolean=True, characters='dummy')
-    tmwfk = TestModelWithForeignKey.objects.create(fkey=tm1)
+    tm1 = ModelTest.objects.create(boolean=True, characters='dummy')
+    tm2 = ModelTest.objects.create(boolean=True, characters='dummy')
+    tmwfk = ModelWithForeignKeyTest.objects.create(fkey=tm1)
 
     tmwfk.fkey_id = tm2.pk
     assert tmwfk.get_dirty_fields(check_relationship=True) == {'fkey': tm1.pk}
@@ -110,9 +110,9 @@ def test_correctly_handle_foreignkeys_id_field_in_update_fields():
 
 @pytest.mark.django_db
 def test_save_deferred_field_with_update_fields():
-    TestModel.objects.create()
+    ModelTest.objects.create()
 
-    tm = TestModel.objects.defer('boolean').first()
+    tm = ModelTest.objects.defer('boolean').first()
     tm.boolean = False
     # Test that providing a deferred field to the update_fields
     # save parameter doesn't raise a KeyError anymore.
@@ -121,8 +121,8 @@ def test_save_deferred_field_with_update_fields():
 
 @pytest.mark.django_db
 def test_deferred_field_was_not_dirty():
-    TestModel.objects.create()
-    tm = TestModel.objects.defer('boolean').first()
+    ModelTest.objects.create()
+    tm = ModelTest.objects.defer('boolean').first()
     tm.boolean = False
     assert tm.get_dirty_fields() == {}
 
@@ -134,8 +134,8 @@ def test_save_deferred_field_with_update_fields_behaviour():
     a field cannot be considered deferred anymore.
     """
 
-    TestModel.objects.create()
-    tm = TestModel.objects.defer('boolean').first()
+    ModelTest.objects.create()
+    tm = ModelTest.objects.defer('boolean').first()
     tm.save(update_fields=['boolean'])
     tm.boolean = False
     assert tm.get_dirty_fields() == {'boolean': True}

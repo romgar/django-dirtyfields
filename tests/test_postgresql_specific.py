@@ -7,9 +7,9 @@ from tests.utils import is_postgresql_env_with_json_field
                     reason="requires postgresql >= 9.4.0")
 @pytest.mark.django_db
 def test_dirty_json_field():
-    from tests.models import TestModelWithJSONField
+    from tests.models import ModelWithJSONBFieldTest
 
-    tm = TestModelWithJSONField.objects.create(json_field={'data': [1, 2, 3]})
+    tm = ModelWithJSONBFieldTest.objects.create(json_field={'data': [1, 2, 3]})
 
     data = tm.json_field['data']
     data.append(4)

@@ -3,7 +3,7 @@ import resource
 
 import pytest
 
-from .models import TestModel as DirtyMixinModel
+from .models import ModelTest as DirtyMixinModel
 
 pytestmark = pytest.mark.django_db
 
