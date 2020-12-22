@@ -1,10 +1,11 @@
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils import timezone
+from jsonfield import JSONField as JSONFieldThirdParty
 
 from dirtyfields import DirtyFieldsMixin
 from dirtyfields.compare import timezone_support_compare
-from tests.utils import is_postgresql_env_with_json_field
+from tests.utils import is_postgresql_env_with_jsonb_field
 
 
 class ModelTest(DirtyFieldsMixin, models.Model):
@@ -116,11 +117,15 @@ class DoubleForeignKeyModelTest(DirtyFieldsMixin, models.Model):
                               on_delete=models.CASCADE)
 
 
-if is_postgresql_env_with_json_field():
-    from django.contrib.postgres.fields import JSONField
+if is_postgresql_env_with_jsonb_field():
+    from django.contrib.postgres.fields import JSONField as JSONBField
 
     class ModelWithJSONBFieldTest(DirtyFieldsMixin, models.Model):
-        json_field = JSONField()
+        jsonb_field = JSONBField()
+
+
+class ModelWithJSONFieldThirdPartyTest(DirtyFieldsMixin, models.Model):
+    json_field_third_party = JSONFieldThirdParty()
 
 
 class ModelWithSpecifiedFieldsTest(DirtyFieldsMixin, models.Model):

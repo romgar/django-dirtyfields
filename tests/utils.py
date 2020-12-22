@@ -55,7 +55,7 @@ class assert_select_number_queries_on_model(assert_number_of_queries_on_regex):
         super(assert_select_number_queries_on_model, self).__init__(regex, number)
 
 
-def is_postgresql_env_with_json_field():
+def is_postgresql_env_with_jsonb_field():
     try:
         PG_VERSION = connection.pg_version
     except AttributeError:
