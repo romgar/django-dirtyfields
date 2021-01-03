@@ -64,7 +64,6 @@ script:
 install:
   - pip install tox
   - pip install coveralls
-  - pip install -e .
 
 after_success:
   - if test "$TOXENV" = "py36-django111-coverage"; then coveralls; fi
