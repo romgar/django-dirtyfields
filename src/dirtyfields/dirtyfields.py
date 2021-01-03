@@ -7,7 +7,6 @@ from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
 
 from .compare import raw_compare, compare_states, normalise_value
-from .compat import is_buffer
 
 
 def get_m2m_with_model(given_model):
@@ -86,7 +85,7 @@ class DirtyFieldsMixin(object):
                 # The current value is not valid so we cannot convert it
                 pass
 
-            if is_buffer(field_value):
+            if isinstance(field_value, memoryview):
                 # psycopg2 returns uncopyable type buffer for bytea
                 field_value = bytes(field_value)
 
