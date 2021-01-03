@@ -9,4 +9,5 @@ docs/_static/*
 .tox
 .cache
 .coverage
+htmlcov
 .idea
