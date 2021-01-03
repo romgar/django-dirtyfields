@@ -107,7 +107,7 @@ If you want to check these relations, you should set ``ENABLE_M2M_CHECK`` to ``T
     False
     >>> tm.get_dirty_fields(check_m2m={'m2m_field': set([tm2.id])})
     {}
-    >>> tm.get_dirty_fields(check_m2m={'m2m_field': set(["dummy_value])})
+    >>> tm.get_dirty_fields(check_m2m={'m2m_field': set(["dummy_value"])})
     {'m2m_field': set([tm2.id])}
 
 
