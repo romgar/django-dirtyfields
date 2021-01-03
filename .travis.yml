@@ -7,47 +7,45 @@ jobs:
   include:
     # Python version is just for the look on travis.
     - python: 3.6
-      env: TOXENV=py36-django111
+      env: TOXENV=py36-django111-postgresql
     - python: 3.7
-      env: TOXENV=py37-django111
+      env: TOXENV=py37-django111-postgresql
     - python: 3.6
-      env: TOXENV=py36-django20
+      env: TOXENV=py36-django20-postgresql
     - python: 3.7
-      env: TOXENV=py37-django20
+      env: TOXENV=py37-django20-postgresql
     - python: 3.6
-      env: TOXENV=py36-django21
+      env: TOXENV=py36-django21-postgresql
     - python: 3.7
-      env: TOXENV=py37-django21
+      env: TOXENV=py37-django21-postgresql
     - python: 3.6
-      env: TOXENV=py36-django22
+      env: TOXENV=py36-django22-postgresql
     - python: 3.7
-      env: TOXENV=py37-django22
+      env: TOXENV=py37-django22-postgresql
     - python: 3.8
-      env: TOXENV=py38-django22
+      env: TOXENV=py38-django22-postgresql
     - python: 3.9
-      env: TOXENV=py39-django22
+      env: TOXENV=py39-django22-postgresql
     - python: 3.6
-      env: TOXENV=py36-django30
+      env: TOXENV=py36-django30-postgresql
     - python: 3.7
-      env: TOXENV=py37-django30
+      env: TOXENV=py37-django30-postgresql
     - python: 3.8
-      env: TOXENV=py38-django30
+      env: TOXENV=py38-django30-postgresql
     - python: 3.9
-      env: TOXENV=py39-django30
+      env: TOXENV=py39-django30-postgresql
     - python: 3.6
-      env: TOXENV=py36-django31
+      env: TOXENV=py36-django31-postgresql
     - python: 3.7
-      env: TOXENV=py37-django31
+      env: TOXENV=py37-django31-postgresql
     - python: 3.8
-      env: TOXENV=py38-django31
+      env: TOXENV=py38-django31-postgresql
     - python: 3.9
-      env: TOXENV=py39-django31
+      env: TOXENV=py39-django31-postgresql
+    - python: 3.6
+      env: TOXENV=py36-django111-sqlite
     - python: 3.6
       env: TOXENV=py36-flake8
-    - python: 3.6
-      env: TOXENV=py36-django111-coverage
-    - python: 3.6
-      env: TOXENV=py36-django111-postgresql
 
 services:
   - postgresql
@@ -64,10 +62,10 @@ script:
 install:
   - pip install tox
   - pip install coveralls
-  - pip install -e .
 
 after_success:
-  - if test "$TOXENV" = "py36-django111-coverage"; then coveralls; fi
+  # only upload coverage report to coveralls from one job.
+  - if test "$TOXENV" = "py36-django111-postgresql"; then coveralls; fi
 
 deploy:
   edge: true  # opt in to dpl v2

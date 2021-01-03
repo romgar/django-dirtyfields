@@ -27,7 +27,7 @@ To use ``django-dirtyfields``, you need to:
     from django.db import models
     from dirtyfields import DirtyFieldsMixin
 
-    class TestModel(DirtyFieldsMixin, models.Model):
+    class ModelTest(DirtyFieldsMixin, models.Model):
         """A simple test model to test dirty fields mixin with"""
         boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
@@ -43,8 +43,8 @@ Examples
 
 ::
 
-    >>> from tests.models import TestModel
-    >>> tm = TestModel.objects.create(boolean=True,characters="testing")
+    >>> from tests.models import ModelTest
+    >>> tm = ModelTest.objects.create(boolean=True,characters="testing")
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
@@ -64,8 +64,8 @@ By default, dirty functions are not checking foreign keys. If you want to also t
 
 ::
 
-    >>> from tests.models import TestModel
-    >>> tm = TestModel.objects.create(fkey=obj1)
+    >>> from tests.models import ModelTest
+    >>> tm = ModelTest.objects.create(fkey=obj1)
     >>> tm.is_dirty()
     False
     >>> tm.get_dirty_fields()
@@ -93,13 +93,13 @@ If you want to check these relations, you should set ``ENABLE_M2M_CHECK`` to ``T
 
 ::
 
-    class TestM2MModel(DirtyFieldsMixin, models.Model):
+    class Many2ManyModelTest(DirtyFieldsMixin, models.Model):
         ENABLE_M2M_CHECK = True
         m2m_field = models.ManyToManyField(AnotherModel)
 
-    >>> from tests.models import TestM2MModel
-    >>> tm = TestM2MModel.objects.create()
-    >>> tm2 = TestModel.objects.create()
+    >>> from tests.models import Many2ManyModelTest
+    >>> tm = Many2ManyModelTest.objects.create()
+    >>> tm2 = ModelTest.objects.create()
     >>> tm.is_dirty()
     False
     >>> tm.m2m_field.add(tm2)
@@ -124,13 +124,13 @@ If you want to check a limited set of model fields, you should set ``FIELDS_TO_C
 
 ::
 
-    class TestModelWithSpecifiedFields(DirtyFieldsMixin, models.Model):
+    class ModelWithSpecifiedFieldsTest(DirtyFieldsMixin, models.Model):
         boolean1 = models.BooleanField(default=True)
         boolean2 = models.BooleanField(default=True)
         FIELDS_TO_CHECK = ['boolean1']
 
-    >>> from tests.models import TestModelWithSpecifiedFields
-    >>> tm = TestModelWithSpecifiedFields.objects.create()
+    >>> from tests.models import ModelWithSpecifiedFieldsTest
+    >>> tm = ModelWithSpecifiedFieldsTest.objects.create()
 
     >>> tm.boolean1 = False
     >>> tm.boolean2 = False
@@ -185,7 +185,7 @@ You can now define how you want to compare 2 values by passing a function on Dir
         # Your custom comparison code here
         return new_value == old_value
 
-    class TestModel(DirtyFieldsMixin, models.Model):
+    class ModelTest(DirtyFieldsMixin, models.Model):
         compare_function = (your_function, {'param1': 5})
 
 
@@ -220,7 +220,7 @@ being passed as well:
     def get_user_timezone():
         return 'Europe/London'
 
-    class TestModel(DirtyFieldsMixin, models.Model):
+    class ModelTest(DirtyFieldsMixin, models.Model):
         normalise_function = (your_normalise_function, {'timezone': get_user_timezone()})
 
 
