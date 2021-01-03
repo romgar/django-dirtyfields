@@ -5,8 +5,10 @@ Django Dirty Fields
 .. image:: https://badges.gitter.im/Join%20Chat.svg
    :alt: Join the chat at https://gitter.im/romgar/django-dirtyfields
    :target: https://gitter.im/romgar/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+.. image:: https://img.shields.io/pypi/v/django-dirtyfields.svg
+   :target: https://pypi.org/project/django-dirtyfields/
 .. image:: https://travis-ci.org/romgar/django-dirtyfields.svg?branch=develop
-    :target: https://travis-ci.org/romgar/django-dirtyfields?branch=develop
+   :target: https://travis-ci.org/romgar/django-dirtyfields?branch=develop
 .. image:: https://coveralls.io/repos/romgar/django-dirtyfields/badge.svg?branch=develop
    :target: https://coveralls.io/r/romgar/django-dirtyfields?branch=develop
 .. image:: https://readthedocs.org/projects/django-dirtyfields/badge/?version=develop
