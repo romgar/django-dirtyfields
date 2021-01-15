@@ -1,4 +1,5 @@
-pytest==3.0.6
-pytest-django==3.1.2
-jsonfield==2.0.2
+pytest==6.2.1
 pytz
+# Because we test a wide range of Django versions, leave versions of these unspecified.
+pytest-django
+jsonfield

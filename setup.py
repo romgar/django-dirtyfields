@@ -12,8 +12,12 @@ with open("README.rst", "r") as frm:
 
 setup(
     name="django-dirtyfields",
-    version="1.4.1",
-    url='http://github.com/romgar/django-dirtyfields',
+    version="1.5.0",
+    url='https://github.com/romgar/django-dirtyfields',
+    project_urls={
+        "Documentation": "https://django-dirtyfields.readthedocs.org/en/develop/",
+        "Changelog": "https://github.com/romgar/django-dirtyfields/blob/develop/ChangeLog.rst",
+    },
     license='BSD',
     description=("Tracking dirty fields on a Django model instance "
                  "(actively maintained)"),

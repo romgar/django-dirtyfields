@@ -1,13 +1,13 @@
 from decimal import Decimal
 import pytest
 
-from .models import (TestModel, TestModelWithForeignKey, TestModelWithOneToOneField,
-                     SubclassModel, TestModelWithDecimalField)
+from .models import (ModelTest, ModelWithForeignKeyTest, ModelWithOneToOneFieldTest,
+                     SubclassModelTest, ModelWithDecimalFieldTest)
 
 
 @pytest.mark.django_db
 def test_is_dirty_function():
-    tm = TestModel.objects.create()
+    tm = ModelTest.objects.create()
 
     # If the object has just been saved in the db, fields are not dirty
     assert tm.get_dirty_fields() == {}
@@ -22,7 +22,7 @@ def test_is_dirty_function():
 
 @pytest.mark.django_db
 def test_dirty_fields():
-    tm = TestModel()
+    tm = ModelTest()
 
     # Initial state is dirty, so should return all fields
     assert tm.get_dirty_fields() == {'boolean': True, 'characters': ''}
@@ -50,7 +50,7 @@ def test_dirty_fields():
 
 @pytest.mark.django_db
 def test_dirty_fields_for_notsaved_pk():
-    tm = TestModel(id=1)
+    tm = ModelTest(id=1)
 
     # Initial state is dirty, so should return all fields
     assert tm.get_dirty_fields() == {'id': 1, 'boolean': True, 'characters': ''}
@@ -63,9 +63,9 @@ def test_dirty_fields_for_notsaved_pk():
 
 @pytest.mark.django_db
 def test_relationship_option_for_foreign_key():
-    tm1 = TestModel.objects.create()
-    tm2 = TestModel.objects.create()
-    tm = TestModelWithForeignKey.objects.create(fkey=tm1)
+    tm1 = ModelTest.objects.create()
+    tm2 = ModelTest.objects.create()
+    tm = ModelWithForeignKeyTest.objects.create(fkey=tm1)
 
     # Let's change the foreign key value and see what happens
     tm.fkey = tm2
@@ -81,9 +81,9 @@ def test_relationship_option_for_foreign_key():
 
 @pytest.mark.django_db
 def test_relationship_option_for_one_to_one_field():
-    tm1 = TestModel.objects.create()
-    tm2 = TestModel.objects.create()
-    tm = TestModelWithOneToOneField.objects.create(o2o=tm1)
+    tm1 = ModelTest.objects.create()
+    tm2 = ModelTest.objects.create()
+    tm = ModelWithOneToOneFieldTest.objects.create(o2o=tm1)
 
     # Let's change the one to one field and see what happens
     tm.o2o = tm2
@@ -99,7 +99,7 @@ def test_relationship_option_for_one_to_one_field():
 
 @pytest.mark.django_db
 def test_non_local_fields():
-    subclass = SubclassModel.objects.create(characters='foo')
+    subclass = SubclassModelTest.objects.create(characters='foo')
     subclass.characters = 'spam'
 
     assert subclass.get_dirty_fields() == {'characters': 'foo'}
@@ -109,7 +109,7 @@ def test_non_local_fields():
 def test_decimal_field_correctly_managed():
     # Non regression test case for bug:
     # https://github.com/romgar/django-dirtyfields/issues/4
-    tm = TestModelWithDecimalField.objects.create(decimal_field=Decimal(2.00))
+    tm = ModelWithDecimalFieldTest.objects.create(decimal_field=Decimal(2.00))
 
     tm.decimal_field = 2.0
     assert tm.get_dirty_fields() == {}
@@ -120,9 +120,9 @@ def test_decimal_field_correctly_managed():
 
 @pytest.mark.django_db
 def test_deferred_fields():
-    TestModel.objects.create()
+    ModelTest.objects.create()
 
-    qs = TestModel.objects.only('boolean')
+    qs = ModelTest.objects.only('boolean')
 
     tm = qs[0]
     tm.boolean = False
@@ -135,7 +135,7 @@ def test_deferred_fields():
 
 def test_validationerror():
     # Initialize the model with an invalid value
-    tm = TestModel(boolean=None)
+    tm = ModelTest(boolean=None)
 
     # Should not raise ValidationError
     assert tm.get_dirty_fields() == {'boolean': None, 'characters': ''}
@@ -146,7 +146,7 @@ def test_validationerror():
 
 @pytest.mark.django_db
 def test_verbose_mode():
-    tm = TestModel.objects.create()
+    tm = ModelTest.objects.create()
     tm.boolean = False
 
     assert tm.get_dirty_fields(verbose=True) == {
@@ -156,7 +156,7 @@ def test_verbose_mode():
 
 @pytest.mark.django_db
 def test_verbose_mode_on_adding():
-    tm = TestModel()
+    tm = ModelTest()
 
     assert tm.get_dirty_fields(verbose=True) == {
         'boolean': {'saved': None, 'current': True},
@@ -166,8 +166,8 @@ def test_verbose_mode_on_adding():
 
 @pytest.mark.django_db
 def test_refresh_from_db():
-    tm = TestModel.objects.create()
-    alias = TestModel.objects.get(pk=tm.pk)
+    tm = ModelTest.objects.create()
+    alias = ModelTest.objects.get(pk=tm.pk)
     alias.boolean = False
     alias.save()
 
@@ -177,7 +177,7 @@ def test_refresh_from_db():
 
 @pytest.mark.django_db
 def test_refresh_from_db_particular_fields():
-    tm = TestModel.objects.create(characters="old value")
+    tm = ModelTest.objects.create(characters="old value")
     tm.boolean = False
     tm.characters = "new value"
     assert tm.get_dirty_fields() == {"boolean": True, "characters": "old value"}
@@ -190,7 +190,7 @@ def test_refresh_from_db_particular_fields():
 
 @pytest.mark.django_db
 def test_refresh_from_db_no_fields():
-    tm = TestModel.objects.create(characters="old value")
+    tm = ModelTest.objects.create(characters="old value")
     tm.boolean = False
     tm.characters = "new value"
     assert tm.get_dirty_fields() == {"boolean": True, "characters": "old value"}
