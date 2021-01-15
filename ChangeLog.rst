@@ -6,6 +6,11 @@ ChangeLog
 master
 ------
 
+No changes yet
+
+1.5.0 (15/01/2021)
+------------------
+
 *New:*
     - Drop support of Python 2.7
     - Drop support of Python 3.5
