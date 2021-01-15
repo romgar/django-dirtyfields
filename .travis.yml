@@ -6,6 +6,7 @@ language: python
 jobs:
   include:
     # Python version is just for the look on travis.
+    # Test the full python/django matrix with postgresql
     - python: 3.6
       env: TOXENV=py36-django111-postgresql
     - python: 3.7
@@ -42,8 +43,14 @@ jobs:
       env: TOXENV=py38-django31-postgresql
     - python: 3.9
       env: TOXENV=py39-django31-postgresql
+    # Test against sqlite once for each major django version.
     - python: 3.6
       env: TOXENV=py36-django111-sqlite
+    - python: 3.7
+      env: TOXENV=py37-django22-sqlite
+    - python: 3.8
+      env: TOXENV=py38-django31-sqlite
+    # Check flake8 once.
     - python: 3.6
       env: TOXENV=py36-flake8
 
