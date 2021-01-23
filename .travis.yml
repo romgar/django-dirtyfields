@@ -8,7 +8,7 @@ jobs:
     # Python version is just for the look on travis.
     # Test the full python/django matrix with postgresql
     - python: 3.6
-      env: TOXENV=py36-django111-postgresql
+      env: TOXENV=py36-django111-postgresql COLLECT_COVERAGE=true
     - python: 3.7
       env: TOXENV=py37-django111-postgresql
     - python: 3.6
@@ -82,7 +82,7 @@ install:
 
 after_success:
   # only upload coverage report to coveralls from one job.
-  - if test "$TOXENV" = "py36-django111-postgresql"; then coveralls; fi
+  - if test "$COLLECT_COVERAGE" = "true"; then coveralls; fi
 
 deploy:
   edge: true  # opt in to dpl v2
