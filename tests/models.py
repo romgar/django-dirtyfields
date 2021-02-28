@@ -155,3 +155,7 @@ class ModelWithM2MAndSpecifiedFieldsTest(DirtyFieldsMixin, models.Model):
 
 class BinaryModelTest(DirtyFieldsMixin, models.Model):
     bytea = models.BinaryField()
+
+
+class FileFieldModel(DirtyFieldsMixin, models.Model):
+    file1 = models.FileField(upload_to="file1/")
