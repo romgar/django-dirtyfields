@@ -6,7 +6,8 @@ ChangeLog
 master
 ------
 
-No changes yet
+*New:*
+    - Remove pytz as a dependency.
 
 1.5.0 (15/01/2021)
 ------------------
