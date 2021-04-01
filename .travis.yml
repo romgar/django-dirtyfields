@@ -64,9 +64,6 @@ jobs:
     - python: 3.6
       env: TOXENV=py36-flake8
 
-services:
-  - postgresql
-
 addons:
   postgresql: "9.6"
 
