@@ -52,13 +52,13 @@ jobs:
       env: TOXENV=py38-django31-sqlite
     # Test on ppc64le once for each major django version.
     - python: 3.6
-      env: TOXENV=py36-django111-postgresql
+      env: TOXENV=py36-django111-sqlite
       arch: ppc64le
     - python: 3.7
-      env: TOXENV=py37-django22-postgresql
+      env: TOXENV=py37-django22-sqlite
       arch: ppc64le
     - python: 3.8
-      env: TOXENV=py38-django31-postgresql
+      env: TOXENV=py38-django31-sqlite
       arch: ppc64le
     # Check flake8 once.
     - python: 3.6
