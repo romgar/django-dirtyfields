@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.signals import pre_save
-from django.utils import timezone
+from django.utils import timezone as django_timezone
 from jsonfield import JSONField as JSONFieldThirdParty
 
 from dirtyfields import DirtyFieldsMixin
@@ -61,12 +61,15 @@ class ExpressionModelTest(DirtyFieldsMixin, models.Model):
 
 class DatetimeModelTest(DirtyFieldsMixin, models.Model):
     compare_function = (timezone_support_compare, {})
-    datetime_field = models.DateTimeField(default=timezone.now)
+    datetime_field = models.DateTimeField(default=django_timezone.now)
 
 
 class CurrentDatetimeModelTest(DirtyFieldsMixin, models.Model):
-    compare_function = (timezone_support_compare, {'timezone_to_set': timezone.get_current_timezone()})
-    datetime_field = models.DateTimeField(default=timezone.now)
+    compare_function = (
+        timezone_support_compare,
+        {'timezone_to_set': django_timezone.get_current_timezone()},
+    )
+    datetime_field = models.DateTimeField(default=django_timezone.now)
 
 
 class Many2ManyModelTest(DirtyFieldsMixin, models.Model):
