@@ -1,4 +1,5 @@
 import re
+from collections import namedtuple
 
 from django.conf import settings
 from django.db import connection
@@ -62,3 +63,7 @@ def is_postgresql_env_with_jsonb_field():
         PG_VERSION = 0
 
     return PG_VERSION >= 90400
+
+
+# Will compare equal with a django `FieldFile` instance in tests.
+FakeFieldFile = namedtuple("FakeFieldFile", ["name"])
