@@ -68,7 +68,8 @@ addons:
   postgresql: "9.6"
 
 before_script:
-  - psql -c 'create database dirtyfields_test;' -U postgres
+  # only create postgres database if needed.
+  - if [[ $TOXENV =~ "postgresql" ]]; then psql -c 'create database dirtyfields_test;' -U postgres; fi
 
 script:
   - tox
