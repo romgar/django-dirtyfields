@@ -6,12 +6,16 @@ Django Dirty Fields
    :alt: Join the chat at https://gitter.im/romgar/django-dirtyfields
    :target: https://gitter.im/romgar/django-dirtyfields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 .. image:: https://img.shields.io/pypi/v/django-dirtyfields.svg
+   :alt: Published PyPI version
    :target: https://pypi.org/project/django-dirtyfields/
 .. image:: https://travis-ci.org/romgar/django-dirtyfields.svg?branch=develop
-   :target: https://travis-ci.org/romgar/django-dirtyfields?branch=develop
-.. image:: https://coveralls.io/repos/romgar/django-dirtyfields/badge.svg?branch=develop
-   :target: https://coveralls.io/r/romgar/django-dirtyfields?branch=develop
+   :alt: Travis CI status
+   :target: https://travis-ci.org/romgar/django-dirtyfields
+.. image:: https://coveralls.io/repos/github/romgar/django-dirtyfields/badge.svg?branch=develop
+   :alt: Coveralls code coverage status
+   :target: https://coveralls.io/github/romgar/django-dirtyfields?branch=develop
 .. image:: https://readthedocs.org/projects/django-dirtyfields/badge/?version=develop
+   :alt: Read the Docs documentation status
    :target: https://django-dirtyfields.readthedocs.org/en/develop/?badge=develop
 
 Tracking dirty fields on a Django model instance.
