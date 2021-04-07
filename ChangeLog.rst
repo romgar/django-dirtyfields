@@ -6,9 +6,18 @@ ChangeLog
 master
 ------
 
+No changes yet
+
+.. _v1.6.0:
+
+1.6.0 (07/04/2021)
+------------------
+
 *New:*
     - Remove pytz as a dependency.
     - Confirm support of Django 3.2
+
+.. _v1.5.0:
 
 1.5.0 (15/01/2021)
 ------------------
