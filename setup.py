@@ -12,7 +12,7 @@ with open("README.rst", "r") as frm:
 
 setup(
     name="django-dirtyfields",
-    version="1.5.0",
+    version="1.6.0",
     url='https://github.com/romgar/django-dirtyfields',
     project_urls={
         "Documentation": "https://django-dirtyfields.readthedocs.org/en/develop/",
