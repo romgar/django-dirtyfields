@@ -8,6 +8,7 @@ master
 
 *New:*
     - Remove pytz as a dependency.
+    - Confirm support of Django 3.2
 
 1.5.0 (15/01/2021)
 ------------------
