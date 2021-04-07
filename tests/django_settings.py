@@ -1,5 +1,6 @@
 # Minimum settings that are needed to run django test suite
 import os
+import tempfile
 
 SECRET_KEY = 'WE DONT CARE ABOUT IT'
 
@@ -26,3 +27,5 @@ else:
     }
 
 INSTALLED_APPS = ('tests', )
+
+MEDIA_ROOT = tempfile.mkdtemp(prefix="django-dirtyfields-test-media-root-")

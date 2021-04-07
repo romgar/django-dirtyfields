@@ -1,3 +1,11 @@
+[tool.pytest.ini_options]
+django_find_project = false
+DJANGO_SETTINGS_MODULE = 'tests.django_settings'
+
 [tool.coverage.run]
 branch = true
 source = ['dirtyfields']
+
+[tool.coverage.report]
+show_missing = true
+precision = 2

@@ -1,5 +1,5 @@
 os: linux
-dist: xenial
+dist: bionic
 
 language: python
 
@@ -8,7 +8,7 @@ jobs:
     # Python version is just for the look on travis.
     # Test the full python/django matrix with postgresql
     - python: 3.6
-      env: TOXENV=py36-django111-postgresql
+      env: TOXENV=py36-django111-postgresql COLLECT_COVERAGE=true
     - python: 3.7
       env: TOXENV=py37-django111-postgresql
     - python: 3.6
@@ -43,25 +43,41 @@ jobs:
       env: TOXENV=py38-django31-postgresql
     - python: 3.9
       env: TOXENV=py39-django31-postgresql
+    - python: 3.6
+      env: TOXENV=py36-django32-postgresql
+    - python: 3.7
+      env: TOXENV=py37-django32-postgresql
+    - python: 3.8
+      env: TOXENV=py38-django32-postgresql
+    - python: 3.9
+      env: TOXENV=py39-django32-postgresql
     # Test against sqlite once for each major django version.
     - python: 3.6
       env: TOXENV=py36-django111-sqlite
     - python: 3.7
       env: TOXENV=py37-django22-sqlite
     - python: 3.8
-      env: TOXENV=py38-django31-sqlite
+      env: TOXENV=py38-django32-sqlite
+    # Test on ppc64le once for each major django version.
+    - python: 3.6
+      env: TOXENV=py36-django111-sqlite
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37-django22-sqlite
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38-django32-sqlite
+      arch: ppc64le
     # Check flake8 once.
     - python: 3.6
       env: TOXENV=py36-flake8
-
-services:
-  - postgresql
 
 addons:
   postgresql: "9.6"
 
 before_script:
-  - psql -c 'create database dirtyfields_test;' -U postgres
+  # only create postgres database if needed.
+  - if [[ $TOXENV =~ "postgresql" ]]; then psql -c 'create database dirtyfields_test;' -U postgres; fi
 
 script:
   - tox
@@ -72,7 +88,7 @@ install:
 
 after_success:
   # only upload coverage report to coveralls from one job.
-  - if test "$TOXENV" = "py36-django111-postgresql"; then coveralls; fi
+  - if test "$COLLECT_COVERAGE" = "true"; then coveralls; fi
 
 deploy:
   edge: true  # opt in to dpl v2
