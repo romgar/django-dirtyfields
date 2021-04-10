@@ -8,6 +8,7 @@ master
 
 *New:*
     - Build and publish a wheel to PyPI.
+    - Provide programmatically accessible package version number.
 
 .. _v1.6.0:
 
