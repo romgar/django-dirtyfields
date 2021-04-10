@@ -6,7 +6,10 @@ ChangeLog
 master
 ------
 
-No changes yet
+*New:*
+    - Build and publish a wheel to PyPI.
+    - Provide programmatically accessible package version number.
+    - Migrate package metadata from setup.py to setup.cfg and specify the PEP-517 build-backend to use with the project.
 
 .. _v1.6.0:
 

@@ -16,7 +16,7 @@ Django Dirty Fields
    :target: https://coveralls.io/github/romgar/django-dirtyfields?branch=develop
 .. image:: https://readthedocs.org/projects/django-dirtyfields/badge/?version=develop
    :alt: Read the Docs documentation status
-   :target: https://django-dirtyfields.readthedocs.org/en/develop/?badge=develop
+   :target: https://django-dirtyfields.readthedocs.io/en/develop/
 
 Tracking dirty fields on a Django model instance.
 Dirty means that field in-memory and database values are different.
@@ -85,7 +85,4 @@ Example
     {'boolean': True}
 
 
-Consult the `full documentation <https://django-dirtyfields.readthedocs.org/en/develop/>`_ for more informations.
-
-
-
+Consult the `full documentation <https://django-dirtyfields.readthedocs.io/>`_ for more information.

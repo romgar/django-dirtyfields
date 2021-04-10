@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools >= 47.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.pytest.ini_options]
 django_find_project = false
 DJANGO_SETTINGS_MODULE = 'tests.django_settings'
