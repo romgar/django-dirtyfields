@@ -11,3 +11,5 @@ docs/_static/*
 .coverage
 htmlcov
 .idea
+dist/*
+build/*
