@@ -6,7 +6,8 @@ ChangeLog
 master
 ------
 
-No changes yet
+*New:*
+    - Build and publish a wheel to PyPI.
 
 .. _v1.6.0:
 
