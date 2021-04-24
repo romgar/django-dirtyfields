@@ -48,6 +48,12 @@ class DirtyFieldsMixin(object):
                     name=self.__class__.__name__))
 
     def _as_dict(self, check_relationship, include_primary_key=True):
+        """
+        Capture the model fields' state as a dictionary.
+
+        Only capture values we are confident are in the database, or would be
+        saved to the database if self.save() is called.
+        """
         all_field = {}
 
         deferred_fields = self.get_deferred_fields()
@@ -165,7 +171,18 @@ def reset_state(sender, instance, **kwargs):
                 if field.get_attname() in instance.get_deferred_fields():
                     continue
 
-                instance._original_state[field.name] = new_state[field.name]
+                if field.name in new_state:
+                    instance._original_state[field.name] = (
+                        new_state[field.name]
+                    )
+                else:
+                    # If we are here it means the field was updated in the DB,
+                    # and we don't know the new value in the database.
+                    # e.g it was updated with an F() expression.
+                    # Because we now don't know the value in the DB,
+                    # we remove it from _original_state, because we can't tell
+                    # if its dirty or not.
+                    del instance._original_state[field.name]
     else:
         instance._original_state = new_state
 

@@ -11,6 +11,10 @@ master
     - Provide programmatically accessible package version number.
     - Migrate package metadata from setup.py to setup.cfg and specify the PEP-517 build-backend to use with the project.
 
+*Bugfix:*
+    - Fixed a :code:`KeyError` that happened when saving a Model with :code:`update_fields` specified after updating a
+      field value with an :code:`F` object (#118).
+
 .. _v1.6.0:
 
 1.6.0 (07/04/2021)
