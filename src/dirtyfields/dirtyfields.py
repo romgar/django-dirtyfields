@@ -48,6 +48,12 @@ class DirtyFieldsMixin(object):
                     name=self.__class__.__name__))
 
     def _as_dict(self, check_relationship, include_primary_key=True):
+        """
+        Capture the model fields' state as a dictionary.
+
+        Only capture values we are confident are in the database, or would be
+        saved to the database if self.save() is called.
+        """
         all_field = {}
 
         deferred_fields = self.get_deferred_fields()
