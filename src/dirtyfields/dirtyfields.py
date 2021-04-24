@@ -134,7 +134,10 @@ class DirtyFieldsMixin(object):
 
         if not verbose:
             # Keeps backward compatibility with previous function return
-            modified_fields = {key: self.normalise_function[0](value['saved']) for key, value in modified_fields.items()}
+            modified_fields = {
+                key: self.normalise_function[0](value['saved'])
+                for key, value in modified_fields.items()
+            }
 
         return modified_fields
 
