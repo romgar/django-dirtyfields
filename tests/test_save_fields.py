@@ -1,6 +1,13 @@
 import pytest
 
-from .models import ModelTest, MixedFieldsModelTest, ModelWithForeignKeyTest
+from django.db.models import F
+
+from .models import (
+    ExpressionModelTest,
+    MixedFieldsModelTest,
+    ModelTest,
+    ModelWithForeignKeyTest,
+)
 from .utils import assert_number_of_queries_on_regex
 
 
@@ -139,3 +146,68 @@ def test_save_deferred_field_with_update_fields_behaviour():
     tm.save(update_fields=['boolean'])
     tm.boolean = False
     assert tm.get_dirty_fields() == {'boolean': True}
+
+
+@pytest.mark.django_db
+def test_get_dirty_fields_when_saving_with_f_objects():
+    """
+    This documents how get_dirty_fields() behaves when updating model fields
+    with F objects.
+    """
+
+    tm = ExpressionModelTest.objects.create(counter=0)
+    assert tm.counter == 0
+    assert tm.get_dirty_fields() == {}
+
+    tm.counter = F("counter") + 1
+    # tm.counter field is not considered dirty because it doesn't have a simple
+    # value in memory we can compare to the original value.
+    # i.e. we don't know what value it will be in the database after the F
+    # object is translated into SQL.
+    assert tm.get_dirty_fields() == {}
+
+    tm.save()
+    # tm.counter is still an F object after save() - we don't know the new
+    # value in the database.
+    assert tm.get_dirty_fields() == {}
+
+    tm.counter = 10
+    # even though we have now assigned a literal value to tm.counter, we don't
+    # know the value in the database, so it is not considered dirty.
+    assert tm.get_dirty_fields() == {}
+
+    tm.save()
+    assert tm.get_dirty_fields() == {}
+
+    tm.refresh_from_db()
+    # if we call refresh_from_db(), we load the database value,
+    # so we can assign a value and make the field dirty again.
+    tm.counter = 20
+    assert tm.get_dirty_fields() == {"counter": 10}
+
+
+@pytest.mark.django_db
+def test_get_dirty_fields_when_saving_with_f_objects_update_fields_specified():
+    """
+    Same as above but with update_fields specified when saving/refreshing
+    """
+
+    tm = ExpressionModelTest.objects.create(counter=0)
+    assert tm.counter == 0
+    assert tm.get_dirty_fields() == {}
+
+    tm.counter = F("counter") + 1
+    assert tm.get_dirty_fields() == {}
+
+    tm.save(update_fields={"counter"})
+    assert tm.get_dirty_fields() == {}
+
+    tm.counter = 10
+    assert tm.get_dirty_fields() == {}
+
+    tm.save(update_fields={"counter"})
+    assert tm.get_dirty_fields() == {}
+
+    tm.refresh_from_db(fields={"counter"})
+    tm.counter = 20
+    assert tm.get_dirty_fields() == {"counter": 10}
