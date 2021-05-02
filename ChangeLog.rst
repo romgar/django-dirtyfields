@@ -10,6 +10,9 @@ master
     - Provide programmatically accessible package version number. Use :code:`dirtyfields.__version__` for a string,
       :code:`dirtyfields.VERSION` for a tuple.
     - Build and publish a wheel to PyPI.
+
+*Changed:*
+    - Only look at concrete fields when determining dirty fields.
     - Migrate package metadata from setup.py to setup.cfg and specify the PEP-517 build-backend to use with the project.
 
 *Bugfix:*
@@ -22,8 +25,10 @@ master
 ------------------
 
 *New:*
-    - Remove pytz as a dependency.
     - Confirm support of Django 3.2
+
+*Changed:*
+    - Remove pytz as a dependency.
 
 .. _v1.5.0:
 
