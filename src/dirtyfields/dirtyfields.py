@@ -58,7 +58,7 @@ class DirtyFieldsMixin(object):
 
         deferred_fields = self.get_deferred_fields()
 
-        for field in self._meta.fields:
+        for field in self._meta.concrete_fields:
 
             # For backward compatibility reasons, in particular for fkey fields, we check both
             # the real name and the wrapped name (it means that we can specify either the field
