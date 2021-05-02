@@ -6,20 +6,39 @@ ChangeLog
 master
 ------
 
-No changes yet
 
-.. _v1.6.0:
+.. _v1.7.0:
 
-1.6.0 (07/04/2021)
+1.7.0 (2021-05-02)
 ------------------
 
 *New:*
-    - Remove pytz as a dependency.
+    - Provide programmatically accessible package version number. Use :code:`dirtyfields.__version__` for a string,
+      :code:`dirtyfields.VERSION` for a tuple.
+    - Build and publish a wheel to PyPI.
+
+*Changed:*
+    - Only look at concrete fields when determining dirty fields.
+    - Migrate package metadata from setup.py to setup.cfg and specify the PEP-517 build-backend to use with the project.
+
+*Bugfix:*
+    - Fixed a :code:`KeyError` that happened when saving a Model with :code:`update_fields` specified after updating a
+      field value with an :code:`F` object (#118).
+
+.. _v1.6.0:
+
+1.6.0 (2021-04-07)
+------------------
+
+*New:*
     - Confirm support of Django 3.2
+
+*Changed:*
+    - Remove pytz as a dependency.
 
 .. _v1.5.0:
 
-1.5.0 (15/01/2021)
+1.5.0 (2021-01-15)
 ------------------
 
 *New:*
@@ -32,7 +51,7 @@ No changes yet
 
 .. _v1.4.1:
 
-1.4.1 (28/11/2020)
+1.4.1 (2020-11-28)
 ------------------
 
 *Bugfix:*
@@ -43,7 +62,7 @@ No changes yet
 
 .. _v1.4:
 
-1.4 (11/04/2020)
+1.4 (2020-04-11)
 ----------------
 
 *New:*
@@ -63,7 +82,7 @@ No changes yet
 
 .. _v1.3.1:
 
-1.3.1 (28/02/2018)
+1.3.1 (2018-02-28)
 ------------------
 
 *New:*
@@ -78,7 +97,7 @@ No changes yet
 
 .. _v1.3:
 
-1.3 (23/08/2017)
+1.3 (2017-08-23)
 ----------------
 
 *New:*

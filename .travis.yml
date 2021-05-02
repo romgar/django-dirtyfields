@@ -8,7 +8,7 @@ jobs:
     # Python version is just for the look on travis.
     # Test the full python/django matrix with postgresql
     - python: 3.6
-      env: TOXENV=py36-django111-postgresql COLLECT_COVERAGE=true
+      env: TOXENV=py36-django111-postgresql COLLECT_COVERAGE=true PYPI_DEPLOY=true
     - python: 3.7
       env: TOXENV=py37-django111-postgresql
     - python: 3.6
@@ -99,8 +99,9 @@ deploy:
   # No need to provide the password anymore. It has been set as an PYPI_PASSWORD environment variable
   # on travis-ci.org web interface, and is picked automatically in this deploy stage for pypi.
   password: $PYPI_PASSWORD
-  skip_existing: true
+  distributions: "sdist bdist_wheel"
   on:
     tags: true
-    all_branches: true
+    # Custom condition to only deploy from one job. Avoids deploy errors on ppc64le jobs.
+    condition: $PYPI_DEPLOY = true
     repo: romgar/django-dirtyfields

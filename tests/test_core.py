@@ -4,11 +4,18 @@ from os.path import dirname, join
 import pytest
 from django.core.files.base import ContentFile, File
 
+import dirtyfields
 from .models import (ModelTest, ModelWithForeignKeyTest,
                      ModelWithOneToOneFieldTest,
                      SubclassModelTest, ModelWithDecimalFieldTest,
                      FileFieldModel)
 from .utils import FakeFieldFile
+
+
+def test_version_numbers():
+    assert isinstance(dirtyfields.__version__, str)
+    assert isinstance(dirtyfields.VERSION, tuple)
+    assert all(isinstance(number, int) for number in dirtyfields.VERSION)
 
 
 @pytest.mark.django_db

@@ -1,8 +1,9 @@
 # Minimum settings that are needed to run django test suite
 import os
+import secrets
 import tempfile
 
-SECRET_KEY = 'WE DONT CARE ABOUT IT'
+SECRET_KEY = secrets.token_hex()
 
 if "postgresql" in os.getenv("TOX_ENV_NAME", ""):
     DATABASES = {

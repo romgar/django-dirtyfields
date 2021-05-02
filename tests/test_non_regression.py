@@ -1,5 +1,6 @@
 import pytest
 from django.db import IntegrityError
+from django.db.models import F
 from django.test.utils import override_settings
 
 from .models import (ModelTest, ModelWithForeignKeyTest, ModelWithNonEditableFieldsTest,
@@ -55,7 +56,8 @@ def test_relationship_model_loading_issue():
     OrdinaryModelWithForeignKeyTest.objects.create(fkey=tm2)
 
     with assert_select_number_queries_on_model(OrdinaryModelWithForeignKeyTest, 1):
-        with assert_select_number_queries_on_model(OrdinaryModelTest, 0):  # should be 0 since we don't access the relationship for now
+        # should be 0 since we don't access the relationship for now
+        with assert_select_number_queries_on_model(OrdinaryModelTest, 0):
             for tmf in OrdinaryModelWithForeignKeyTest.objects.all():
                 tmf.pk
 
@@ -86,7 +88,8 @@ def test_relationship_model_loading_issue():
                 tmf.fkey  # access the relationship here
 
     with assert_select_number_queries_on_model(ModelWithForeignKeyTest, 1):
-        with assert_select_number_queries_on_model(ModelTest, 0):  # should be 0 since we use `selected_related` (was 2 before)
+        # should be 0 since we use `selected_related` (was 2 before)
+        with assert_select_number_queries_on_model(ModelTest, 0):
             for tmf in ModelWithForeignKeyTest.objects.select_related('fkey').all():
                 tmf.fkey  # access the relationship here
 
@@ -171,3 +174,21 @@ def test_access_deferred_field_doesnt_reset_state():
     assert tm_deferred.get_deferred_fields() == set()
     # previously accessing the deferred field would reset the dirty state.
     assert tm_deferred.get_dirty_fields() == {"boolean": True}
+
+
+@pytest.mark.django_db
+def test_f_objects_and_save_update_fields_works():
+    # Non regression test case for bug:
+    # https://github.com/romgar/django-dirtyfields/issues/118
+    tm = ExpressionModelTest.objects.create(counter=0)
+    assert tm.counter == 0
+
+    tm.counter = F("counter") + 1
+    tm.save()
+    tm.refresh_from_db()
+    assert tm.counter == 1
+
+    tm.counter = F("counter") + 1
+    tm.save(update_fields=["counter"])
+    tm.refresh_from_db()
+    assert tm.counter == 2
