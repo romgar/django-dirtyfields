@@ -29,7 +29,7 @@ jobs:
           python -m pip install flake8
 
       - name: Run flake8
-        run: flake8 src tests docs setup.py
+        run: flake8 src tests docs
 
   bandit:
     name: bandit
@@ -52,5 +52,5 @@ jobs:
     - name: Run bandit
       # "B101:assert_used" is allowed in tests.
       run: |
-        bandit -r src docs ./setup.py
+        bandit -r src docs
         bandit -r tests --skip B101
