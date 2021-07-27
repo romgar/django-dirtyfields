@@ -5,16 +5,13 @@ import tempfile
 
 SECRET_KEY = secrets.token_hex()
 
-if "postgresql" in os.getenv("TOX_ENV_NAME", ""):
+if "postgresql" in os.getenv("TOX_ENV_NAME", "") or os.getenv("TEST_DATABASE") == "postgres":
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            # Should be the same defined in .travis.yml
             'NAME': 'dirtyfields_test',
-            # postgres user is by default created in travis-ci
             'USER': os.getenv('POSTGRES_USER', 'postgres'),
-            # postgres user has no password on travis-ci
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
             'HOST': 'localhost',
             'PORT': '5432',  # default postgresql port
         }
