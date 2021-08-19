@@ -63,4 +63,24 @@ jobs:
           pip freeze -l
 
       - name: Run unit tests
-        run: python -m pytest
+        run: coverage run -m pytest -v
+
+      - name: Report test coverage
+        run: coverage report
+
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          flag-name: run-${{ matrix.test_number }}
+          parallel: true
+
+  finish:
+    needs: pytest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls coverage aggregation
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true

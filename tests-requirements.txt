@@ -3,3 +3,4 @@ psycopg2
 pytest
 pytest-django
 jsonfield
+coverage[toml]
