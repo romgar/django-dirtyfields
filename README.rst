@@ -8,9 +8,9 @@ Django Dirty Fields
 .. image:: https://img.shields.io/pypi/v/django-dirtyfields.svg
    :alt: Published PyPI version
    :target: https://pypi.org/project/django-dirtyfields/
-.. image:: https://travis-ci.org/romgar/django-dirtyfields.svg?branch=develop
-   :alt: Travis CI status
-   :target: https://travis-ci.org/romgar/django-dirtyfields
+.. image:: https://github.com/romgar/django-dirtyfields/actions/workflows/tests.yml/badge.svg
+   :alt: Github Actions Test status
+   :target: https://github.com/romgar/django-dirtyfields/actions/workflows/tests.yml
 .. image:: https://coveralls.io/repos/github/romgar/django-dirtyfields/badge.svg?branch=develop
    :alt: Coveralls code coverage status
    :target: https://coveralls.io/github/romgar/django-dirtyfields?branch=develop
