@@ -75,7 +75,7 @@ jobs:
           COVERALLS_PARALLEL: true
 
   coveralls-finished:
-    name: Indicate completion to coveralls.io
+    name: Tell coveralls.io test matrix is finished
     needs: pytest
     runs-on: ubuntu-latest
     steps:
@@ -84,9 +84,10 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Tell coveralls.io tests are finished
-        run: |
-          pip install --upgrade coveralls
-          coveralls --service=github --finish
+      - name: Install requirements
+        run: pip install --upgrade coveralls
+
+      - name: Tell coveralls.io test matrix is finished
+        run: coveralls --service=github --finish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
