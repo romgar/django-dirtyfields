@@ -43,9 +43,6 @@ jobs:
         ports:
           - 5432:5432
 
-    env:
-      TEST_DATABASE: ${{ matrix.database }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -64,6 +61,8 @@ jobs:
 
       - name: Run unit tests
         run: coverage run -m pytest -v
+        env:
+          TEST_DATABASE: ${{ matrix.database }}
 
       - name: Report coverage to console
         run: coverage report
