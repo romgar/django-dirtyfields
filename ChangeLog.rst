@@ -6,6 +6,9 @@ ChangeLog
 master
 ------
 
+*Tests*
+    - Run CI tests on Github Actions since travis-ci.org has been shutdown.
+
 
 .. _v1.7.0:
 
