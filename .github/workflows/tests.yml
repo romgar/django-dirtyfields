@@ -68,7 +68,7 @@ jobs:
         run: coverage report
 
       - name: Report coverage to coveralls.io
-        if: ${{ matrix.django == '2.2' && matrix.python == '3.7 && matrix.database == 'postgres }}
+        if: ${{ matrix.django == '2.2' && matrix.python == '3.7' && matrix.database == 'postgres' }}
         run: coveralls --service=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
