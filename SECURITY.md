@@ -2,8 +2,6 @@
 
 ## Reporting a Vulnerability
 
-If you have found a vulnerability in the django-dirtyfields library, please contact the author and maintainer by email.
+If you have found a vulnerability in the django-dirtyfields library, please open a Github issue.
 
-Contact details can be found in `setup.cfg`.
-
-If you do not receive an email response within one month, please open a Github issue, so others can be aware of the vulnerability.
+So we can address it as soon as possible and others can be aware of the vulnerability.
