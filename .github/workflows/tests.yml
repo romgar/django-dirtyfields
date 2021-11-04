@@ -55,7 +55,7 @@ jobs:
       - name: Install test requirements
         run: |
           python -m pip install --upgrade pip wheel
-          pip install django~=${{ matrix.django }}.0 coverage[toml] coveralls -r tests-requirements.txt .
+          pip install django~=${{ matrix.django }}.0 coverage[toml]~=6.0 coveralls~=3.0 -r tests-requirements.txt .
           python --version
           pip list
 
