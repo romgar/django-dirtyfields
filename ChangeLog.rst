@@ -6,6 +6,9 @@ ChangeLog
 master
 ------
 
+*New:*
+    - Confirm support of Python 3.10
+
 *Tests*
     - Run CI tests on Github Actions since travis-ci.org has been shutdown.
 
