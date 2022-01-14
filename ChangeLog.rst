@@ -9,6 +9,7 @@ master
 *New:*
     - Confirm support of Python 3.10
     - Confirm support of Django 4.0
+    - Drop support for Python 3.6
 
 *Tests*
     - Run CI tests on Github Actions since travis-ci.org has been shutdown.
