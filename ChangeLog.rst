@@ -6,6 +6,14 @@ ChangeLog
 master
 ------
 
+*No changes yet*
+
+
+.. _v1.8.0:
+
+1.8.0 (2022-01-22)
+------------------
+
 *New:*
     - Confirm support of Python 3.10
     - Confirm support of Django 4.0
