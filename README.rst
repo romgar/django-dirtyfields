@@ -8,9 +8,9 @@ Django Dirty Fields
 .. image:: https://img.shields.io/pypi/v/django-dirtyfields.svg
    :alt: Published PyPI version
    :target: https://pypi.org/project/django-dirtyfields/
-.. image:: https://travis-ci.org/romgar/django-dirtyfields.svg?branch=develop
-   :alt: Travis CI status
-   :target: https://travis-ci.org/romgar/django-dirtyfields
+.. image:: https://github.com/romgar/django-dirtyfields/actions/workflows/tests.yml/badge.svg
+   :alt: Github Actions Test status
+   :target: https://github.com/romgar/django-dirtyfields/actions/workflows/tests.yml
 .. image:: https://coveralls.io/repos/github/romgar/django-dirtyfields/badge.svg?branch=develop
    :alt: Coveralls code coverage status
    :target: https://coveralls.io/github/romgar/django-dirtyfields?branch=develop
@@ -24,13 +24,17 @@ Dirty means that field in-memory and database values are different.
 This package is compatible and tested with the following Python & Django versions:
 
 
-+------------------------+------------------------+
-| Django                 | Python                 |
-+========================+========================+
-| 1.11, 2.0, 2.1         | 3.6, 3.7               |
-+------------------------+------------------------+
-| 2.2, 3.0, 3.1, 3.2     | 3.6, 3.7, 3.8 ,3.9     |
-+------------------------+------------------------+
++------------------------+-----------------------------------+
+| Django                 | Python                            |
++========================+===================================+
+| 1.11, 2.0, 2.1         | 3.7                               |
++------------------------+-----------------------------------+
+| 2.2, 3.0, 3.1          | 3.7, 3.8, 3.9                     |
++------------------------+-----------------------------------+
+| 3.2                    | 3.7, 3.8, 3.9, 3.10               |
++------------------------+-----------------------------------+
+| 4.0                    | 3.8, 3.9, 3.10                    |
++------------------------+-----------------------------------+
 
 
 

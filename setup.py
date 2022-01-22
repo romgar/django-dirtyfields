@@ -1,5 +1,5 @@
 # All package metadata is in setup.cfg
-# This is still required because travis builds with "python setup.py"
+# This is still required for tox
 
 from setuptools import setup
 
