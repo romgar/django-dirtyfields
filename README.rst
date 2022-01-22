@@ -14,9 +14,9 @@ Django Dirty Fields
 .. image:: https://coveralls.io/repos/github/romgar/django-dirtyfields/badge.svg?branch=develop
    :alt: Coveralls code coverage status
    :target: https://coveralls.io/github/romgar/django-dirtyfields?branch=develop
-.. image:: https://readthedocs.org/projects/django-dirtyfields/badge/?version=develop
+.. image:: https://readthedocs.org/projects/django-dirtyfields/badge/?version=latest
    :alt: Read the Docs documentation status
-   :target: https://django-dirtyfields.readthedocs.io/en/develop/
+   :target: https://django-dirtyfields.readthedocs.io/en/latest/
 
 Tracking dirty fields on a Django model instance.
 Dirty means that field in-memory and database values are different.
