@@ -6,7 +6,8 @@ ChangeLog
 master
 ------
 
-*No changes yet*
+*Documentation:*
+    - Document limitations when using dirtyfields and database transactions (#148).
 
 
 .. _v1.8.0:
