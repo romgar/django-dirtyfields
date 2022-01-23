@@ -56,6 +56,7 @@ def test_datetime_fields_when_aware_db_and_aware_current_value():
     assert tm.get_dirty_fields() == {'datetime_field': aware_dt}
 
 
+@override_settings(USE_TZ=False)
 @pytest.mark.django_db
 def test_datetime_fields_when_naive_db_and_naive_current_value():
     naive_dt = datetime.now()
