@@ -59,3 +59,45 @@ Warning: This calls the ``save()`` method internally so will trigger the same si
     >>> model.save_dirty_fields()
     >>> model.get_dirty_fields()
     {}
+
+
+Database Transactions Limitations
+---------------------------------
+There is currently a limitation when using dirtyfields and database transactions.
+If your code saves Model instances inside a ``transaction.atomic()`` block, and the transaction is rolled back,
+then the Model instance's ``is_dirty()`` method will return ``False`` when it should return ``True``.
+The ``get_dirty_fields()`` method will also return the wrong thing in the same way.
+
+This is because after the ``save()`` method is called, the instance's dirty state is reset because it thinks it has
+successfully saved to the database. Then when the transaction rolls back, the database is reset back to the original value.
+At this point this Model instance thinks it is not dirty when it actually is.
+Here is a code example to illustrate the problem:
+
+.. code-block:: python
+
+    # first create a model
+    model = ExampleModel.objects.create(boolean=True, characters="first")
+    # then make an edit in-memory, model becomes dirty
+    model.characters = "second"
+    assert model.is_dirty()
+    # then attempt to save the model in a transaction
+    try:
+        with transaction.atomic():
+            model.save()
+            # no longer dirty because save() has been called,
+            # BUT we are still in a transaction ...
+            assert not model.is_dirty()
+            # force a transaction rollback
+            raise DatabaseError("pretend something went wrong")
+    except DatabaseError:
+        pass
+
+    # Here is the problem:
+    # value in DB is still "first" but model does not think its dirty,
+    # because in-memory value is still "second"
+    assert model.characters == "second"
+    assert not model.is_dirty()
+
+
+This simplest workaround to this issue is to call ``model.refresh_from_db()`` if the transaction is rolled back.
+Or you can manually restore the fields that were edited in-memory.

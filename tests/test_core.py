@@ -3,6 +3,7 @@ from os.path import dirname, join
 
 import pytest
 from django.core.files.base import ContentFile, File
+from django.db import DatabaseError, transaction
 
 import dirtyfields
 from .models import (ModelTest, ModelWithForeignKeyTest,
@@ -256,3 +257,42 @@ def test_file_fields_real_file():
     assert tm.get_dirty_fields() == {"file1": FakeFieldFile("file1/test-file-3.txt")}
     tm.save()
     assert tm.get_dirty_fields() == {}
+
+
+@pytest.mark.django_db
+def test_transaction_behavior():
+    """This test is to document the behavior in transactions"""
+    # first create a model
+    tm = ModelTest.objects.create(boolean=True, characters="first")
+    assert not tm.is_dirty()
+
+    # make an edit in-memory, model becomes dirty
+    tm.characters = "second"
+    assert tm.get_dirty_fields() == {"characters": "first"}
+
+    # attempt to save the model in a transaction
+    try:
+        with transaction.atomic():
+            tm.save()
+            # no longer dirty because save() has been called, BUT we are still in a transaction ...
+            assert not tm.is_dirty()
+            assert tm.get_dirty_fields() == {}
+            # force a transaction rollback
+            raise DatabaseError("pretend something went wrong")
+    except DatabaseError:
+        pass
+
+    # Here is the problem:
+    # value in DB is still "first" but model does not think its dirty.
+    assert tm.characters == "second"
+    assert not tm.is_dirty()  # <---- In an ideal world this would be dirty
+    assert tm.get_dirty_fields() == {}
+
+    # here is a workaround, after failed transaction call refresh_from_db()
+    tm.refresh_from_db()
+    assert tm.characters == "first"
+    assert tm.get_dirty_fields() == {}
+    # test can become dirty again
+    tm.characters = "third"
+    assert tm.is_dirty()
+    assert tm.get_dirty_fields() == {"characters": "first"}
