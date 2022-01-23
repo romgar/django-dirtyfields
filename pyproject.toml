@@ -5,6 +5,10 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 django_find_project = false
 DJANGO_SETTINGS_MODULE = 'tests.django_settings'
+filterwarnings = [
+    'error',
+    "default:Using or importing the ABCs from 'collections':DeprecationWarning",  # Remove when Python3.7 dropped
+]
 
 [tool.coverage.run]
 branch = true
