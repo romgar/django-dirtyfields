@@ -3,6 +3,7 @@ import os
 import secrets
 import tempfile
 
+USE_TZ = True
 SECRET_KEY = secrets.token_hex()
 
 if "postgresql" in os.getenv("TOX_ENV_NAME", "") or os.getenv("TEST_DATABASE") == "postgres":
