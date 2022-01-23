@@ -43,7 +43,7 @@ Install
 
 .. code-block:: bash
 
-   $ pip install django-dirtyfields
+    $ pip install django-dirtyfields
 
 
 Usage
@@ -53,20 +53,20 @@ To use ``django-dirtyfields``, you need to:
 
 - Inherit from ``DirtyFieldsMixin`` in the Django model you want to track.
 
-  .. code-block:: python
+.. code-block:: python
 
     from django.db import models
     from dirtyfields import DirtyFieldsMixin
 
-    class ModelTest(DirtyFieldsMixin, models.Model):
-        """A simple test model to test dirty fields mixin with"""
+    class ExampleModel(DirtyFieldsMixin, models.Model):
+        """A simple example model to test dirty fields mixin with"""
         boolean = models.BooleanField(default=True)
         characters = models.CharField(blank=True, max_length=80)
 
 - Use one of these 2 functions on a model instance to know if this instance is dirty, and get the dirty fields:
 
-  * is\_dirty()
-  * get\_dirty\_fields()
+  * ``is_dirty()``
+  * ``get_dirty_fields()``
 
 
 Example
@@ -74,19 +74,19 @@ Example
 
 .. code-block:: python
 
-    >>> from tests.models import ModelTest
-    >>> tm = ModelTest.objects.create(boolean=True,characters="testing")
-    >>> tm.is_dirty()
+    >>> model = ExampleModel.objects.create(boolean=True,characters="first value")
+    >>> model.is_dirty()
     False
-    >>> tm.get_dirty_fields()
+    >>> model.get_dirty_fields()
     {}
 
-    >>> tm.boolean = False
+    >>> model.boolean = False
+    >>> model.characters = "second value"
 
-    >>> tm.is_dirty()
+    >>> model.is_dirty()
     True
-    >>> tm.get_dirty_fields()
-    {'boolean': True}
+    >>> model.get_dirty_fields()
+    {'boolean': True, "characters": "first_value"}
 
 
 Consult the `full documentation <https://django-dirtyfields.readthedocs.io/>`_ for more information.
