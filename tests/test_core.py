@@ -2,6 +2,7 @@ from decimal import Decimal
 from os.path import dirname, join
 
 import pytest
+from django.conf import settings
 from django.core.files.base import ContentFile, File
 from django.db import DatabaseError, transaction
 
@@ -10,7 +11,6 @@ from .models import (ModelTest, ModelWithForeignKeyTest,
                      ModelWithOneToOneFieldTest,
                      SubclassModelTest, ModelWithDecimalFieldTest,
                      FileFieldModel)
-from .utils import FakeFieldFile
 
 
 def test_version_numbers():
@@ -219,19 +219,19 @@ def test_refresh_from_db_no_fields():
 def test_file_fields_content_file():
     tm = FileFieldModel()
     # field is dirty because model is unsaved
-    assert tm.get_dirty_fields() == {"file1": FakeFieldFile("")}
+    assert tm.get_dirty_fields() == {"file1": ""}
     tm.save()
     assert tm.get_dirty_fields() == {}
 
     # set file makes field dirty
     tm.file1.save("test-file-1.txt", ContentFile(b"Test file content 1"), save=False)
-    assert tm.get_dirty_fields() == {"file1": FakeFieldFile("")}
+    assert tm.get_dirty_fields() == {"file1": ""}
     tm.save()
     assert tm.get_dirty_fields() == {}
 
     # change file makes field dirty
     tm.file1.save("test-file-2.txt", ContentFile(b"Test file content 2"), save=False)
-    assert tm.get_dirty_fields() == {"file1": FakeFieldFile("file1/test-file-1.txt")}
+    assert tm.get_dirty_fields() == {"file1": f"{settings.MEDIA_ROOT}/file1/test-file-1.txt"}
     tm.save()
     assert tm.get_dirty_fields() == {}
 
@@ -240,21 +240,21 @@ def test_file_fields_content_file():
 def test_file_fields_real_file():
     tm = FileFieldModel()
     # field is dirty because model is unsaved
-    assert tm.get_dirty_fields() == {"file1": FakeFieldFile("")}
+    assert tm.get_dirty_fields() == {"file1": ""}
     tm.save()
     assert tm.get_dirty_fields() == {}
 
     # set file makes field dirty
     with open(join(dirname(__file__), "files", "foo.txt"), "rb") as f:
         tm.file1.save("test-file-3.txt", File(f), save=False)
-    assert tm.get_dirty_fields() == {"file1": FakeFieldFile("")}
+    assert tm.get_dirty_fields() == {"file1": ""}
     tm.save()
     assert tm.get_dirty_fields() == {}
 
     # change file makes field dirty
     with open(join(dirname(__file__), "files", "bar.txt"), "rb") as f:
         tm.file1.save("test-file-4.txt", File(f), save=False)
-    assert tm.get_dirty_fields() == {"file1": FakeFieldFile("file1/test-file-3.txt")}
+    assert tm.get_dirty_fields() == {"file1": f"{settings.MEDIA_ROOT}/file1/test-file-3.txt"}
     tm.save()
     assert tm.get_dirty_fields() == {}
 
