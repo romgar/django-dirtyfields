@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 from django.core.exceptions import ValidationError
+from django.core.files import File
 from django.db.models.expressions import BaseExpression
 from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
@@ -78,6 +79,11 @@ class DirtyFieldsMixin(object):
                 continue
 
             field_value = getattr(self, field.attname)
+
+            if isinstance(field_value, File):
+                # Uses the name for files due to a perfomance regression caused by Django 3.1.
+                # For more info see: https://github.com/romgar/django-dirtyfields/issues/165
+                field_value = field_value.name
 
             # If current field value is an expression, we are not evaluating it
             if isinstance(field_value, (BaseExpression, Combinable)):

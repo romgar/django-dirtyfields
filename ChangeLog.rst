@@ -6,6 +6,10 @@ ChangeLog
 unreleased
 ------
 
+*Changed:*
+    - Only look at the file name when determining if FileFields are dirty.
+    - Return only the file name in :code:`get_dirty_fields()` for FileFields.
+
 
 .. _v1.8.2:
 
