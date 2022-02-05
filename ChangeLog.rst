@@ -1,13 +1,14 @@
 ChangeLog
 =========
 
-.. _master:
+.. _unreleased:
 
-master
+unreleased
 ------
 
 *Documentation:*
     - Document limitations when using dirtyfields and database transactions (#148).
+    - Document how to use a Proxy Model to avoid performance impact (#132).
 
 
 .. _v1.8.0:

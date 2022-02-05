@@ -9,7 +9,7 @@ import dirtyfields
 from .models import (ModelTest, ModelWithForeignKeyTest,
                      ModelWithOneToOneFieldTest,
                      SubclassModelTest, ModelWithDecimalFieldTest,
-                     FileFieldModel)
+                     FileFieldModel, OrdinaryModelTest, OrdinaryWithDirtyFieldsProxy)
 from .utils import FakeFieldFile
 
 
@@ -296,3 +296,25 @@ def test_transaction_behavior():
     tm.characters = "third"
     assert tm.is_dirty()
     assert tm.get_dirty_fields() == {"characters": "first"}
+
+
+@pytest.mark.django_db
+def test_proxy_model_behavior():
+    tm = OrdinaryModelTest.objects.create()
+
+    dirty_tm = OrdinaryWithDirtyFieldsProxy.objects.get(id=tm.id)
+    assert not dirty_tm.is_dirty()
+    assert dirty_tm.get_dirty_fields() == {}
+
+    dirty_tm.boolean = False
+    dirty_tm.characters = "hello"
+    assert dirty_tm.is_dirty()
+    assert dirty_tm.get_dirty_fields() == {"characters": "", "boolean": True}
+
+    dirty_tm.save()
+    assert not dirty_tm.is_dirty()
+    assert dirty_tm.get_dirty_fields() == {}
+
+    tm.refresh_from_db()
+    assert tm.boolean is False
+    assert tm.characters == "hello"

@@ -61,6 +61,43 @@ Warning: This calls the ``save()`` method internally so will trigger the same si
     {}
 
 
+Performance Impact
+------------------
+
+Using ``DirtyFieldsMixin`` in your Model will have a (normally small) performance impact even when you don't call
+any of ``DirtyFieldsMixin``'s methods. This is because ``DirtyFieldsMixin`` needs to captures the state of the Model
+when it is initialized and when it is saved, so that ``DirtyFieldsMixin`` can later determine if the fields are dirty.
+
+Using a Proxy Model to reduce Performance Impact
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you only use ``DirtyFieldsMixin``'s methods in some places of you project but not all, you can eliminate the
+performance impact in the places you don't use them by inheriting from ``DirtyFieldsMixin`` in a `Proxy Model`_.
+
+.. _Proxy Model: https://docs.djangoproject.com/en/dev/topics/db/models/#proxy-models
+
+For example define your Model without ``DirtyFieldsMixin``:
+
+.. code-block:: python
+
+    class FooModel(models.Model):
+        ...
+
+Use this Model class when you don't need to track dirty fields. It is a regular Model so there will be no performance
+impact, but ``is_dirty()`` and ``get_dirty_fields()`` can't be used.
+
+Then define a Proxy Model for that Model which includes ``DirtyFieldsMixin``:
+
+.. code-block:: python
+
+     class FooModelWithDirtyFields(DirtyFieldsMixin, FooModel):
+         class Meta:
+             proxy = True
+
+Use this Model class when you do want dirty fields to be tracked. There will be a performance impact but
+``is_dirty()`` and ``get_dirty_fields()`` can be used.
+
+
 Database Transactions Limitations
 ---------------------------------
 There is currently a limitation when using dirtyfields and database transactions.
