@@ -47,6 +47,11 @@ class OrdinaryModelTest(models.Model):
     characters = models.CharField(blank=True, max_length=80)
 
 
+class OrdinaryWithDirtyFieldsProxy(DirtyFieldsMixin, OrdinaryModelTest):
+    class Meta:
+        proxy = True
+
+
 class OrdinaryModelWithForeignKeyTest(models.Model):
     fkey = models.ForeignKey(OrdinaryModelTest, on_delete=models.CASCADE)
 
