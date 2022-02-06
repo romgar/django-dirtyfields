@@ -6,6 +6,9 @@ ChangeLog
 master
 ------
 
+*Changed:*
+    - Only look at the file name when determining File based dirty fields.
+
 *Documentation:*
     - Document limitations when using dirtyfields and database transactions (#148).
 

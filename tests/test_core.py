@@ -231,7 +231,7 @@ def test_file_fields_content_file():
 
     # change file makes field dirty
     tm.file1.save("test-file-2.txt", ContentFile(b"Test file content 2"), save=False)
-    assert tm.get_dirty_fields() == {"file1": f"{settings.MEDIA_ROOT}/file1/test-file-1.txt"}
+    assert tm.get_dirty_fields() == {"file1": "file1/test-file-1.txt"}
     tm.save()
     assert tm.get_dirty_fields() == {}
 
@@ -254,7 +254,7 @@ def test_file_fields_real_file():
     # change file makes field dirty
     with open(join(dirname(__file__), "files", "bar.txt"), "rb") as f:
         tm.file1.save("test-file-4.txt", File(f), save=False)
-    assert tm.get_dirty_fields() == {"file1": f"{settings.MEDIA_ROOT}/file1/test-file-3.txt"}
+    assert tm.get_dirty_fields() == {"file1": "file1/test-file-3.txt"}
     tm.save()
     assert tm.get_dirty_fields() == {}
 
