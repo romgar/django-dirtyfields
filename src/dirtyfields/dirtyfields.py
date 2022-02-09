@@ -78,10 +78,9 @@ class DirtyFieldsMixin(object):
             if field.get_attname() in deferred_fields:
                 continue
 
-            if field.auto_now:
+            field_value = getattr(self, field.attname)
+            if isinstance(field_value, datetime) and field.auto_now:
                 field_value = datetime.now()
-            else:
-                field_value = getattr(self, field.attname)
 
             # If current field value is an expression, we are not evaluating it
             if isinstance(field_value, (BaseExpression, Combinable)):

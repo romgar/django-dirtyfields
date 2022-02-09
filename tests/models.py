@@ -69,6 +69,11 @@ class DatetimeModelTest(DirtyFieldsMixin, models.Model):
     datetime_field = models.DateTimeField(default=django_timezone.now)
 
 
+class UpdatedDatetimeModelTest(DirtyFieldsMixin, models.Model):
+    # data = models.CharField(max_length=255)
+    updated_datetime_field = models.DateTimeField(auto_now=True)
+
+
 class CurrentDatetimeModelTest(DirtyFieldsMixin, models.Model):
     compare_function = (
         timezone_support_compare,
