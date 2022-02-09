@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db.models.expressions import BaseExpression
@@ -77,7 +78,10 @@ class DirtyFieldsMixin(object):
             if field.get_attname() in deferred_fields:
                 continue
 
-            field_value = getattr(self, field.attname)
+            if field.auto_now:
+                field_value = datetime.now()
+            else:
+                field_value = getattr(self, field.attname)
 
             # If current field value is an expression, we are not evaluating it
             if isinstance(field_value, (BaseExpression, Combinable)):
