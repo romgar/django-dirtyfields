@@ -70,7 +70,6 @@ class DatetimeModelTest(DirtyFieldsMixin, models.Model):
 
 
 class UpdatedDatetimeModelTest(DirtyFieldsMixin, models.Model):
-    # data = models.CharField(max_length=255)
     updated_datetime_field = models.DateTimeField(auto_now=True)
 
 
