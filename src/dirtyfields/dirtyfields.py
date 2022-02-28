@@ -1,10 +1,9 @@
 from copy import deepcopy
-from datetime import datetime
-
 from django.core.exceptions import ValidationError
 from django.db.models.expressions import BaseExpression
 from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
+from django.utils import timezone
 
 from .compare import raw_compare, compare_states, normalise_value
 
@@ -79,12 +78,13 @@ class DirtyFieldsMixin(object):
                 continue
 
             field_value = getattr(self, field.attname)
-            if isinstance(field_value, datetime) and field.auto_now:
-                field_value = datetime.now()
 
             # If current field value is an expression, we are not evaluating it
             if isinstance(field_value, (BaseExpression, Combinable)):
                 continue
+
+            if isinstance(field_value, timezone.datetime) and field.auto_now:
+                field_value = timezone.now()
 
             try:
                 # Store the converted value for fields with conversion
