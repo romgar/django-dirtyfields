@@ -167,3 +167,9 @@ class BinaryModelTest(DirtyFieldsMixin, models.Model):
 
 class FileFieldModel(DirtyFieldsMixin, models.Model):
     file1 = models.FileField(upload_to="file1/")
+
+
+class TimestampedModel(DirtyFieldsMixin, models.Model):
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    characters = models.CharField(max_length=32)

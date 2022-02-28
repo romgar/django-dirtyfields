@@ -9,7 +9,8 @@ import dirtyfields
 from .models import (ModelTest, ModelWithForeignKeyTest,
                      ModelWithOneToOneFieldTest,
                      SubclassModelTest, ModelWithDecimalFieldTest,
-                     FileFieldModel, OrdinaryModelTest, OrdinaryWithDirtyFieldsProxy)
+                     FileFieldModel, OrdinaryModelTest, OrdinaryWithDirtyFieldsProxy,
+                     TimestampedModel)
 from .utils import FakeFieldFile
 
 
@@ -318,3 +319,71 @@ def test_proxy_model_behavior():
     tm.refresh_from_db()
     assert tm.boolean is False
     assert tm.characters == "hello"
+
+
+@pytest.mark.django_db
+def test_auto_now_fields_behavior():
+    tm = TimestampedModel(characters="initial")
+    # all fields are dirty before saving
+    assert tm.is_dirty()
+    assert tm.get_dirty_fields(verbose=True) == {
+        "created_on": {"saved": None, "current": None},
+        "updated_on": {"saved": None, "current": None},
+        "characters": {"saved": None, "current": "initial"},
+    }
+    assert tm.get_dirty_fields() == {
+        "created_on": None,
+        "updated_on": None,
+        "characters": "initial",
+    }
+
+    tm.save()
+    updated_on_1 = tm.updated_on
+    # after saving nothing is dirty
+    assert not tm.is_dirty()
+    assert tm.get_dirty_fields() == {}
+
+    # load model instance again
+    tm = TimestampedModel.objects.get()
+
+    # nothing is dirty - auto_now field not included
+    # NOTE this is because at this point the value in memory still matches the database.
+    assert not tm.is_dirty()
+    assert tm.get_dirty_fields() == {}
+
+    tm.characters = "updated"
+    # making model dirty - auto_now field still excluded
+    assert tm.is_dirty()
+    assert tm.get_dirty_fields(verbose=True) == {
+        "characters": {"saved": "initial", "current": "updated"},
+    }
+    assert tm.get_dirty_fields() == {"characters": "initial"}
+
+    tm.save()
+    # saving will change updated_on in memory and then immediately save to the DB.
+    updated_on_2 = tm.updated_on
+    assert updated_on_1 < updated_on_2  # updated_on timestamp will be changed.
+    assert not tm.is_dirty()
+
+    # make model dirty again
+    tm.characters = "updated_again"
+    assert tm.is_dirty()
+    assert tm.get_dirty_fields() == {"characters": "updated"}
+
+    # this time save with save_dirty_fields()
+    # this will NOT update the updated_on timestamp.
+    # some people might find this surprising.
+    # BUT this the same behavior as when doing .save(updated_fields={"characters"})
+    tm.save_dirty_fields()
+    assert not tm.is_dirty()
+    assert tm.get_dirty_fields() == {}
+    assert tm.characters == "updated_again"
+    assert tm.updated_on == updated_on_2
+
+    # test that .save(updated_fields={"characters"}) gives the same behavior.
+    tm.characters = "updated_third_time"
+    assert tm.is_dirty()
+    tm.save(update_fields={"characters"})
+    assert not tm.is_dirty()
+    assert tm.characters == "updated_third_time"
+    assert tm.updated_on == updated_on_2
