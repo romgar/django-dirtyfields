@@ -6,6 +6,12 @@ ChangeLog
 unreleased
 ------
 
+
+.. _v1.8.1:
+
+1.8.1 (2022-03-07)
+------------------
+
 *Documentation:*
     - Document limitations when using dirtyfields and database transactions (#148).
     - Document how to use a Proxy Model to avoid performance impact (#132).
