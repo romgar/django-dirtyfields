@@ -4,18 +4,17 @@ Advanced Usage
 
 Verbose mode
 ------------
-By default, when you use ``get_dirty_fields()`` function, if there are dirty fields, only the old value is returned.
-You can use ``verbose`` option to return the saved and current value:
+By default, when you use ``get_dirty_fields()`` function, if there are dirty fields, only the saved value is returned.
+You can use the ``verbose`` option to return the saved and current in-memory value:
 
-.. code-block:: python
+.. code-block:: pycon
 
+    >>> model = ExampleModel.objects.create(characters="first value")
+    >>> model.characters = "second value"
     >>> model.get_dirty_fields()
-    {'boolean': True, 'characters': 'first_value'}
+    {'characters': 'first_value'}
     >>> model.get_dirty_fields(verbose=True)
-    {
-        'boolean': {'saved': True, 'current': False},
-        'characters': {'saved': "first value", 'current': 'second value'}
-    }
+    {'characters': {'saved': 'first value', 'current': 'second value'}}
 
 
 Checking foreign key fields.
@@ -28,17 +27,16 @@ use ``check_relationship`` parameter:
     class ForeignKeyModel(DirtyFieldsMixin, models.Model):
         fkey = models.ForeignKey(AnotherModel, on_delete=models.CASCADE)
 
+.. code-block:: pycon
+
     >>> model = ForeignKeyModel.objects.create(fkey=obj1)
     >>> model.is_dirty()
     False
-
     >>> model.fkey = obj2
-
     >>> model.is_dirty()
     False
     >>> model.is_dirty(check_relationship=True)
     True
-
     >>> model.get_dirty_fields()
     {}
     >>> model.get_dirty_fields(check_relationship=True)
@@ -52,13 +50,13 @@ you can use ``save_dirty_fields()`` method.
 
 Warning: This calls the ``save()`` method internally so will trigger the same signals as normally calling the ``save()`` method.
 
-.. code-block:: python
+.. code-block:: pycon
 
-    >>> model.get_dirty_fields()
-    {'boolean': True, 'characters': 'first_value'}
+    >>> model.is_dirty()
+    True
     >>> model.save_dirty_fields()
-    >>> model.get_dirty_fields()
-    {}
+    >>> model.is_dirty()
+    False
 
 
 Performance Impact
@@ -113,7 +111,7 @@ Here is a code example to illustrate the problem:
 .. code-block:: python
 
     # first create a model
-    model = ExampleModel.objects.create(boolean=True, characters="first")
+    model = ExampleModel.objects.create(characters="first")
     # then make an edit in-memory, model becomes dirty
     model.characters = "second"
     assert model.is_dirty()
