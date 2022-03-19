@@ -13,8 +13,11 @@
 # serve to show the default.
 
 import sys
-import os
 from datetime import date
+from os import path
+
+_docs_directory = path.dirname(__file__)
+_root_directory = path.dirname(_docs_directory)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -30,8 +33,7 @@ from datetime import date
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "_ext")))
+sys.path.append(path.join(_docs_directory, "_ext"))
 
 extensions = [
     'djangodocs',
