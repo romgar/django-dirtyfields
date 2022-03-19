@@ -60,8 +60,8 @@ source_suffix = '.rst'
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
 
-# The master toctree document.
-master_doc = 'index'
+# The root toctree document.
+root_doc = 'index'
 
 # General information about the project.
 project = u'django-dirtyfields'
@@ -234,10 +234,10 @@ htmlhelp_basename = 'django-dirtyfieldsdoc'
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-    # 'papersize': 'letterpaper',
+    'papersize': 'a4paper',
 
     # The font size ('10pt', '11pt' or '12pt').
-    # 'pointsize': '10pt',
+    'pointsize': '12pt',
 
     # Additional stuff for the LaTeX preamble.
     # 'preamble': '',
@@ -247,20 +247,19 @@ latex_elements = {
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
+# (source start file, target name, title, author, theme, toctree_only).
 latex_documents = [
-    (master_doc, 'django-dirtyfields.tex', u'django-dirtyfields Documentation',
-     u'Romain Garrigues', 'manual'),
+    (root_doc, 'django-dirtyfields.tex', 'django-dirtyfields Documentation',
+     'Romain Garrigues', 'howto', True),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
 # latex_logo = None
 
-# For "manual" documents, if this is true, then toplevel headings are parts,
-# not chapters.
-# latex_use_parts = False
+# This value determines the topmost sectioning unit.
+# It should be chosen from 'part', 'chapter' or 'section'.
+latex_toplevel_sectioning = "section"
 
 # If true, show page references after internal links.
 # latex_show_pagerefs = False
@@ -280,7 +279,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'django-dirtyfields', u'django-dirtyfields Documentation',
+    (root_doc, 'django-dirtyfields', u'django-dirtyfields Documentation',
      [author], 1)
 ]
 
@@ -294,7 +293,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'django-dirtyfields', u'django-dirtyfields Documentation',
+    (root_doc, 'django-dirtyfields', 'django-dirtyfields Documentation',
      author, 'django-dirtyfields', 'One line description of project.',
      'Miscellaneous'),
 ]
