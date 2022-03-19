@@ -65,7 +65,7 @@ Performance Impact
 ------------------
 
 Using ``DirtyFieldsMixin`` in your Model will have a (normally small) performance impact even when you don't call
-any of ``DirtyFieldsMixin``'s methods. This is because ``DirtyFieldsMixin`` needs to captures the state of the Model
+any of ``DirtyFieldsMixin``'s methods. This is because ``DirtyFieldsMixin`` needs to capture the state of the Model
 when it is initialized and when it is saved, so that ``DirtyFieldsMixin`` can later determine if the fields are dirty.
 
 Using a Proxy Model to reduce Performance Impact
