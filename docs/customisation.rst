@@ -21,6 +21,8 @@ If you want to check these relations, you should set ``ENABLE_M2M_CHECK`` to ``T
         ENABLE_M2M_CHECK = True
         m2m_field = models.ManyToManyField(AnotherModel)
 
+.. code-block:: pycon
+
     >>> model = Many2ManyModel.objects.create()
     >>> related_model = AnotherModel.objects.create()
     >>> model.is_dirty()
@@ -28,9 +30,9 @@ If you want to check these relations, you should set ``ENABLE_M2M_CHECK`` to ``T
     >>> model.m2m_field.add(related_model)
     >>> model.is_dirty()
     False
-    >>> model.get_dirty_fields(check_m2m={'m2m_field': {related_model.id}})
+    >>> model.get_dirty_fields(check_m2m={"m2m_field": {related_model.id}})
     {}
-    >>> model.get_dirty_fields(check_m2m={'m2m_field': set()})
+    >>> model.get_dirty_fields(check_m2m={"m2m_field": set()})
     {'m2m_field': set([related_model.id])}
 
 
@@ -47,7 +49,9 @@ If you want to check a limited set of model fields, you should set ``FIELDS_TO_C
     class ModelWithSpecifiedFields(DirtyFieldsMixin, models.Model):
         boolean1 = models.BooleanField(default=True)
         boolean2 = models.BooleanField(default=True)
-        FIELDS_TO_CHECK = ['boolean1']
+        FIELDS_TO_CHECK = ["boolean1"]
+
+.. code-block:: pycon
 
     >>> model = ModelWithSpecifiedFields.objects.create()
 
@@ -77,7 +81,7 @@ You can now define how you want to compare 2 values by passing a function on Dir
         return new_value == old_value
 
     class YourModel(DirtyFieldsMixin, models.Model):
-        compare_function = (your_function, {'param1': 5})
+        compare_function = (your_function, {"param1": 5})
 
 
 Have a look at ``dirtyfields.compare`` module to get some examples.
@@ -111,8 +115,8 @@ being passed as well:
             return value
 
     def get_user_timezone():
-        return 'Europe/London'
+        return "Europe/London"
 
     class YourModel(DirtyFieldsMixin, models.Model):
         normalise_function = (your_normalise_function,
-                              {'timezone': get_user_timezone()})
+                              {"timezone": get_user_timezone()})
