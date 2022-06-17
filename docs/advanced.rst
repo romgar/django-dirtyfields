@@ -46,7 +46,7 @@ use ``check_relationship`` parameter:
 Saving dirty fields.
 --------------------
 If you want to only save dirty fields from an instance in the database (only these fields will be involved in SQL query),
-you can use ``save_dirty_fields()`` method.
+you can use ``save_dirty_fields()`` method. If model wasn't changed save won't be called.
 
 Warning: This calls the ``save()`` method internally so will trigger the same signals as normally calling the ``save()`` method.
 

@@ -153,6 +153,8 @@ class DirtyFieldsMixin(object):
 
     def save_dirty_fields(self):
         dirty_fields = self.get_dirty_fields(check_relationship=True)
+        if not dirty_fields:
+            return
         self.save(update_fields=dirty_fields.keys())
 
 

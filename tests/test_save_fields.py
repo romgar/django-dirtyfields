@@ -60,6 +60,19 @@ def test_save_dirty_related_field():
 
 
 @pytest.mark.django_db
+def test_save_dirty_dont_call_save_without_changes():
+    tm = ModelTest.objects.create()
+
+    assert tm.get_dirty_fields() == {}
+
+    # Naive checking on fields involved in Django query
+    # boolean unchanged field is not updated on Django update query: GOOD !
+    with assert_number_of_queries_on_regex(r'.*characters.*', 0):
+        with assert_number_of_queries_on_regex(r'.*boolean.*', 0):
+            tm.save_dirty_fields()
+
+
+@pytest.mark.django_db
 def test_save_only_specific_fields_should_let_other_fields_dirty():
     tm = ModelTest.objects.create(boolean=True, characters='dummy')
 
