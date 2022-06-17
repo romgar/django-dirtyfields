@@ -152,8 +152,11 @@ class DirtyFieldsMixin(object):
                                            check_m2m=check_m2m)
 
     def save_dirty_fields(self):
-        dirty_fields = self.get_dirty_fields(check_relationship=True)
-        self.save(update_fields=dirty_fields.keys())
+        if self._state.adding:
+            self.save()
+        else:
+            dirty_fields = self.get_dirty_fields(check_relationship=True)
+            self.save(update_fields=dirty_fields.keys())
 
 
 def reset_state(sender, instance, **kwargs):
