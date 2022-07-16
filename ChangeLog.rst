@@ -6,6 +6,11 @@ ChangeLog
 unreleased
 ------
 
+*Changed:*
+    - The method :code:`get_dirty_fields()` now returns only the file name for FileFields.
+      This is to improve performance, since the entire :code:`FieldFile` object will no longer
+      be copied when Model instances are initialized and saved.
+
 
 .. _v1.8.2:
 
