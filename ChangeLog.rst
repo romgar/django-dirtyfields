@@ -7,6 +7,15 @@ unreleased
 ------
 
 
+.. _v1.8.2:
+
+1.8.2 (2022-07-16)
+------------------
+
+*Documentation:*
+    - General improvements to content and generation of Documentation (#197).
+
+
 .. _v1.8.1:
 
 1.8.1 (2022-03-07)
