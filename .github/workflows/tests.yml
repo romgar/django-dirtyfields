@@ -2,12 +2,12 @@ name: "Tests"
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ develop ]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ develop ]
   schedule:
-    - cron: '55 22 15 * *'
+    - cron: '30 22 15 * *'
 
 jobs:
   pytest:
@@ -59,10 +59,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
 
