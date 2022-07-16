@@ -218,44 +218,93 @@ def test_refresh_from_db_no_fields():
 def test_file_fields_content_file():
     tm = FileFieldModel()
     # field is dirty because model is unsaved
-    assert tm.get_dirty_fields() == {"file1": ""}
+    assert tm.get_dirty_fields(verbose=True) == {
+        "file1": {"current": "", "saved": None},
+    }
     tm.save()
     assert tm.get_dirty_fields() == {}
 
     # set file makes field dirty
-    tm.file1.save("test-file-1.txt", ContentFile(b"Test file content 1"), save=False)
-    assert tm.get_dirty_fields() == {"file1": ""}
+    tm.file1.save("test-file-1.txt", ContentFile(b"Test file content"), save=False)
+    assert tm.get_dirty_fields(verbose=True) == {
+        "file1": {"current": "file1/test-file-1.txt", "saved": ""},
+    }
     tm.save()
     assert tm.get_dirty_fields() == {}
 
-    # change file makes field dirty
-    tm.file1.save("test-file-2.txt", ContentFile(b"Test file content 2"), save=False)
-    assert tm.get_dirty_fields() == {"file1": "file1/test-file-1.txt"}
+    # change field to new file makes field dirty
+    tm.file1.save("test-file-2.txt", ContentFile(b"Test file content"), save=False)
+    assert tm.get_dirty_fields(verbose=True) == {
+        "file1": {"current": "file1/test-file-2.txt", "saved": "file1/test-file-1.txt"},
+    }
     tm.save()
     assert tm.get_dirty_fields() == {}
+
+    # change field to new file and new content makes field dirty
+    tm.file1.save("test-file-3.txt", ContentFile(b"Test file content 3"), save=False)
+    assert tm.get_dirty_fields(verbose=True) == {
+        "file1": {"current": "file1/test-file-3.txt", "saved": "file1/test-file-2.txt"},
+    }
+    tm.save()
+    assert tm.get_dirty_fields() == {}
+
+    # change file content without changing file name does not make field dirty
+    tm.file1.open("w")
+    tm.file1.write("Test file content edited")
+    tm.file1.close()
+    assert tm.file1.name == "file1/test-file-3.txt"
+    assert tm.get_dirty_fields() == {}
+    tm.file1.open("r")
+    assert tm.file1.read() == "Test file content edited"
+    tm.file1.close()
 
 
 @pytest.mark.django_db
 def test_file_fields_real_file():
     tm = FileFieldModel()
     # field is dirty because model is unsaved
-    assert tm.get_dirty_fields() == {"file1": ""}
+    assert tm.get_dirty_fields(verbose=True) == {
+        "file1": {"current": "", "saved": None},
+    }
     tm.save()
     assert tm.get_dirty_fields() == {}
 
     # set file makes field dirty
     with open(join(dirname(__file__), "files", "foo.txt"), "rb") as f:
-        tm.file1.save("test-file-3.txt", File(f), save=False)
-    assert tm.get_dirty_fields() == {"file1": ""}
+        tm.file1.save("test-file-4.txt", File(f), save=False)
+    assert tm.get_dirty_fields(verbose=True) == {
+        "file1": {"current": "file1/test-file-4.txt", "saved": ""},
+    }
     tm.save()
     assert tm.get_dirty_fields() == {}
 
-    # change file makes field dirty
+    # change field to new file makes field dirty
     with open(join(dirname(__file__), "files", "bar.txt"), "rb") as f:
-        tm.file1.save("test-file-4.txt", File(f), save=False)
-    assert tm.get_dirty_fields() == {"file1": "file1/test-file-3.txt"}
+        tm.file1.save("test-file-5.txt", File(f), save=False)
+    assert tm.get_dirty_fields(verbose=True) == {
+        "file1": {"current": "file1/test-file-5.txt", "saved": "file1/test-file-4.txt"},
+    }
     tm.save()
     assert tm.get_dirty_fields() == {}
+
+    # change field to new file with same content makes field dirty
+    with open(join(dirname(__file__), "files", "bar.txt"), "rb") as f:
+        tm.file1.save("test-file-6.txt", File(f), save=False)
+    assert tm.get_dirty_fields(verbose=True) == {
+        "file1": {"current": "file1/test-file-6.txt", "saved": "file1/test-file-5.txt"},
+    }
+    tm.save()
+    assert tm.get_dirty_fields() == {}
+
+    # change file content without changing file name does not make field dirty
+    tm.file1.open("w")
+    tm.file1.write("Test file content edited")
+    tm.file1.close()
+    assert tm.file1.name == "file1/test-file-6.txt"
+    assert tm.get_dirty_fields() == {}
+    tm.file1.open("r")
+    assert tm.file1.read() == "Test file content edited"
+    tm.file1.close()
 
 
 @pytest.mark.django_db
