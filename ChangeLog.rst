@@ -6,6 +6,9 @@ ChangeLog
 unreleased
 ------
 
+*New:*
+    - Confirm support for Django 4.1
+
 *Changed:*
     - The method :code:`get_dirty_fields()` now returns only the file name for FileFields.
       This is to improve performance, since the entire :code:`FieldFile` object will no longer
