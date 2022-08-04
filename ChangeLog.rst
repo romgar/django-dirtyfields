@@ -8,6 +8,7 @@ unreleased
 
 *New:*
     - Confirm support for Django 4.1
+    - Drop support for Django 1.11
 
 *Changed:*
     - The method :code:`get_dirty_fields()` now returns only the file name for FileFields.
