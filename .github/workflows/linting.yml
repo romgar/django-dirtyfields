@@ -27,9 +27,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip wheel
           python -m pip install flake8
+          python --version
+          pip list
 
       - name: Run flake8
-        run: flake8 src tests docs setup.py
+        run: flake8 -v src tests docs setup.py
 
   bandit:
     name: bandit
