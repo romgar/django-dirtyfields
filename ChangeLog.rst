@@ -13,12 +13,12 @@ unreleased
 *Changed:*
     - The method :code:`get_dirty_fields()` now returns only the file name for FileFields.
       This is to improve performance, since the entire :code:`FieldFile` object will no longer
-      be copied when Model instances are initialized and saved.
+      be copied when Model instances are initialized and saved. (#203)
 
 *Bugfix:*
     - The method :code:`save_dirty_fields()` can now be called on Model instances that have not been
       saved to the Database yet. In this case all fields will be considered dirty, and all will be
-      saved to the Database. Previously doing this would result in an Exception being raised.
+      saved to the Database. Previously doing this would result in an Exception being raised. (#200)
 
 
 .. _v1.8.2:
