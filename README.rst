@@ -46,6 +46,13 @@ Install
     $ pip install django-dirtyfields
 
 
+Run tests
+=========
+
+.. code-block:: bash
+    $ PYTHONPATH=src coverage run -m pytest
+
+
 Usage
 =====
 
