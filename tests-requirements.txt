@@ -1,5 +1,5 @@
 # let pip choose the latest version compatible with the python/django version being tested.
-psycopg2
+psycopg2-binary
 pytest
 pytest-django
 jsonfield
