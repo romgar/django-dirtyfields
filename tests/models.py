@@ -77,6 +77,12 @@ class CurrentDatetimeModelTest(DirtyFieldsMixin, models.Model):
     datetime_field = models.DateTimeField(default=django_timezone.now)
 
 
+class AutoNowDatetimeModel(DirtyFieldsMixin, models.Model):
+    datetime_field = models.DateTimeField(auto_now=True)
+    date_field = models.DateField(auto_now=True)
+    test_string = models.TextField()
+
+
 class Many2ManyModelTest(DirtyFieldsMixin, models.Model):
     m2m_field = models.ManyToManyField(ModelTest)
     ENABLE_M2M_CHECK = True

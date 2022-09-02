@@ -1,10 +1,13 @@
 from copy import deepcopy
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files import File
+from django.db.models import DateField, DateTimeField
 from django.db.models.expressions import BaseExpression
 from django.db.models.expressions import Combinable
 from django.db.models.signals import post_save, m2m_changed
+from django.utils import timezone
 
 from .compare import raw_compare, compare_states, normalise_value
 
@@ -151,6 +154,22 @@ class DirtyFieldsMixin(object):
                                                  self.compare_function,
                                                  self.normalise_function)
             modified_fields.update(modified_m2m_fields)
+
+        if modified_fields and getattr(settings, 'DIRTYFIELDS_UPDATE_AUTO_NOW', False):
+            # If any fields are marked as dirty, we want to update auto_now fields too
+            auto_now_fields = {}
+            relevant_datetime_fields = filter(
+                lambda value: isinstance(value, (DateTimeField, DateField)) and value.auto_now,
+                self._meta.fields
+            )
+            for field in relevant_datetime_fields:
+                field_value = self._resolve_field_value(field)
+                if isinstance(field, DateTimeField):
+                    current_value = timezone.now()
+                elif isinstance(field, DateField):
+                    current_value = timezone.now().date()
+                auto_now_fields[field.name] = {"saved": field_value, "current": current_value}
+            modified_fields.update(auto_now_fields)
 
         if not verbose:
             # Keeps backward compatibility with previous function return
