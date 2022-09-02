@@ -78,6 +78,21 @@ class DirtyFieldsMixin(object):
             return True
         return False
 
+    def _resolve_field_value(self, field):
+        field_value = getattr(self, field.attname)
+        try:
+            # Store the converted value for fields with conversion
+            field_value = field.to_python(field_value)
+        except ValidationError:
+            # The current value is not valid so we cannot convert it
+            pass
+
+        if isinstance(field_value, memoryview):
+            # psycopg2 returns uncopyable type buffer for bytea
+            field_value = bytes(field_value)
+
+        return field_value
+
     def _as_dict(self, check_relationship, include_primary_key=True):
         """
         Capture the model fields' state as a dictionary.
@@ -91,17 +106,7 @@ class DirtyFieldsMixin(object):
             if self._skip_field(field, check_relationship, include_primary_key):
                 continue
 
-            field_value = getattr(self, field.attname)
-            try:
-                # Store the converted value for fields with conversion
-                field_value = field.to_python(field_value)
-            except ValidationError:
-                # The current value is not valid so we cannot convert it
-                pass
-
-            if isinstance(field_value, memoryview):
-                # psycopg2 returns uncopyable type buffer for bytea
-                field_value = bytes(field_value)
+            field_value = self._resolve_field_value(field)
 
             # Explanation of copy usage here :
             # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
