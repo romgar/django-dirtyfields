@@ -5,7 +5,7 @@ Adapted from https://stackoverflow.com/questions/110803/dirty-fields-in-django
 """
 
 __all__ = ['DirtyFieldsMixin']
-__version__ = "1.9.0"
+__version__ = "1.9.1.dev0"
 
 from dirtyfields.dirtyfields import DirtyFieldsMixin
 
