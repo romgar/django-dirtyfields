@@ -6,6 +6,12 @@ ChangeLog
 unreleased
 ------
 
+
+.. _v1.9.0:
+
+1.9.0 (2022-11-07)
+------------------
+
 *New:*
     - Confirm support for Python 3.11
     - Confirm support for Django 4.1
