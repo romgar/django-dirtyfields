@@ -7,6 +7,7 @@ unreleased
 ------
 
 *New:*
+    - Confirm support for Python 3.11
     - Confirm support for Django 4.1
     - Drop support for Django 1.11
 
