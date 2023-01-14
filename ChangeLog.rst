@@ -4,7 +4,12 @@ ChangeLog
 .. _unreleased:
 
 unreleased
-------
+----------
+
+*Bugfix:*
+    - Fixed a :code:`KeyError` that would occur when updating a field two times in a row when
+      the field value is set to an :code:`F` object and the field is specified in the
+      :code:`update_fields` argument to :code:`save()`. (#209)
 
 
 .. _v1.9.0:
