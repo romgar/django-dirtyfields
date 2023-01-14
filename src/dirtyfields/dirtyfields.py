@@ -184,7 +184,7 @@ def reset_state(sender, instance, **kwargs):
                     instance._original_state[field.name] = (
                         new_state[field.name]
                     )
-                else:
+                elif field.name in instance._original_state:
                     # If we are here it means the field was updated in the DB,
                     # and we don't know the new value in the database.
                     # e.g it was updated with an F() expression.

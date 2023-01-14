@@ -123,7 +123,6 @@ def test_expressions_not_taken_into_account_for_dirty_check():
 
 @pytest.mark.django_db
 def test_pre_save_signal_make_dirty_checking_not_consistent():
-
     # first case
     model = WithPreSaveSignalModelTest.objects.create(data='specific_value')
     assert model.data_updated_on_presave == 'presave_value'
@@ -192,3 +191,21 @@ def test_f_objects_and_save_update_fields_works():
     tm.save(update_fields=["counter"])
     tm.refresh_from_db()
     assert tm.counter == 2
+
+
+@pytest.mark.django_db
+def test_f_objects_and_save_update_fields_works_multiple_times():
+    # Non regression test case for bug:
+    # https://github.com/romgar/django-dirtyfields/issues/208
+    tm = ExpressionModelTest.objects.create(counter=0)
+    assert tm.counter == 0
+
+    tm.counter = F("counter") + 1
+    tm.save(update_fields=["counter"])
+    tm_from_db = ExpressionModelTest.objects.get(id=tm.id)
+    assert tm_from_db.counter == 1
+
+    tm.counter = F("counter") + 1
+    tm.save(update_fields=["counter"])
+    tm_from_db = ExpressionModelTest.objects.get(id=tm.id)
+    assert tm_from_db.counter == 2
