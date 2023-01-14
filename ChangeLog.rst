@@ -6,6 +6,13 @@ ChangeLog
 unreleased
 ----------
 
+
+
+.. _v1.9.1:
+
+1.9.1 (2023-01-14)
+------------------
+
 *Bugfix:*
     - Fixed a :code:`KeyError` that would occur when updating a field two times in a row when
       the field value is set to an :code:`F` object and the field is specified in the
