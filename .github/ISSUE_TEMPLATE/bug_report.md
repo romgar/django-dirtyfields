@@ -11,7 +11,7 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Minimal code to reproduce the issue. If possible, write a test case that fails to demonstrate your issue.
+Minimal code to reproduce the issue. If possible, write a test case to demonstrate your issue.
 
 ```python
 your code here...
@@ -19,6 +19,9 @@ your code here...
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
+
+**Actual Behavior**
+What actually happens, include your stack trace if an exception is occurring.
 
 **Environment (please complete the following information):**
  - OS:
