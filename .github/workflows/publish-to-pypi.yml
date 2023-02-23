@@ -36,7 +36,7 @@ jobs:
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: pypi-packages
           path: dist/
