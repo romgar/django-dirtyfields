@@ -6,6 +6,8 @@ ChangeLog
 unreleased
 ----------
 
+*New:*
+    - Confirm support for Django 4.2
 
 
 .. _v1.9.1:
