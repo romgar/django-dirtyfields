@@ -10,6 +10,7 @@ docs/.venv-docs/*
 .tox
 .cache
 .coverage
+coverage.xml
 htmlcov
 .idea
 dist/*
