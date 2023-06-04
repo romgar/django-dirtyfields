@@ -6,6 +6,10 @@ ChangeLog
 unreleased
 ----------
 
+*New:*
+    - Drop support for Python 3.7
+    - Drop support for Django 2.0
+    - Drop support for Django 2.1
 
 
 .. _v1.9.2:
