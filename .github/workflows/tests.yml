@@ -81,7 +81,7 @@ jobs:
       - name: Install test requirements
         run: |
           python -m pip install --upgrade pip wheel
-          pip install django~=${{ matrix.django }}.0 coverage[toml]~=7.0 -r tests-requirements.txt .
+          pip install django~=${{ matrix.django }}.0 coverage[toml]~=7.0 -r tests-requirements.txt
           python --version
           pip list
 
@@ -89,6 +89,9 @@ jobs:
         run: coverage run -m pytest -v
         env:
           TEST_DATABASE: ${{ matrix.database }}
+          # Run tests on original source code, rather than installing the package into the python environment.
+          # This ensures coverage report has files listed with paths relative to the repository root.
+          PYTHONPATH: './src'
 
       - name: Report coverage to console
         run: coverage report
