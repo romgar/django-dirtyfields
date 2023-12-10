@@ -7,6 +7,8 @@ unreleased
 ----------
 
 *New:*
+    - Confirm support for Python 3.12
+    - Confirm support for Django 5.0
     - Drop support for Python 3.7
     - Drop support for Django 2.0
     - Drop support for Django 2.1

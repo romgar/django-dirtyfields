@@ -15,10 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ['3.8', '3.9', '3.10', '3.11']
-        django: ['2.2', '3.0', '3.1', '3.2', '4.0', '4.1', '4.2']
+        python: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        django: ['2.2', '3.0', '3.1', '3.2', '4.0', '4.1', '4.2', '5.0']
         database: ['postgres', 'sqlite']
         exclude:
+          - python: '3.8'
+            django: '5.0'
+          - python: '3.9'
+            django: '5.0'
           - python: '3.10'
             django: '2.2'
           - python: '3.10'
@@ -39,6 +43,18 @@ jobs:
             django: '3.2'
           - python: '3.11'
             django: '4.0'
+          - python: '3.12'
+            django: '2.2'
+          - python: '3.12'
+            django: '3.0'
+          - python: '3.12'
+            django: '3.1'
+          - python: '3.12'
+            django: '3.2'
+          - python: '3.12'
+            django: '4.0'
+          - python: '3.12'
+            django: '4.1'
 
     services:
       # as far as I can see, no way to make this conditional on the matrix database
