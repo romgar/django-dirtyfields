@@ -6,6 +6,13 @@ ChangeLog
 unreleased
 ----------
 
+
+
+.. _v1.9.3:
+
+1.9.3 (2024-05-24)
+------------------
+
 *New:*
     - Confirm support for Python 3.12
     - Confirm support for Django 5.0
