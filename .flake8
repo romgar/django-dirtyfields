@@ -1,0 +1,4 @@
+[flake8]
+ignore = E133,W503
+max-line-length = 120
+extend-exclude = docs/_build,docs/.venv-docs
