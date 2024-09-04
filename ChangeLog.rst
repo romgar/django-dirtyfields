@@ -6,6 +6,8 @@ ChangeLog
 unreleased
 ----------
 
+*New:*
+    - Confirm support for Django 5.1
 
 
 .. _v1.9.3:
