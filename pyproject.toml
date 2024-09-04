@@ -2,6 +2,55 @@
 requires = ["setuptools ~= 74.0"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "django-dirtyfields"
+dynamic = ["version"]
+description = "Tracking dirty fields on a Django model instance."
+keywords = ["django", "dirtyfields", "track", "model", "changes"]
+readme = {file = "README.rst", content-type = "text/x-rst"}
+license = {file = "LICENSE"}
+authors = [{name = "Romain Garrigues"}]
+maintainers = [{name = "Lincoln Puzey"}]
+requires-python = ">=3.8"
+dependencies = [
+  "Django>=2.2",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Django",
+    "Framework :: Django :: 2.2",
+    "Framework :: Django :: 3.0",
+    "Framework :: Django :: 3.1",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/romgar/django-dirtyfields"
+Repository = "https://github.com/romgar/django-dirtyfields.git"
+Changelog = "https://github.com/romgar/django-dirtyfields/blob/develop/ChangeLog.rst"
+Documentation = "https://django-dirtyfields.readthedocs.io"
+
+[tool.setuptools.dynamic]
+version = {attr = "dirtyfields.__version__"}
+
 [tool.pytest.ini_options]
 django_find_project = false
 DJANGO_SETTINGS_MODULE = 'tests.django_settings'
