@@ -13,6 +13,7 @@
 # serve to show the default.
 
 import ast
+import os
 import sys
 from datetime import date
 from os import path
@@ -245,6 +246,15 @@ html_sidebars = {
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'django-dirtyfieldsdoc'
+
+# Define the canonical URL if you are using a custom domain on Read the Docs
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+
+html_context = {}
+
+# Tell Jinja2 templates the build is running on Read the Docs
+if os.environ.get("READTHEDOCS", "") == "True":
+    html_context["READTHEDOCS"] = True
 
 # -- Options for LaTeX output ---------------------------------------------
 
