@@ -4,7 +4,7 @@ import pytest
 from django.test.utils import override_settings
 from django.utils import timezone as django_timezone
 
-from .models import DatetimeModelTest, CurrentDatetimeModelTest
+from .models import DatetimeModelTest, CurrentDatetimeModelTest, UpdatedDatetimeModelTest
 
 
 @override_settings(USE_TZ=True)
@@ -107,3 +107,10 @@ def test_datetime_fields_with_current_timezone_conversion_without_timezone_suppo
         ),
     ):
         assert tm.get_dirty_fields() == {}
+
+
+@pytest.mark.django_db
+def test_updated_datetime_fields():
+    tm = UpdatedDatetimeModelTest.objects.create()
+    tm.id = 2
+    assert list(tm.get_dirty_fields().keys()) == ['id', 'updated_datetime_field']
