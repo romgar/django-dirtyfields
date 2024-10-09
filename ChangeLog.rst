@@ -8,6 +8,7 @@ unreleased
 
 *New:*
     - Confirm support for Django 5.1
+    - Drop support for Python 3.8
 
 
 .. _v1.9.3:
