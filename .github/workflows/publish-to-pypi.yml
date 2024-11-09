@@ -50,7 +50,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           # Download distributions from one job of the matrix
-          name: "distributions-built-with-py-3.12"
+          name: "distributions-built-with-py3.12"
           path: "dist"
 
       - name: Publish distribution to PyPI
