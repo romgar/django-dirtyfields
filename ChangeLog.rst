@@ -8,6 +8,15 @@ unreleased
 
 
 
+.. _v1.9.5:
+
+1.9.5 (2024-11-09)
+------------------
+
+*Bugfix*
+    - Fixed error in PyPI publish process
+
+
 .. _v1.9.4:
 
 1.9.4 (2024-11-09)
