@@ -1,5 +1,5 @@
 from copy import deepcopy
-
+from django import VERSION as DJANGO_VERSION
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.db.models.expressions import BaseExpression
@@ -38,9 +38,12 @@ class DirtyFieldsMixin(object):
         reset_state(sender=self.__class__, instance=self)
 
     def refresh_from_db(self, using=None, fields=None, from_queryset=None):
-        super(DirtyFieldsMixin, self).refresh_from_db(
-            using=using, fields=fields, from_queryset=from_queryset
-        )
+        if DJANGO_VERSION >= (5, 1):
+            super(DirtyFieldsMixin, self).refresh_from_db(
+                using=using, fields=fields, from_queryset=from_queryset
+            )
+        else:
+            super(DirtyFieldsMixin, self).refresh_from_db(using=using, fields=fields)
         reset_state(sender=self.__class__, instance=self, update_fields=fields)
 
     def _connect_m2m_relations(self):
