@@ -216,7 +216,7 @@ def test_refresh_from_db_no_fields():
 
 @pytest.mark.django_db
 def test_refresh_from_db_with_from_queryset():
-    """Tests passthrough of `save_queryset` field in refresh_from_db
+    """Tests passthrough of `from_queryset` field in refresh_from_db
     this field was introduced in django 5.1. more details in this PR:
     https://github.com/romgar/django-dirtyfields/pull/235
     """
