@@ -8,6 +8,15 @@ unreleased
 
 
 
+.. _v1.9.6:
+
+1.9.6 (2025-02-07)
+------------------
+
+*Bugfix*
+    - Allow passing :code:`from_queryset` argument to :code:`Model.refresh_from_db()` in Django 5.1+
+
+
 .. _v1.9.5:
 
 1.9.5 (2024-11-09)
