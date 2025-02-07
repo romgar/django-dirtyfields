@@ -2,6 +2,7 @@ from decimal import Decimal
 from os.path import dirname, join
 
 import pytest
+import django
 from django.core.files.base import ContentFile, File
 from django.db import DatabaseError, transaction
 
@@ -214,6 +215,7 @@ def test_refresh_from_db_no_fields():
     assert tm.get_dirty_fields() == {"boolean": True, "characters": "old value"}
 
 
+@pytest.mark.skipif(django.VERSION < (5, 1), reason="requires django 5.1 or higher")
 @pytest.mark.django_db
 def test_refresh_from_db_with_from_queryset():
     """Tests passthrough of `from_queryset` field in refresh_from_db
