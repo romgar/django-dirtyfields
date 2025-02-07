@@ -215,6 +215,23 @@ def test_refresh_from_db_no_fields():
 
 
 @pytest.mark.django_db
+def test_refresh_from_db_with_from_queryset():
+    """Tests passthrough of `from_queryset` field in refresh_from_db
+    this field was introduced in django 5.1. more details in this PR:
+    https://github.com/romgar/django-dirtyfields/pull/235
+    """
+    tm = ModelTest.objects.create(characters="old value")
+    tm.boolean = False
+    tm.characters = "new value"
+    assert tm.get_dirty_fields() == {"boolean": True, "characters": "old value"}
+
+    tm.refresh_from_db(fields={"characters"}, from_queryset=ModelTest.objects.all())
+    assert tm.boolean is False
+    assert tm.characters == "old value"
+    assert tm.get_dirty_fields() == {"boolean": True}
+
+
+@pytest.mark.django_db
 def test_file_fields_content_file():
     tm = FileFieldModel()
     # field is dirty because model is unsaved
