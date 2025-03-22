@@ -246,6 +246,20 @@ def test_refresh_from_db_with_from_queryset():
     assert tm.get_dirty_fields() == {"boolean": True}
 
 
+@pytest.mark.skipif(django.VERSION < (5, 1), reason="requires django 5.1 or higher")
+@pytest.mark.django_db
+def test_refresh_from_db_position_args_with_queryset():
+    tm = ModelTest.objects.create(characters="old value")
+    tm.boolean = False
+    tm.characters = "new value"
+    assert tm.get_dirty_fields() == {"boolean": True, "characters": "old value"}
+
+    tm.refresh_from_db("default", {"characters"}, ModelTest.objects.all())
+    assert tm.boolean is False
+    assert tm.characters == "old value"
+    assert tm.get_dirty_fields() == {"boolean": True}
+
+
 @pytest.mark.django_db
 def test_file_fields_content_file():
     tm = FileFieldModel()
