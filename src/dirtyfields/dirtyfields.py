@@ -37,7 +37,7 @@ class DirtyFieldsMixin(object):
         reset_state(sender=self.__class__, instance=self)
 
     def refresh_from_db(self, using=None, fields=None, *args, **kwargs):
-        super().refresh_from_db(using=using, fields=fields, *args, **kwargs)
+        super().refresh_from_db(using, fields, *args, **kwargs)
         reset_state(sender=self.__class__, instance=self, update_fields=fields)
 
     def _connect_m2m_relations(self):
