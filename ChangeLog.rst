@@ -6,6 +6,8 @@ ChangeLog
 unreleased
 ----------
 
+*Bugfix*
+    - Fix :code:`Model.refresh_from_db()` so calling it with 3 positional args works.
 
 
 .. _v1.9.6:
