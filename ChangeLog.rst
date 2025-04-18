@@ -6,7 +6,8 @@ ChangeLog
 unreleased
 ----------
 
-
+*New:*
+    - Confirm support for Django 5.2
 
 1.9.7 (2025-03-22)
 ------------------
