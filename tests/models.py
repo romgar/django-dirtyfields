@@ -167,3 +167,7 @@ class BinaryModelTest(DirtyFieldsMixin, models.Model):
 
 class FileFieldModel(DirtyFieldsMixin, models.Model):
     file1 = models.FileField(upload_to="file1/")
+
+
+class ImageFieldModel(DirtyFieldsMixin, models.Model):
+    image1 = models.ImageField(upload_to="image1/")
