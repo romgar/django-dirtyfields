@@ -5,12 +5,14 @@ import pytest
 import django
 from django.core.files.base import ContentFile, File
 from django.db import DatabaseError, transaction
+from django.db.models.fields.files import ImageFile
 
 import dirtyfields
 from .models import (ModelTest, ModelWithForeignKeyTest,
                      ModelWithOneToOneFieldTest,
                      SubclassModelTest, ModelWithDecimalFieldTest,
-                     FileFieldModel, OrdinaryModelTest, OrdinaryWithDirtyFieldsProxy)
+                     FileFieldModel, ImageFieldModel,
+                     OrdinaryModelTest, OrdinaryWithDirtyFieldsProxy)
 
 
 def test_version_numbers():
@@ -351,6 +353,29 @@ def test_file_fields_real_file():
     tm.file1.open("r")
     assert tm.file1.read() == "Test file content edited"
     tm.file1.close()
+
+
+@pytest.mark.django_db
+def test_file_fields_real_images():
+    tm = ImageFieldModel()
+    # field is dirty because model is unsaved
+    assert tm.get_dirty_fields() == {"image1": ""}
+    tm.save()
+    assert tm.get_dirty_fields() == {}
+
+    # set file makes field dirty
+    with open(join(dirname(__file__), "files", "blank1.png"), "rb") as f:
+        tm.image1.save("test-image-1.png", ImageFile(f), save=False)
+    assert tm.get_dirty_fields() == {"image1": ""}
+    tm.save()
+    assert tm.get_dirty_fields() == {}
+
+    # change file makes field dirty
+    with open(join(dirname(__file__), "files", "blank2.png"), "rb") as f:
+        tm.image1.save("test-image-2.png", ImageFile(f), save=False)
+    assert tm.get_dirty_fields() == {"image1": "image1/test-image-1.png"}
+    tm.save()
+    assert tm.get_dirty_fields() == {}
 
 
 @pytest.mark.django_db
