@@ -52,6 +52,31 @@ Documentation = "https://django-dirtyfields.readthedocs.io"
 [tool.setuptools.dynamic]
 version = {attr = "dirtyfields.__version__"}
 
+[dependency-groups]
+dev = [
+    {include-group = "test"},
+    {include-group = "lint"},
+    {include-group = "security"},
+    {include-group = "build"},
+]
+test = [
+    "pytest>=8.4.0,<9",
+    "coverage[toml]>=7.10.0,<8",
+    "psycopg2",
+    # let pip choose the latest version compatible with the python/django version being tested.
+    "pytest-django",
+    "jsonfield",
+]
+lint = [
+    "flake8",
+]
+security = [
+    "bandit",
+]
+build = [
+    "build",
+]
+
 [tool.pytest.ini_options]
 django_find_project = false
 DJANGO_SETTINGS_MODULE = 'tests.django_settings'
