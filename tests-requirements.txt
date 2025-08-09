@@ -1,5 +1,0 @@
-# let pip choose the latest version compatible with the python/django version being tested.
-psycopg2
-pytest
-pytest-django
-jsonfield

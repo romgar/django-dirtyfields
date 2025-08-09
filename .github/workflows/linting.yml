@@ -25,9 +25,7 @@ jobs:
 
       - name: Install flake8
         run: |
-          python -m pip install --upgrade pip wheel
-          python -m pip install flake8
-          python --version
+          pip install --group lint
           pip list
 
       - name: Run flake8
@@ -48,8 +46,8 @@ jobs:
 
     - name: Install bandit
       run: |
-        python -m pip install --upgrade pip wheel
-        python -m pip install bandit
+        pip install --group security
+        pip list
 
     - name: Run bandit
       # "B101:assert_used" is allowed in tests.
