@@ -17,7 +17,7 @@ jobs:
     strategy:
       # Matrix to exercise the build backend on all versions of python supported
       matrix:
-        python: ['3.10', '3.11', '3.12', '3.13']
+        python: ['3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
       - uses: actions/checkout@v4
 
