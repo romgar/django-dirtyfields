@@ -6,6 +6,12 @@ ChangeLog
 unreleased
 ----------
 
+
+.. _v1.9.8:
+
+1.9.8 (2025-11-17)
+------------------
+
 *New:*
     - Confirm support for Python 3.14
     - Confirm support for Django 5.2
@@ -13,6 +19,8 @@ unreleased
     - Drop support for Django 2.2
     - Drop support for Django 3.0
     - Drop support for Django 3.1
+
+.. _v1.9.7:
 
 1.9.7 (2025-03-22)
 ------------------
