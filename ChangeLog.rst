@@ -8,6 +8,10 @@ unreleased
 
 *New:*
     - Confirm support for Django 5.2
+    - Drop support for Python 3.9
+    - Drop support for Django 2.2
+    - Drop support for Django 3.0
+    - Drop support for Django 3.1
 
 1.9.7 (2025-03-22)
 ------------------
