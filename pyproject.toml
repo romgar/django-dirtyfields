@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools ~= 75.0"]
+requires = ["setuptools >= 80.9.0, < 81"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,8 @@ dynamic = ["version"]
 description = "Tracking dirty fields on a Django model instance."
 keywords = ["django", "dirtyfields", "track", "model", "changes"]
 readme = {file = "README.rst", content-type = "text/x-rst"}
-license = {file = "LICENSE"}
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 authors = [{name = "Romain Garrigues"}]
 maintainers = [{name = "Lincoln Puzey"}]
 requires-python = ">=3.10"
@@ -19,7 +20,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
