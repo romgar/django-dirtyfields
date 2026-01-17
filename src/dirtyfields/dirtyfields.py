@@ -1,4 +1,5 @@
 from copy import deepcopy
+
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.db.models.expressions import BaseExpression
@@ -16,6 +17,9 @@ def get_m2m_with_model(given_model):
     ]
 
 
+_m2m_connected_classes = set()
+
+
 class DirtyFieldsMixin(object):
     compare_function = (raw_compare, {})
     normalise_function = (normalise_value, {})
@@ -26,14 +30,20 @@ class DirtyFieldsMixin(object):
 
     FIELDS_TO_CHECK = None
 
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        post_save.connect(
+            reset_state, sender=cls, weak=False,
+            dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
+                name=cls.__name__))
+
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)
-        post_save.connect(
-            reset_state, sender=self.__class__, weak=False,
-            dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
-                name=self.__class__.__name__))
         if self.ENABLE_M2M_CHECK:
-            self._connect_m2m_relations()
+            cls = self.__class__
+            if cls not in _m2m_connected_classes:
+                _m2m_connected_classes.add(cls)
+                self._connect_m2m_relations()
         reset_state(sender=self.__class__, instance=self)
 
     def refresh_from_db(self, using=None, fields=None, *args, **kwargs):
@@ -99,8 +109,6 @@ class DirtyFieldsMixin(object):
                 # psycopg2 returns uncopyable type buffer for bytea
                 field_value = bytes(field_value)
 
-            # Explanation of copy usage here :
-            # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
             all_field[field.name] = deepcopy(field_value)
 
         return all_field
