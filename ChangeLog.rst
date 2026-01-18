@@ -7,7 +7,13 @@ unreleased
 ----------
 
 *New:*
-    - Confirm support for Django 6.0
+    - Confirm support for Django 6.0.
+      Note that Django 6.0 now refreshes or defers (depending on your database)
+      fields that are expressions after :code:`Model.save()`.
+      A field that is refreshed by this mechanism will now appear as dirty if
+      it is subsequently changed in-memory, when previously it wouldn't.
+      See https://docs.djangoproject.com/en/6.0/ref/models/expressions/#f-assignments-are-refreshed-after-model-save
+      and https://code.djangoproject.com/ticket/27222.
 
 
 .. _v1.9.8:
