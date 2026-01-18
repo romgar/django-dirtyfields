@@ -53,12 +53,3 @@ class assert_select_number_queries_on_model(assert_number_of_queries_on_regex):
         regex = r'^.*SELECT.*FROM "tests_%s".*$' % model_name
 
         super(assert_select_number_queries_on_model, self).__init__(regex, number)
-
-
-def is_postgresql_env_with_jsonb_field():
-    try:
-        PG_VERSION = connection.pg_version
-    except AttributeError:
-        PG_VERSION = 0
-
-    return PG_VERSION >= 90400
