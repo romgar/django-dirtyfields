@@ -51,7 +51,7 @@ def test_datetime_fields_when_aware_db_and_aware_current_value():
     aware_dt = django_timezone.now()
     tm = DatetimeModelTest.objects.create(datetime_field=aware_dt)
 
-    tm.datetime_field = django_timezone.now()
+    tm.datetime_field = aware_dt + timedelta(hours=1)
 
     assert tm.get_dirty_fields() == {'datetime_field': aware_dt}
 
@@ -62,7 +62,7 @@ def test_datetime_fields_when_naive_db_and_naive_current_value():
     naive_dt = datetime.now()
     tm = DatetimeModelTest.objects.create(datetime_field=naive_dt)
 
-    tm.datetime_field = datetime.now()
+    tm.datetime_field = naive_dt + timedelta(hours=1)
 
     assert tm.get_dirty_fields() == {'datetime_field': naive_dt}
 
