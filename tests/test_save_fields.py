@@ -1,6 +1,8 @@
 import pytest
 
-from django.db.models import F
+import django
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 
 from .models import (
     ExpressionModelTest,
@@ -156,8 +158,9 @@ def test_save_deferred_field_with_update_fields_behaviour():
     assert tm.get_dirty_fields() == {'boolean': True}
 
 
+@pytest.mark.skipif(django.VERSION >= (6, 0), reason="tests behavior on django before 6.0")
 @pytest.mark.django_db
-def test_get_dirty_fields_when_saving_with_f_objects():
+def test_get_dirty_fields_when_saving_with_f_objects_pre_django6():
     """
     This documents how get_dirty_fields() behaves when updating model fields
     with F objects.
@@ -194,8 +197,9 @@ def test_get_dirty_fields_when_saving_with_f_objects():
     assert tm.get_dirty_fields() == {"counter": 10}
 
 
+@pytest.mark.skipif(django.VERSION >= (6, 0), reason="tests behavior on django before 6.0")
 @pytest.mark.django_db
-def test_get_dirty_fields_when_saving_with_f_objects_update_fields_specified():
+def test_get_dirty_fields_when_saving_with_f_objects_update_fields_specified_pre_django6():
     """
     Same as above but with update_fields specified when saving/refreshing
     """
@@ -219,3 +223,84 @@ def test_get_dirty_fields_when_saving_with_f_objects_update_fields_specified():
     tm.refresh_from_db(fields={"counter"})
     tm.counter = 20
     assert tm.get_dirty_fields() == {"counter": 10}
+
+
+@pytest.mark.skipif(django.VERSION < (6, 0), reason="tests behavior on django after 6.0")
+@pytest.mark.django_db
+def test_get_dirty_fields_when_saving_with_f_objects():
+    """
+    This documents how get_dirty_fields() behaves when updating model fields
+    with F objects.
+    """
+
+    tm = ExpressionModelTest.objects.create(counter=0)
+    assert tm.counter == 0
+    assert tm.get_dirty_fields() == {}
+
+    tm.counter = F("counter") + 1
+    # tm.counter field is not considered dirty because it doesn't have a simple
+    # value in memory we can compare to the original value.
+    # i.e. we don't know what value it will be in the database after the F
+    # object is translated into SQL.
+    assert tm.get_dirty_fields() == {}
+
+    tm.save()
+    # .save() refreshes the value in memory so we now know what it is, and the model is not dirty.
+    # https://docs.djangoproject.com/en/dev/ref/models/expressions/#f-assignments-are-refreshed-after-model-save
+    assert tm.counter == 1
+    assert tm.get_dirty_fields() == {}
+
+    # .get_dirty_fields() now behaves as normal.
+    tm.counter = 10
+    assert tm.get_dirty_fields() == {'counter': 1}
+
+
+@pytest.mark.skipif(django.VERSION < (6, 0), reason="tests behavior on django after 6.0")
+@pytest.mark.django_db
+def test_get_dirty_fields_when_saving_with_f_objects_update_fields_specified():
+    """
+    Same as above but with update_fields specified when saving
+    """
+
+    tm = ExpressionModelTest.objects.create(counter=0)
+    assert tm.counter == 0
+    assert tm.get_dirty_fields() == {}
+
+    tm.counter = F("counter") + 1
+    assert tm.get_dirty_fields() == {}
+
+    tm.save(update_fields={"counter"})
+    assert tm.counter == 1
+    assert tm.get_dirty_fields() == {}
+
+    tm.counter = 10
+    assert tm.get_dirty_fields() == {'counter': 1}
+
+
+@pytest.mark.skipif(django.VERSION < (6, 0), reason="tests behavior on django after 6.0")
+@pytest.mark.django_db
+def test_get_dirty_fields_when_saving_with_f_objects_update_fields_specified_for_different_field():
+    """
+    Test when a field is set to an F object, and another field is saved.
+    """
+
+    tm = ModelTest.objects.create(boolean=True, characters="abc")
+    assert tm.get_dirty_fields() == {}
+
+    # Set 'characters' to an F object. Not dirty because we don't know what the final value it.
+    tm.characters = Concat(F("characters"), Value("def"))
+    assert tm.get_dirty_fields() == {}
+
+    # Save a different field. F expression is not refreshed.
+    tm.save(update_fields={"boolean"})
+    # 'characters' is still not dirty.
+    assert tm.get_dirty_fields() == {}
+
+    # Save the F object
+    tm.save()
+    assert tm.characters == 'abcdef'
+    assert tm.get_dirty_fields() == {}
+
+    # .get_dirtyfields() works as normal now.
+    tm.characters = 'xyz'
+    assert tm.get_dirty_fields() == {"characters": "abcdef"}
