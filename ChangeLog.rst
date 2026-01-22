@@ -6,6 +6,13 @@ ChangeLog
 unreleased
 ----------
 
+
+
+.. _v1.9.9:
+
+1.9.9 (2026-01-22)
+------------------
+
 *New:*
     - Confirm support for Django 6.0.
       Note that Django 6.0 now refreshes or defers (depending on your database)
@@ -28,6 +35,7 @@ unreleased
     - Drop support for Django 2.2
     - Drop support for Django 3.0
     - Drop support for Django 3.1
+
 
 .. _v1.9.7:
 
