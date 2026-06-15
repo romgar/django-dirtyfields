@@ -1,9 +1,11 @@
 from copy import deepcopy
+
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.db.models.expressions import BaseExpression
 from django.db.models.expressions import Combinable
-from django.db.models.signals import post_save, m2m_changed
+from django.db.models.signals import class_prepared, post_save, m2m_changed
+from django.dispatch import receiver
 
 from .compare import raw_compare, compare_states, normalise_value
 
@@ -11,8 +13,7 @@ from .compare import raw_compare, compare_states, normalise_value
 def get_m2m_with_model(given_model):
     return [
         (f, f.model if f.model != given_model else None)
-        for f in given_model._meta.get_fields()
-        if f.many_to_many and not f.auto_created
+        for f in given_model._meta.many_to_many
     ]
 
 
@@ -28,24 +29,19 @@ class DirtyFieldsMixin(object):
 
     def __init__(self, *args, **kwargs):
         super(DirtyFieldsMixin, self).__init__(*args, **kwargs)
-        post_save.connect(
-            reset_state, sender=self.__class__, weak=False,
-            dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
-                name=self.__class__.__name__))
-        if self.ENABLE_M2M_CHECK:
-            self._connect_m2m_relations()
         reset_state(sender=self.__class__, instance=self)
 
     def refresh_from_db(self, using=None, fields=None, *args, **kwargs):
         super().refresh_from_db(using, fields, *args, **kwargs)
         reset_state(sender=self.__class__, instance=self, update_fields=fields)
 
-    def _connect_m2m_relations(self):
-        for m2m_field, model in get_m2m_with_model(self.__class__):
+    @classmethod
+    def _connect_m2m_relations(cls):
+        for m2m_field, model in get_m2m_with_model(cls):
             m2m_changed.connect(
                 reset_state, sender=m2m_field.remote_field.through, weak=False,
                 dispatch_uid='{name}-DirtyFieldsMixin-sweeper-m2m'.format(
-                    name=self.__class__.__name__))
+                    name=cls.__name__))
 
     def _as_dict(self, check_relationship, include_primary_key=True):
         """
@@ -99,8 +95,6 @@ class DirtyFieldsMixin(object):
                 # psycopg2 returns uncopyable type buffer for bytea
                 field_value = bytes(field_value)
 
-            # Explanation of copy usage here :
-            # https://github.com/romgar/django-dirtyfields/commit/efd0286db8b874b5d6bd06c9e903b1a0c9cc6b00
             all_field[field.name] = deepcopy(field_value)
 
         return all_field
@@ -196,3 +190,15 @@ def reset_state(sender, instance, **kwargs):
 
     if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()
+
+
+@receiver(class_prepared)
+def _connect_dirty_fields_signals(sender, **kwargs):
+    if not issubclass(sender, DirtyFieldsMixin):
+        return
+    post_save.connect(
+        reset_state, sender=sender, weak=False,
+        dispatch_uid='{name}-DirtyFieldsMixin-sweeper'.format(
+            name=sender.__name__))
+    if sender.ENABLE_M2M_CHECK:
+        sender._connect_m2m_relations()
