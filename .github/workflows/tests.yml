@@ -16,17 +16,21 @@ jobs:
     strategy:
       matrix:
         python: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        django: ['3.2', '4.0', '4.1', '4.2', '5.0', '5.1', '5.2', '6.0']
+        django: ['3.2', '4.0', '4.1', '4.2', '5.0', '5.1', '5.2', '6.0', '6.1']
         database: ['postgres', 'sqlite']
         exclude:
           - python: '3.10'
             django: '6.0'
+          - python: '3.10'
+            django: '6.1'
           - python: '3.11'
             django: '3.2'
           - python: '3.11'
             django: '4.0'
           - python: '3.11'
             django: '6.0'
+          - python: '3.11'
+            django: '6.1'
           - python: '3.12'
             django: '3.2'
           - python: '3.12'
@@ -59,7 +63,7 @@ jobs:
     services:
       # as far as I can see, no way to make this conditional on the matrix database
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
