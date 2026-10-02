@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools >= 80.9.0, < 81"]
+requires = ["setuptools >= 84.0.0, < 85"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -39,6 +39,7 @@ classifiers = [
     "Framework :: Django :: 5.1",
     "Framework :: Django :: 5.2",
     "Framework :: Django :: 6.0",
+    "Framework :: Django :: 6.1",
 ]
 
 [project.urls]
@@ -58,7 +59,7 @@ dev = [
     {include-group = "build"},
 ]
 test = [
-    "pytest>=8.4.0,<9",
+    "pytest>=9.1.1,<10",
     "coverage[toml]>=7.10.0,<8",
     "psycopg2",
     # let pip choose the latest version compatible with the python/django version being tested.
